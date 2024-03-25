@@ -1,6 +1,28 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, User
 from django.db import models
 
 
 class User(AbstractUser):
-    pass
+    full_name = models.CharField(max_length=255)
+    address = models.TextField(blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    province = models.CharField(max_length=100, blank=True)
+    postal_code = models.CharField(max_length=10, blank=True)
+    phone_number = models.CharField(max_length=15, blank=True)
+
+    def __str__(self):
+        return self.username
+
+class Listing(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    starting_bid = models.DecimalField(max_digits=10, decimal_places=2)
+    current_bid = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    image_url = models.URLField(blank=True)
+    category = models.CharField(max_length=50, blank=True)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
+    created_at = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
