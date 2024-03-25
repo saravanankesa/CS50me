@@ -26,3 +26,21 @@ class Listing(models.Model):
 
     def __str__(self):
         return self.title
+
+class Bid(models.Model):
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bids")
+    bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.bidder.username} - {self.listing.title} - {self.amount}"
+
+class Comment(models.Model):
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comments")
+    commenter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.commenter.username} - {self.listing.title}"
