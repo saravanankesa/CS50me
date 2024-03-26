@@ -1,6 +1,9 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    <h2>Welcome, {{ user.username }}!</h2>
+    <!-- Add a link to create a new listing -->
+    <a href="{% url 'create_listing' %}">Create a New Listing</a>
     <h2>Active Listings</h2>
 
     TODO
