@@ -71,7 +71,7 @@ def create_listing(request):
             listing = form.save(commit=False)
             listing.creator_id = request.user.id
             listing.save()
-            return redirect('listing', pk=listing.pk)  # Redirect to the listing after creating the listing
+            return redirect('listing_detail', pk=listing.pk)  # Redirect to the listing after creating the listing
     else:
         form = ListingForm()
 
@@ -80,4 +80,4 @@ def create_listing(request):
 
 def listing_detail(request, pk):
     listing = get_object_or_404(Listing, pk=pk)
-    return render(request, 'auctions/listing.html', {'listing': listing})
+    return render(request, 'auctions/listing_detail.html', {'listing': listing})
