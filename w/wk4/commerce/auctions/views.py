@@ -4,14 +4,15 @@ from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.utils import timezone
 from .forms import ListingForm
 from .models import User, Listing
-from datetime import datetime
+
 
 
 @login_required
 def index(request):
-    current_datetime = datetime.now()
+    current_datetime = timezone.now()
     active_listings = Listing.objects.filter(created_at__lte=current_datetime)
     return render(request, 'auctions/index.html', {'active_listings': active_listings})
 
