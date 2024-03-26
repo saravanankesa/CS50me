@@ -4,7 +4,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .forms import ListingForm
-
 from .models import User, Listing
 
 
@@ -78,7 +77,22 @@ def create_listing(request):
 
     return render(request, 'auctions/create_listing.html', {'form': form})
 
-
 def listing_detail(request, pk):
     listing = get_object_or_404(Listing, pk=pk)
     return render(request, 'auctions/listing_detail.html', {'listing': listing})
+
+def edit_listing(request, pk):
+    listing = get_object_or_404(Listing, pk=pk)
+    if request.method == 'POST':
+        form = ListingForm(request.POST, instance=listing)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = ListingForm(instance=listing)
+    return render(request, 'auctions/edit_listing.html', {'form': form, 'listing': listing})
+
+def delete_listing(request, pk):
+    listing = get_object_or_404(Listing, pk=pk)
+    listing.delete()
+    return redirect('index')

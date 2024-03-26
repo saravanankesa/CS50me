@@ -1,12 +1,16 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Welcome, {{ user.username }}!</h2>
-    <a href="{% url 'create_listing' %}">Create a New Listing</a>
-  <h3>Latest Listings:</h3>
+  <h2>Welcome, {{ user.username }}!</h2>
+  <a href="{% url 'create_listing' %}">Create a New Listing</a>
+  <h3>Your Listings:</h3>
   <ul>
-    {% for listing in latest_listings %}
-      <li><a href="{% url 'listing_detail' listing.pk %}">{{ listing.title }}</a></li>
+    {% for listing in user.listings.all %}
+      <li>
+        <a href="{% url 'listing_detail' listing.pk %}">{{ listing.title }}</a>
+        <a href="{% url 'edit_listing' listing.pk %}">Edit</a>
+        <a href="{% url 'delete_listing' listing.pk %}">Delete</a>
+      </li>
     {% endfor %}
   </ul>
 {% endblock %}
