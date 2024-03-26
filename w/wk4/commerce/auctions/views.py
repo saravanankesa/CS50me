@@ -1,8 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.forms import ListingForm
 
 from .models import User
 
@@ -61,3 +62,15 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+def create_listing(request):
+    if request.method == 'POST':
+        form = ListingForm(request.POST)
+        if form.is_valid():
+            # Save the form data to create a new listing
+            form.save()
+            return redirect('index')  # Redirect to the index page after creating the listing
+    else:
+        form = ListingForm()
+
+    return render(request, 'auctions/create_listing.html', {'form': form})
