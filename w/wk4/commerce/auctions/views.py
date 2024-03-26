@@ -1,11 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .forms import ListingForm
 
-from .models import User
+from .models import User, Listing
 
 
 def index(request):
@@ -71,8 +71,13 @@ def create_listing(request):
             listing = form.save(commit=False)
             listing.creator_id = request.user.id
             listing.save()
-            return redirect('index')  # Redirect to the index page after creating the listing
+            return redirect('listing', pk=listing.pk)  # Redirect to the listing after creating the listing
     else:
         form = ListingForm()
 
     return render(request, 'auctions/create_listing.html', {'form': form})
+
+
+def listing_detail(request, pk):
+    listing = get_object_or_404(Listing, pk=pk)
+    return render(request, 'auctions/listing.html', {'listing': listing})

@@ -1,0 +1,8 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+  <h2>{{ listing.title }}</h2>
+  <p>Description: {{ listing.description }}</p>
+  <p>Starting Bid: {{ listing.starting_bid }}</p>
+  <!-- Display other listing details as needed -->
+{% endblock %}
