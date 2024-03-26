@@ -77,7 +77,7 @@ def create_listing(request):
     return render(request, 'auctions/create_listing.html', {'form': form})
 
 def listing_detail(request, pk):
-    listing = get_object_or_404(Listing, pk=pk)
+    listing = Listing.objects.get(pk=pk)
     return render(request, 'auctions/listing_detail.html', {'listing': listing})
 
 def edit_listing(request, pk):
