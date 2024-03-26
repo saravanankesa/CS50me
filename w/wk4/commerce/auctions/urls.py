@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
-    path("", auth_views.LoginView.as_view(), name="login"),  # Default route to login page
+    path("", auth_views.LoginView.as_view(template_name="auctions/login.html"), name="login"),  # Default route to login page
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
     path('create_listing/', views.create_listing, name='create_listing'),
