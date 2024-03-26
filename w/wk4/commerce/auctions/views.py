@@ -68,7 +68,9 @@ def create_listing(request):
         form = ListingForm(request.POST)
         if form.is_valid():
             # Save the form data to create a new listing
-            form.save()
+            listing = form.save(commit=False)
+            listing.creator_id = request.user.id
+            listing.save()
             return redirect('index')  # Redirect to the index page after creating the listing
     else:
         form = ListingForm()
