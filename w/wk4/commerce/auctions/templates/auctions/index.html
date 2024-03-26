@@ -2,7 +2,6 @@
 
 {% block body %}
   <h2>Welcome, {{ user.username }}!</h2>
-  <a href="{% url 'create_listing' %}">Create a New Listing</a>
   <h3>Your Listings:</h3>
   <ul>
     {% for listing in user.listings.all %}
@@ -13,4 +12,5 @@
       </li>
     {% endfor %}
   </ul>
+  <a href="{% url 'create_listing' %}">Create a New Listing</a>
 {% endblock %}
