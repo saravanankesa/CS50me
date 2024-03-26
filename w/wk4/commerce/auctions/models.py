@@ -4,12 +4,12 @@ from django.db import models
 
 class User(AbstractUser):
     id = models.BigAutoField(primary_key=True)
-    full_name = models.CharField(max_length=255, default='')
-    address = models.TextField(blank=True)
-    city = models.CharField(max_length=100, blank=True)
-    province = models.CharField(max_length=100, blank=True)
-    postal_code = models.CharField(max_length=10, blank=True)
-    phone_number = models.CharField(max_length=15, blank=True)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=150)
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)  # Saved as a hash in the database
+    bid_history = models.ManyToManyField('Bid', related_name='bidders', blank=True)
+    winnings = models.ManyToManyField('Listing', related_name='winning_bidders', blank=True)
 
     def __str__(self):
         return self.username
