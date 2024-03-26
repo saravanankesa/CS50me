@@ -10,6 +10,6 @@ urlpatterns = [
     path('listing/<int:pk>/', views.listing_detail, name='listing_detail'),
     path('edit_listing/<int:pk>/', views.edit_listing, name='edit_listing'),
     path('delete_listing/<int:pk>/', views.delete_listing, name='delete_listing'),
-    path("login", auth_views.LoginView.as_view(), name="login"),  # Additional login route
+    path("login", auth_views.LoginView.as_view(template_name="auctions/login.html"), name="login"),  # Additional login route
     path("index", views.index, name="index"),  # Redirect to index after successful login
 ]
