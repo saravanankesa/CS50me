@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, login_required
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -8,6 +8,7 @@ from .models import User, Listing
 from datetime import datetime
 
 
+@login_required
 def index(request):
     current_datetime = datetime.now()
     active_listings = Listing.objects.filter(created_at__lte=current_datetime)
@@ -64,6 +65,7 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+@login_required
 def create_listing(request):
     if request.method == 'POST':
         form = ListingForm(request.POST)
@@ -78,10 +80,12 @@ def create_listing(request):
 
     return render(request, 'auctions/create_listing.html', {'form': form})
 
+@login_required
 def listing_detail(request, pk):
     listing = Listing.objects.get(pk=pk)
     return render(request, 'auctions/listing_detail.html', {'listing': listing})
 
+@login_required
 def edit_listing(request, pk):
     listing = get_object_or_404(Listing, pk=pk)
     if request.method == 'POST':
@@ -93,6 +97,7 @@ def edit_listing(request, pk):
         form = ListingForm(instance=listing)
     return render(request, 'auctions/edit_listing.html', {'form': form, 'listing': listing})
 
+@login_required
 def delete_listing(request, pk):
     listing = get_object_or_404(Listing, pk=pk)
     listing.delete()
