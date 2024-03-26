@@ -26,6 +26,7 @@ class Listing(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
     winner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="won_listings")
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
