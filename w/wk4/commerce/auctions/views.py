@@ -9,8 +9,9 @@ from .models import User, Listing
 
 
 def index(request):
-    return render(request, "auctions/index.html")
-
+    # Retrieve latest listings
+    latest_listings = Listing.objects.all().order_by('-created_at')[:5]  # Get the latest 5 listings
+    return render(request, 'auctions/index.html', {'latest_listings': latest_listings})
 
 def login_view(request):
     if request.method == "POST":
