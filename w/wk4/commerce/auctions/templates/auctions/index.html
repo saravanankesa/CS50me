@@ -7,7 +7,9 @@
   <ul>
     {% for listing in active_listings %}
       <li>
+        <h5>
         <a href="{% url 'listing_detail' listing.pk %}">{{ listing.title }}</a>
+        </h5>
         <p>Description: {{ listing.description }}</p>
         <p>Current Price: {{ listing.current_price }}</p>
         {% if listing.image_url %}
