@@ -5,7 +5,7 @@
   <p>Description: {{ listing.description }}</p>
   <p>Starting Bid: {{ listing.starting_bid }}</p>
   {% if listing.image_url %}
-    <img src="{{ listing.image_url }}" alt="Listing Image">
+  <img src="{{ listing.image_url }}" alt="Listing Image" style="max-width: 100%;">
   {% endif %}
   <!-- Display other listing details as needed -->
 {% endblock %}
