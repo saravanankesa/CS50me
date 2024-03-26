@@ -3,9 +3,16 @@
 {% block body %}
   <h2>{{ listing.title }}</h2>
   <p>Description: {{ listing.description }}</p>
-  <p>Starting Bid: {{ listing.starting_bid }}</p>
+  <p>Current Price: {{ listing.current_price }}</p>
   {% if listing.image_url %}
-  <img src="{{ listing.image_url }}" alt="Listing Image" style="max-width: 100%;">
+    <img src="{{ listing.image_url }}" alt="Listing Image" style="max-width: 100%;">
   {% endif %}
-  <!-- Display other listing details as needed -->
+
+  {% if user.is_authenticated %}
+    <a href="#">Add to Watchlist</a>
+    <a href="#">Bid</a>
+    {% if user == listing.creator %}
+      <a href="#">Close Auction</a>
+    {% endif %}
+  {% endif %}
 {% endblock %}
