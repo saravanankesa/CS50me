@@ -4,11 +4,14 @@
   <h2>Welcome, {{ user.username }}!</h2>
   <h3>Your Listings:</h3>
   <ul>
-    {% for listing in user.listings.all %}
+    {% for listing in active_listings %}
       <li>
         <a href="{% url 'listing_detail' listing.pk %}">{{ listing.title }}</a>
-        <a href="{% url 'edit_listing' listing.pk %}">Edit</a>
-        <a href="{% url 'delete_listing' listing.pk %}">Delete</a>
+        <p>Description: {{ listing.description }}</p>
+        <p>Current Price: {{ listing.current_price }}</p>
+        {% if listing.image_url %}
+          <img src="{{ listing.image_url }}" alt="Listing Image" style="max-width: 100px;">
+        {% endif %}
       </li>
     {% endfor %}
   </ul>
