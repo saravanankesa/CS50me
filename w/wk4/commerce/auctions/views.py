@@ -9,7 +9,8 @@ from datetime import datetime
 
 
 def index(request):
-    active_listings = Listing.objects.filter(is_active=True)
+    current_datetime = datetime.now()
+    active_listings = Listing.objects.filter(created_at__lte=current_datetime)
     return render(request, 'auctions/index.html', {'active_listings': active_listings})
 
 def login_view(request):
