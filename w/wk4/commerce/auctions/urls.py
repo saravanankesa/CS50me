@@ -10,5 +10,5 @@ urlpatterns = [
     path('listing/<int:pk>/', views.listing_detail, name='listing_detail'),
     path('edit_listing/<int:pk>/', views.edit_listing, name='edit_listing'),
     path('delete_listing/<int:pk>/', views.delete_listing, name='delete_listing'),
-    path("auctions/login/", auth_views.LoginView.as_view(), name="login"),
+    path("login/", auth_views.LoginView.as_view(), name="login"),
 ]
