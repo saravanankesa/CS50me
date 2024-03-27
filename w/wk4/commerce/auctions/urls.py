@@ -12,4 +12,7 @@ urlpatterns = [
     path('edit_listing/<int:pk>/', views.edit_listing, name='edit_listing'),
     path('delete_listing/<int:pk>/', views.delete_listing, name='delete_listing'),
     path("index", views.index, name="index"),  # Redirect to index after successful login
+    path('add_to_watchlist/<int:listing_id>/', views.add_to_watchlist, name='add_to_watchlist'),
+    path('remove_from_watchlist/<int:listing_id>/', views.remove_from_watchlist, name='remove_from_watchlist'),
+    path('watchlist/', views.view_watchlist, name='view_watchlist'),
 ]

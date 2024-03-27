@@ -1,0 +1,14 @@
+<!-- In listing_detail.html -->
+{% if listing in user.watchlist.all %}
+    <a href="{% url 'remove_from_watchlist' listing.id %}">Remove from Watchlist</a>
+{% else %}
+    <a href="{% url 'add_to_watchlist' listing.id %}">Add to Watchlist</a>
+{% endif %}
+
+<!-- In watchlist.html -->
+{% for listing in watchlist %}
+    <div>
+        <h3>{{ listing.title }}</h3>
+        <!-- Other listing details -->
+    </div>
+{% endfor %}
