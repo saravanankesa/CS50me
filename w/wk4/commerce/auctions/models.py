@@ -10,6 +10,7 @@ class User(AbstractUser):
     password = models.CharField(max_length=128)  # Saved as a hash in the database
     bid_history = models.ManyToManyField('Bid', related_name='bidders', blank=True)
     winnings = models.ManyToManyField('Listing', related_name='winning_bidders', blank=True)
+    watchlist = models.ManyToManyField('Listing', blank=True, related_name="watchlisted_by")
 
     def __str__(self):
         return self.username
