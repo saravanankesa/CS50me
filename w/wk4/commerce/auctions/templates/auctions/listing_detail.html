@@ -9,7 +9,11 @@
   {% endif %}
 
   {% if user.is_authenticated %}
-    <a href="#">Add to Watchlist</a>
+  {% if listing in user.watchlist.all %}
+  <a href="{% url 'remove_from_watchlist' listing.id %}">Remove from Watchlist</a>
+  {% else %}
+  <a href="{% url 'add_to_watchlist' listing.id %}">Add to Watchlist</a>
+  {% endif %}
     <a href="#">Bid</a>
     {% if user == listing.creator %}
       <a href="#">Close Auction</a>
