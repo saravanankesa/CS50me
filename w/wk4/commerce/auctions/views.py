@@ -89,7 +89,7 @@ def delete_listing(request, pk):
 def add_to_watchlist(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
     request.user.watchlist.add(listing)
-    return HttpResponseRedirect(reverse('listing_detail', args=(listing_id,)))
+    return HttpResponseRedirect(reverse('view_watchlist'))
 
 @login_required
 def remove_from_watchlist(request, listing_id):
