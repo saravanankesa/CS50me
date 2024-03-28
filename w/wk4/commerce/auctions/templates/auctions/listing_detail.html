@@ -24,7 +24,9 @@
                     <div class="error">{{ error_message }}</div>
                 {% endif %}
             </form>
+        {% endif %}
         <a href="{% url 'add_to_watchlist' listing.id %}">Add to Watchlist</a>
     {% endif %}
 {% endblock %}
+
 
