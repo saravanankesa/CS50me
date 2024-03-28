@@ -6,6 +6,7 @@
     <a href="{% url 'index' %}">Back to Active Listings</a>
     {% for listing in watchlist %}
         <div>
+            <p>Hello from Watchlist!</p>
             <h3>{{ listing.title }}</h3>
             <p>Description: {{ listing.description }}</p>
             <p>Current Price: {{ listing.current_bid|default:listing.starting_bid }}</p>
