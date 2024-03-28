@@ -141,7 +141,7 @@ def close_auction(request, listing_id):
     if request.user != listing.creator:
         return HttpResponseForbidden("You are not authorized to close this auction.")
 
-    listing.active = False
+    listing.is_active = False
     listing.winner = listing.highest_bidder
     listing.save()
 
