@@ -121,3 +121,17 @@ def place_bid(request, listing_id):
                 "error_message": "Your bid must be higher than the current highest bid and at least equal to the starting bid."
             })
     return redirect('listing_detail', pk=listing_id)
+
+@login_required
+def close_auction(request, listing_id):
+    listing = get_object_or_404(Listing, pk=listing_id)
+
+    if request.user != listing.creator:
+        return HttpResponseForbidden("You are not authorized to close this auction.")
+
+    listing.active = False
+    listing.winner = listing.highest_bidder
+    listing.save()
+
+    return redirect('listing_detail', pk=listing_id)
+
