@@ -154,8 +154,4 @@ def close_auction(request, listing_id):
 
     return redirect('listing_detail', pk=listing_id)
 
-class UserMessage(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="messages")
-    message = models.TextField()
-    read = models.BooleanField(default=False)
+
