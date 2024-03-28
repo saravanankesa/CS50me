@@ -146,6 +146,8 @@ def close_auction(request, listing_id):
     listing.winner = listing.highest_bidder
     listing.save()
 
-    
+    if listing.winner:
+        messages.success(listing.winner, f'Congratulations! You won the auction for "{listing.title}".')
+
     return redirect('listing_detail', pk=listing_id)
 
