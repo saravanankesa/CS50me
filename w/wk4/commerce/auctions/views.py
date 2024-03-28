@@ -7,7 +7,7 @@ from django.urls import reverse
 from .forms import ListingForm
 from .models import User, Listing, Bid
 from datetime import datetime
-from deciman import Decimal
+from decimal import Decimal
 
 
 @login_required
