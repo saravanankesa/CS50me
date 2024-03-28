@@ -38,12 +38,15 @@
                 </li>
             {% endif %}
         </ul>
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li class="{{ message.tags }}">{{ message }}</li>
-                {% endfor %}
-            </ul>
+            {% if user.is_authenticated %}
+                {% for message in user.messages.filter(read=False) %}
+                <div class="user-message">
+                    {{ message.message }}
+                </div>
+                {% with message.read=True %}
+                    {% save message %}
+                {% endwith %}
+            {% endfor %}
         {% endif %}
         <hr>
         {% block body %}
