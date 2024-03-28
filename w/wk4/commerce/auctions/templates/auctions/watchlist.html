@@ -13,6 +13,7 @@
                 <img src="{{ listing.image_url }}" alt="Listing Image" style="max-width: 100px;">
             {% endif %}
             <a href="{% url 'listing_detail' listing.id %}">View Listing</a>
+            <a href="{% url 'remove_from_watchlist' listing.id %}">Back</a>
             <a href="{% url 'remove_from_watchlist' listing.id %}">Remove from Watchlist</a>
         </div>
     {% empty %}
