@@ -3,7 +3,11 @@
 {% block body %}
     <h2>{{ listing.title }}</h2>
     <p>Description: {{ listing.description }}</p>
-    <p>Current Price: {{ listing.highest_bid|default:listing.starting_bid }}</p>
+    <p>Current Price: {{ listing.highest_bid|default:listing.starting_bid }}
+        {% if listing.highest_bidder %}
+            (Bid made by {{ listing.highest_bidder.username }})
+        {% endif %}
+     </p>
     {% if listing.image_url %}
         <img src="{{ listing.image_url }}" alt="Listing Image" style="max-width: 100%;">
     {% endif %}
