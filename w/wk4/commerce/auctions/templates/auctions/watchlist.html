@@ -1,4 +1,6 @@
 <!-- In watchlist.html -->
+
+<a href="{% url 'index' %}">Back to Active Listings</a>
 {% for listing in watchlist %}
     <div>
         <h3>{{ listing.title }}</h3>
