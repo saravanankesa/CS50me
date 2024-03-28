@@ -1,6 +1,15 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    {% if not listing.active %}
+        <p>Auction Closed.</p>
+        {% if listing.winner %}
+            <p>Winner: {{ listing.winner.username }}</p>
+        {% else %}
+            <p>No bids were placed on this auction.</p>
+        {% endif %}
+    {% endif %}
+
     <h2>{{ listing.title }}</h2>
     <p>Description: {{ listing.description }}</p>
     <p>Current Price: {{ listing.highest_bid|default:listing.starting_bid }}
