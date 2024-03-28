@@ -19,4 +19,5 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("auctions.urls"))
+    path('/test_watchlist/', views.test_watchlist, name='test_watchlist'),
 ]
