@@ -7,16 +7,15 @@
   <ul>
     {% for listing in active_listings %}
       <li>
-        <h5>
-        <a href="{% url 'listing_detail' listing.pk %}">{{ listing.title }}</a>
-        </h5>
-        <p>Description: {{ listing.description }}</p>
-        <p>Current Price: {{ listing.highest_bid|default:listing.starting_bid }}</p>
-        {% if listing.image_url %}
-          <img src="{{ listing.image_url }}" alt="Listing Image" style="max-width: 100px;">
-        {% endif %}
+          <h5><a href="{% url 'listing_detail' listing.pk %}">{{ listing.title }}</a></h5>
+          <p>Description: {{ listing.description }}</p>
+          <p>Current Price: {{ listing.highest_bid|default:listing.starting_bid }}</p>
+          {% if listing.image_url %}
+              <img src="{{ listing.image_url }}" alt="Listing Image" style="max-width: 100px;">
+          {% endif %}
       </li>
     {% endfor %}
+
   </ul>
 
 {% endblock %}
