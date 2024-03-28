@@ -28,6 +28,8 @@ class Listing(models.Model):
     active = models.BooleanField(default=True)
     winner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="won_listings")
     is_active = models.BooleanField(default=True)
+    highest_bid = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    highest_bidder = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="highest_bids")
 
     def __str__(self):
         return self.title

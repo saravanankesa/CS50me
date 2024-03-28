@@ -5,8 +5,9 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .forms import ListingForm
-from .models import User, Listing
+from .models import User, Listing, Bid
 from datetime import datetime
+from deciman import Decimal
 
 
 @login_required
@@ -102,3 +103,21 @@ def view_watchlist(request):
     watchlist = request.user.watchlist.all()
     return render(request, 'auctions/watchlist.html', {'watchlist': watchlist})
 
+@login_required
+def place_bid(request, listing_id):
+    listing = get_object_or_404(Listing, pk=listing_id)
+    if request.method == "POST":
+        bid_amount = Decimal(request.POST.get("bid_amount"))
+        if bid_amount > listing.highest_bid and bid_amount >= listing.starting_bid:
+            listing.highest_bid = bid_amount
+            listing.highest_bidder = request.user
+            listing.save()
+            bid = Bid(listing=listing, bidder=request.user, amount=bid_amount)
+            bid.save()
+            return redirect('listing_detail', pk=listing_id)
+        else:
+            return render(request, "auctions/listing_detail.html", {
+                "listing": listing,
+                "error_message": "Your bid must be higher than the current highest bid and at least equal to the starting bid."
+            })
+    return redirect('listing_detail', pk=listing_id)

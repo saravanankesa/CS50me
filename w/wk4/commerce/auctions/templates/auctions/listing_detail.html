@@ -14,7 +14,14 @@
   {% else %}
   <a href="{% url 'add_to_watchlist' listing.id %}">Add to Watchlist</a>
   {% endif %}
-    <a href="#">Bid</a>
+    {% if user.is_authenticated and listing.active %}
+      <form action="{% url 'place_bid' listing.id %}" method="post">
+          {% csrf_token %}
+          <label for="bid_amount">Your Bid:</label>
+          <input type="number" name="bid_amount" min="{{ listing.highest_bid|default:listing.starting_bid }}" step="0.01" required>
+          <button type="submit">Place Bid</button>
+      </form>
+    {% endif %}
     {% if user == listing.creator %}
       <a href="#">Close Auction</a>
     {% endif %}
