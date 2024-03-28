@@ -4,6 +4,7 @@ from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.contrib import messages
 from .forms import ListingForm
 from .models import User, Listing, Bid
 from datetime import datetime
@@ -145,5 +146,6 @@ def close_auction(request, listing_id):
     listing.winner = listing.highest_bidder
     listing.save()
 
+    
     return redirect('listing_detail', pk=listing_id)
 
