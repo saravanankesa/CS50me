@@ -39,7 +39,7 @@
             {% endif %}
         </ul>
             {% if user.is_authenticated %}
-                {% for message in user.messages.filter(read=False) %}
+                {% for message in unread_messages %}
                 <div class="user-message">
                     {{ message.message }}
                 </div>
