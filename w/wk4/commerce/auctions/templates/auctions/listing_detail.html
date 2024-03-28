@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    {% if not listing.active %}
+    {% if not listing.is_active %}
         <p>Auction Closed.</p>
         {% if listing.winner %}
             <p>Winner: {{ listing.winner.username }}</p>
