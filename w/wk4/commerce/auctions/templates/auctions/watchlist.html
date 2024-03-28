@@ -1,21 +1,24 @@
 {% extends "auctions/layout.html" %}
 
 <!-- In watchlist.html -->
-<p>Hello!!!</p>
+{% block body %}
 
-{% for listing in watchlist %}
-    <div>
-        <h3>{{ listing.title }}</h3>
-        <p>Description: {{ listing.description }}</p>
-        <p>Current Price: {{ listing.current_bid|default:listing.starting_bid }}</p>
-        {% if listing.image_url %}
-            <img src="{{ listing.image_url }}" alt="Listing Image" style="max-width: 100px;">
-        {% endif %}
-        <a href="{% url 'listing_detail' listing.id %}">View Listing</a>
-        <a href="{% url 'remove_from_watchlist' listing.id %}">Remove from Watchlist</a>
-        <a href="{% url 'index' %}">Home</a>
-    </div>
-{% empty %}
-    <p>Your watchlist is empty.</p>
-{% endfor %}
+    {% for listing in watchlist %}
+        <div>
+            <h3>{{ listing.title }}</h3>
+            <p>Description: {{ listing.description }}</p>
+            <p>Current Price: {{ listing.current_bid|default:listing.starting_bid }}</p>
+            {% if listing.image_url %}
+                <img src="{{ listing.image_url }}" alt="Listing Image" style="max-width: 100px;">
+            {% endif %}
+            <a href="{% url 'listing_detail' listing.id %}">View Listing</a>
+            <a href="{% url 'remove_from_watchlist' listing.id %}">Remove from Watchlist</a>
+        </div>
+    {% empty %}
+        <p>Your watchlist is empty.</p>
+    {% endfor %}
+
+    <a href="{% url 'index' %}"Back to Active Listings</a>
+{% endblock %}
+
 
