@@ -52,3 +52,8 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.commenter.username} - {self.listing.title}"
+
+class UserMessage(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="messages")
+    message = models.TextField()
+    read = models.BooleanField(default=False)

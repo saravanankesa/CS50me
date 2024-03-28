@@ -147,7 +147,10 @@ def close_auction(request, listing_id):
     listing.save()
 
     if listing.winner:
-        messages.success(request, f'Congratulations! You won the auction for "{listing.title}".')
+        UserMessage.objects.create(
+            user=listing.winner,
+            message=f'Congratulations! You won the auction for "{listing.title}".'
+        )
 
     return redirect('listing_detail', pk=listing_id)
 
