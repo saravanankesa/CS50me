@@ -38,14 +38,11 @@
                 </li>
             {% endif %}
         </ul>
-            {% if user.is_authenticated %}
-                {% for message in unread_messages %}
+        {% if user.is_authenticated %}
+            {% for message in unread_messages %}
                 <div class="user-message">
                     {{ message.message }}
                 </div>
-                {% with message.read=True %}
-                    {% save message %}
-                {% endwith %}
             {% endfor %}
         {% endif %}
         <hr>

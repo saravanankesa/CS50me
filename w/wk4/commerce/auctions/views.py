@@ -15,6 +15,7 @@ def index(request):
     current_datetime = datetime.now()
     active_listings = Listing.objects.filter(created_at__lte=current_datetime)
     unread_messages = UserMessage.objects.filter(user=request.user, read=False) if request.user.is_authenticated else None
+    unread_messages.update(read=True)
     return render(request, 'auctions/index.html', {'unread_messages': unread_messages})
 
 
