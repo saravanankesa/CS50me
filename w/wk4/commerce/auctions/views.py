@@ -108,7 +108,17 @@ def place_bid(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
     if request.method == "POST":
         bid_amount = Decimal(request.POST.get("bid_amount"))
-        if bid_amount > listing.highest_bid and bid_amount >= listing.starting_bid:
+
+        # Determine the required increment
+        if listing.highest_bid < 99:
+            increment = Decimal('5.00')
+        elif 99 <= listing.highest_bid < 1000:
+            increment = Decimal('10.00')
+        else:
+            increment = Decimal('100.00')
+
+        # Check if the bid is in the correct increment
+        if (bid_amount - listing.starting_bid) % increment == 0 and bid_amount > listing.highest_bid:
             listing.highest_bid = bid_amount
             listing.highest_bidder = request.user
             listing.save()
@@ -116,11 +126,13 @@ def place_bid(request, listing_id):
             bid.save()
             return redirect('listing_detail', pk=listing_id)
         else:
+            error_message = f"Your bid must be in increments of ${increment} and higher than the current highest bid."
             return render(request, "auctions/listing_detail.html", {
                 "listing": listing,
-                "error_message": "Your bid must be higher than the current highest bid and at least equal to the starting bid."
+                "error_message": error_message
             })
     return redirect('listing_detail', pk=listing_id)
+
 
 @login_required
 def close_auction(request, listing_id):
