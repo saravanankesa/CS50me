@@ -101,3 +101,6 @@ def remove_from_watchlist(request, listing_id):
 def view_watchlist(request):
     watchlist = request.user.watchlist.all()
     return render(request, 'auctions/watchlist.html', {'watchlist': watchlist})
+
+def test_watchlist(request):
+    return render(request, 'auctions/watchlist.html')
