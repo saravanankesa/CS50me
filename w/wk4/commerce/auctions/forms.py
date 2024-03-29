@@ -1,5 +1,5 @@
 from django import forms
-from .models import Listing
+from .models import Listing, Comment
 
 class ListingForm(forms.ModelForm):
     class Meta:
