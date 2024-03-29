@@ -65,8 +65,26 @@ def create_listing(request):
 
 @login_required
 def listing_detail(request, pk):
-    listing = Listing.objects.get(pk=pk)
-    return render(request, 'auctions/listing_detail.html', {'listing': listing})
+    listing = get_object_or_404(Listing, pk=pk)
+    comments = listing.comments.all().order_by('-timestamp')
+    new_comment = None
+
+    if request.method == 'POST':
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.listing = listing
+            new_comment.user = request.user
+            new_comment.save()
+            return redirect('listing_detail', pk=listing.pk)
+    else:
+        comment_form = CommentForm()
+
+    return render(request, 'auctions/listing_detail.html', {
+        'listing': listing,
+        'comments': comments,
+        'comment_form': comment_form
+    })
 
 @login_required
 def edit_listing(request, pk):
