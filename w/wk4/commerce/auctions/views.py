@@ -153,4 +153,7 @@ def close_auction(request, listing_id):
 
     return redirect('listing_detail', pk=listing_id)
 
-
+@login_required
+def categories(request):
+    all_categories = Listing.objects.values_list('category', flat=True).distinct()
+    return render(request, 'auctions/categories.html', {'categories': all_categories})
