@@ -43,15 +43,6 @@ class Bid(models.Model):
     def __str__(self):
         return f"{self.bidder.username} - {self.listing.title} - {self.amount}"
 
-class Comment(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comments")
-    commenter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
-    content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.commenter.username} - {self.listing.title}"
 
 class UserMessage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="messages")
