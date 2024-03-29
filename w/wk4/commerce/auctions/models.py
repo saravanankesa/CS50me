@@ -43,7 +43,6 @@ class Bid(models.Model):
     def __str__(self):
         return f"{self.bidder.username} - {self.listing.title} - {self.amount}"
 
-
 class UserMessage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="messages")
     message = models.TextField()
