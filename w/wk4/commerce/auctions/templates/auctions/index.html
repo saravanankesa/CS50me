@@ -4,7 +4,6 @@
   <h2>Welcome, {{ user.username }}!</h2>
   <a href="{% url 'create_listing' %}">Create a New Listing</a>
   <h4>All Active Listings:</h4>
-  <div>Active Listings: {{ active_listings }}</div>
   <ul>
     {% for listing in active_listings %}
       <li>
