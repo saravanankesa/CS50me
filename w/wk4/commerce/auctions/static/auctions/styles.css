@@ -1,6 +1,17 @@
 body {
-    padding: 10px;
+    padding-top: 60px;
     padding-bottom: 50px;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f2f2f2;
+    text-align: center;
+    padding: 10px;
+    z-index: 1000;
 }
 
 
