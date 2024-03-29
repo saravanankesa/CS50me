@@ -13,3 +13,6 @@ class CommentForm(forms.ModelForm):
         widgets = {
             'content': forms.Textarea(attrs={'class': 'comment-content'}),
         }
+        labels = {
+            'content': '',  # Set the label for the 'content' field to an empty string
+        }
