@@ -4,8 +4,8 @@ from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from .forms import ListingForm
-from .models import User, Listing, Bid, UserMessage
+from .forms import ListingForm, CommentForm
+from .models import User, Listing, Bid, UserMessage, Comment
 from datetime import datetime
 from decimal import Decimal
 
