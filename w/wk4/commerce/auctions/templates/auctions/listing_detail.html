@@ -40,6 +40,26 @@
         {% endif %}
         <a href="{% url 'add_to_watchlist' listing.id %}">Add to Watchlist</a>
     {% endif %}
+    <h3>Comments</h3>
+    <ul>
+        {% for comment in comments %}
+            <li>
+                <strong>{{ comment.user.username }}</strong> - {{ comment.timestamp }}
+                <p>{{ comment.content }}</p>
+            </li>
+        {% empty %}
+            <li>No comments yet.</li>
+        {% endfor %}
+    </ul>
+
+    {% if user.is_authenticated %}
+        <h4>Add a comment:</h4>
+        <form method="post">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+    {% endif %}
 {% endblock %}
 
 
