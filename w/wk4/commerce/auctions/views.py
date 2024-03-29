@@ -157,3 +157,9 @@ def close_auction(request, listing_id):
 def categories(request):
     all_categories = Listing.objects.values_list('category', flat=True).distinct()
     return render(request, 'auctions/categories.html', {'categories': all_categories})
+
+@login_required
+def category_listings(request, category_name):
+    listings = Listing.objects.filter(category=category_name, is_active=True)
+    return render(request, 'auctions/category_listings.html', {'category': category_name, 'listings': listings})
+
