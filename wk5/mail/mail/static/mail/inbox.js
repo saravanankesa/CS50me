@@ -59,7 +59,9 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(result => {
           console.log(result); // For debugging
           // Check if the email was sent successfully
-          if (result.message === "Email sent successfully.") {
+          if (result.message) {
+            alert(result.message); // Display success message
+            load_mailbox('sent');  // Load the sent mailbox
               // Load the user's sent mailbox
               load_mailbox('sent');
           } else {
