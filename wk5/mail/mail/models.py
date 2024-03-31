@@ -3,10 +3,12 @@ from django.db import models
 
 
 class User(AbstractUser):
+    id = models.BigAutoField(primary_key=True)
     pass
 
 
 class Email(models.Model):
+    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="emails")
     sender = models.ForeignKey("User", on_delete=models.PROTECT, related_name="emails_sent")
     recipients = models.ManyToManyField("User", related_name="emails_received")
