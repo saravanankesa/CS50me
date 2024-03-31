@@ -23,7 +23,7 @@ function compose_email() {
 }
 
 function load_mailbox(mailbox) {
-  
+
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
@@ -31,3 +31,40 @@ function load_mailbox(mailbox) {
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Listen for form submission
+  document.querySelector('#compose-form').onsubmit = function() {
+      // Prevent default form submission
+      event.preventDefault();
+
+      // Get form data
+      const recipients = document.querySelector('#compose-recipients').value;
+      const subject = document.querySelector('#compose-subject').value;
+      const body = document.querySelector('#compose-body').value;
+
+      // Send POST request to /emails
+      fetch('/emails', {
+          method: 'POST',
+          body: JSON.stringify({
+              recipients: recipients,
+              subject: subject,
+              body: body
+          })
+      })
+      .then(response => response.json())
+      .then(result => {
+          // Check if the email was sent successfully
+          if (result.message === "Email sent successfully.") {
+              // Load the user's sent mailbox
+              load_mailbox('sent');
+          } else {
+              // Display an error message if the email wasn't sent
+              document.querySelector('#error-message').textContent = result.error;
+          }
+      });
+
+      // Prevent form from submitting
+      return false;
+  };
+});
