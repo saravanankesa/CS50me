@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
       })
       .then(response => response.json())
       .then(result => {
+          console.log(result); // For debugging
           // Check if the email was sent successfully
           if (result.message === "Email sent successfully.") {
               // Load the user's sent mailbox
