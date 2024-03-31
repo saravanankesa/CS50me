@@ -46,6 +46,9 @@ document.addEventListener('DOMContentLoaded', function() {
       // Send POST request to /emails
       fetch('/emails', {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+        },
           body: JSON.stringify({
               recipients: recipients,
               subject: subject,
@@ -60,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
               load_mailbox('sent');
           } else {
               // Display an error message if the email wasn't sent
-              document.querySelector('#error-message').textContent = result.error;
+              alert(result.error);
           }
       });
 
