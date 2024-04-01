@@ -82,13 +82,13 @@ function load_mailbox(mailbox) {
               `;
               document.querySelector('#emails-view').appendChild(emailElement);
           });
-      // Add event listeners to each subject line
-      document.querySelectorAll('.email-subject').forEach(subject => {
-        subject.addEventListener('click', function() {
-            view_email(this.getAttribute('data-email-id'));
+          // Add event listeners to each subject line
+          document.querySelectorAll('.email-subject').forEach(subject => {
+            subject.addEventListener('click', function() {
+                view_email(this.getAttribute('data-email-id'));
+            });
         });
     });
-});
 }
 
 function view_email(email_id) {
