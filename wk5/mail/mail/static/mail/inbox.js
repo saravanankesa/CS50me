@@ -120,9 +120,22 @@ fetch(`/emails/${email_id}`)
           replyButton.addEventListener('click', () => compose_email(email));
           document.querySelector('#emails-view').appendChild(replyButton);
 
-          // Add event listener to the reply button
-          document.querySelector('#reply-button').addEventListener('click', () => {
-              compose_email(email);
-          });
-      });
+          // Add an "Archive/Unarchive" button if not viewing a sent email
+          if (mailbox !== 'sent') {
+            const archiveButton = document.createElement('button');
+            archiveButton.textContent = email.archived ? 'Unarchive' : 'Archive';
+            archiveButton.addEventListener('click', () => {
+                fetch(`/emails/${email_id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        archived: !email.archived
+                    })
+                })
+                .then(() => {
+                    load_mailbox('inbox');
+                });
+            });
+            document.querySelector('#emails-view').appendChild(archiveButton);
+        }
+    });
 }
