@@ -94,16 +94,16 @@ function load_mailbox(mailbox) {
 function view_email(email_id) {
 // Fetch and display the full email
 fetch(`/emails/${email_id}`)
-.then(response => response.json())
-.then(email => {
-    // Show the email details
-    document.querySelector('#emails-view').innerHTML = `
-        <div><strong>From:</strong> ${email.sender}</div>
-        <div><strong>To:</strong> ${email.recipients.join(', ')}</div>
-        <div><strong>Subject:</strong> ${email.subject}</div>
-        <div><strong>Timestamp:</strong> ${email.timestamp}</div>
-        <hr>
-        <div>${email.body}</div>
-    `;
-});
+    .then(response => response.json())
+    .then(email => {
+        // Show the email details
+        document.querySelector('#emails-view').innerHTML = `
+            <div><strong>From:</strong> ${email.sender}</div>
+            <div><strong>To:</strong> ${email.recipients.join(', ')}</div>
+            <div><strong>Subject:</strong> ${email.subject}</div>
+            <div><strong>Timestamp:</strong> ${email.timestamp}</div>
+            <hr>
+            <div>${email.body}</div>
+        `;
+    });
 }
