@@ -77,7 +77,7 @@ function load_mailbox(mailbox) {
               emailElement.className = 'email';
               emailElement.innerHTML = `
                   <div>From: ${email.sender}</div>
-                  <div>Subject: ${email.subject}</div>
+                  <div class="email-subject" data-email-id="${email.id}">Subject: ${email.subject}</div>
                   <div>Timestamp: ${email.timestamp}</div>
               `;
               document.querySelector('#emails-view').appendChild(emailElement);
