@@ -112,8 +112,13 @@ fetch(`/emails/${email_id}`)
             <div><strong>Timestamp:</strong> ${email.timestamp}</div>
             <hr>
             <div>${email.body}</div>
-            <button id="reply-button">Reply</button>
           `;
+
+          // Add a "Reply" button
+          const replyButton = document.createElement('button');
+          replyButton.textContent = 'Reply';
+          replyButton.addEventListener('click', () => compose_email(email));
+          document.querySelector('#emails-view').appendChild(replyButton);
 
           // Add event listener to the reply button
           document.querySelector('#reply-button').addEventListener('click', () => {
