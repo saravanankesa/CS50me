@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
@@ -8,33 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // By default, load the inbox
   load_mailbox('inbox');
-});
 
-function compose_email() {
-
-  // Show compose view and hide other views
-  document.querySelector('#emails-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'block';
-
-  // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
-}
-
-function load_mailbox(mailbox) {
-
-  // Show the mailbox and hide other views
-  document.querySelector('#emails-view').style.display = 'block';
-  document.querySelector('#compose-view').style.display = 'none';
-
-  // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
-}
-
-document.addEventListener('DOMContentLoaded', function() {
   // Listen for form submission
-  document.querySelector('#compose-form').onsubmit = function() {
+  document.querySelector('#compose-form').onsubmit = function(event) {
       // Prevent default form submission
       event.preventDefault();
 
@@ -62,8 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
           if (result.message) {
             alert(result.message); // Display success message
             load_mailbox('sent');  // Load the sent mailbox
-              // Load the user's sent mailbox
-              load_mailbox('sent');
           } else {
               // Display an error message if the email wasn't sent
               alert(result.error);
@@ -74,3 +47,40 @@ document.addEventListener('DOMContentLoaded', function() {
       return false;
   };
 });
+
+function compose_email() {
+  // Show compose view and hide other views
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'block';
+
+  // Clear out composition fields
+  document.querySelector('#compose-recipients').value = '';
+  document.querySelector('#compose-subject').value = '';
+  document.querySelector('#compose-body').value = '';
+}
+
+function load_mailbox(mailbox) {
+  // Show the mailbox and hide other views
+  document.querySelector('#emails-view').style.display = 'block';
+  document.querySelector('#compose-view').style.display = 'none';
+
+  // Show the mailbox name
+  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  // Fetch and display emails for the mailbox
+  fetch(`/emails/${mailbox}`)
+      .then(response => response.json())
+      .then(emails => {
+          // Iterate over emails and create HTML elements to display them
+          emails.forEach(email => {
+              const emailElement = document.createElement('div');
+              emailElement.className = 'email';
+              emailElement.innerHTML = `
+                  <div>From: ${email.sender}</div>
+                  <div>Subject: ${email.subject}</div>
+                  <div>Timestamp: ${email.timestamp}</div>
+              `;
+              document.querySelector('#emails-view').appendChild(emailElement);
+          });
+      });
+}
