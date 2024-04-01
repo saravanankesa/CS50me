@@ -1,3 +1,13 @@
 textarea {
     min-height: 400px;
 }
+
+.email-subject {
+    cursor: pointer;
+    color: #007bff; /* Bootstrap primary blue for example, but you can choose any color */
+    text-decoration: underline;
+}
+
+.email-subject:hover {
+    color: #0056b3; /* Darker blue on hover */
+}
