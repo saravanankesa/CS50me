@@ -1,6 +1,7 @@
 import json
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from django.db import IntegrityError
 from django.http import JsonResponse
 from django.shortcuts import HttpResponse, HttpResponseRedirect, render
@@ -126,7 +127,7 @@ def email(request, email_id):
             "error": "GET or PUT request required."
         }, status=400)
 
-
+@never_cache
 def login_view(request):
     if request.method == "POST":
 
