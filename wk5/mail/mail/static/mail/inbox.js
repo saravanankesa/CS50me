@@ -104,6 +104,13 @@ function view_email(email_id, mailbox) {
 fetch(`/emails/${email_id}`)
     .then(response => response.json())
     .then(email => {
+        // Update the email's read status to true
+        fetch(`/emails/${email_id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                read: true
+            })
+        });
         // Show the email details
         document.querySelector('#emails-view').innerHTML = `
             <div><strong>From:</strong> ${email.sender}</div>
