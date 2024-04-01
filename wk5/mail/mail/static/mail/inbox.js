@@ -83,7 +83,6 @@ function load_mailbox(mailbox) {
           emails.forEach(email => {
               const emailElement = document.createElement('div');
               emailElement.className = `email-box ${email.read ? 'read' : 'unread'}`;
-              emailElement.style.backgroundColor = email.read ? '#f8f9fa' : 'white';
               emailElement.innerHTML = `
                   <div>From: ${email.sender}</div>
                   <div class="email-subject" data-email-id="${email.id}">Subject: ${email.subject}</div>
