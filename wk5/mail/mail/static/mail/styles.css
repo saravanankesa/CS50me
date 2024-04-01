@@ -19,6 +19,11 @@ textarea {
     cursor: pointer;
 }
 
-.email-box:hover {
-    background-color: #f2f2f2;
+.email-box.unread {
+    background-color: white;
 }
+
+.email-box.read {
+    background-color: #f8f9fa;
+}
+
