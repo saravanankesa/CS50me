@@ -11,3 +11,14 @@ textarea {
 .email-subject:hover {
     color: #0056b3; /* Darker blue on hover */
 }
+
+.email-box {
+    border: 1px solid #e3e3e3;
+    padding: 10px;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.email-box:hover {
+    background-color: #f2f2f2;
+}
