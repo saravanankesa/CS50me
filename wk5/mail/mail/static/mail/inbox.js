@@ -99,7 +99,7 @@ function load_mailbox(mailbox) {
     });
 }
 
-function view_email(email_id) {
+function view_email(email_id, mailbox) {
 // Fetch and display the full email
 fetch(`/emails/${email_id}`)
     .then(response => response.json())
