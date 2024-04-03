@@ -105,3 +105,9 @@ def follow(request, username):
             user_to_follow.followers.add(request.user)
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error'}, status=400)
+
+def following(request):
+    user = request.user
+    following_users = user.following.all()
+    posts = Post.objects.filter(creator__in=following_users).order_by('-timestamp')
+    return render(request, 'network/following.html', {'posts': posts})
