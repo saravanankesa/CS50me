@@ -8,7 +8,15 @@ from .models import User
 
 
 def index(request):
-    form = NewPostForm()
+    if request.method == "POST":
+        form = NewPostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.creator = request.user
+            post.save()
+            return redirect('index')
+    else:
+        form = NewPostForm()
     return render(request, "network/index.html", {'form': form})
 
 
