@@ -92,11 +92,13 @@ def profile(request, username):
     posts = profile_user.posts.all().order_by('-timestamp')
     followers = profile_user.followers.count()
     following = profile_user.following.count()
+    is_following = request.user.is_authenticated and profile_user.followers.filter(id=request.user.id).exists()
     return render(request, 'network/profile.html', {
         'profile_user': profile_user,
         'posts': posts,
         'followers': followers,
         'following': following
+        'is_following': is_following
     })
 
 @login_required
