@@ -15,8 +15,8 @@ class Post(models.Model):
         return f"{self.creator.username}: {self.content[:30]}"
 
 class Follow(models.Model):
-    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
-    followed = models.ForeignKey(User, on_delete=models.CASCADE, related_name="followers")
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following_set")
+    followed = models.ForeignKey(User, on_delete=models.CASCADE, related_name="followers_set")
 
     class Meta:
         unique_together = ('follower', 'followed')
