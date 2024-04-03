@@ -86,6 +86,7 @@ def new_post(request):
         form = NewPostForm()
     return render(request, 'network/new_post.html', {'form': form})
 
+@login_required
 def profile(request, username):
     user = get_object_or_404(User, username=username)
     posts = user.posts.all().order_by('-timestamp')
@@ -98,6 +99,7 @@ def profile(request, username):
         'following': following
     })
 
+@login_required
 def follow(request, username):
     if request.method == "POST":
         user_to_follow = get_object_or_404(User, username=username)
@@ -108,6 +110,7 @@ def follow(request, username):
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error'}, status=400)
 
+@login_required
 def following(request):
     user = request.user
     following_users = user.following.all()
