@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
@@ -6,7 +7,7 @@ from django.urls import reverse
 from .forms import NewPostForm
 from .models import User, Post
 
-
+@login_required
 def index(request):
     posts = Post.objects.all().order_by('-timestamp')
     if request.method == "POST":
@@ -43,7 +44,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse("index"))
+    return HttpResponseRedirect(reverse("login_view"))
 
 
 def register(request):
@@ -72,6 +73,7 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
+@login_required
 def new_post(request):
     if request.method == "POST":
         form = NewPostForm(request.POST)
