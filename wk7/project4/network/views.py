@@ -98,8 +98,8 @@ def profile(request, username):
         'profile_user': profile_user,
         'posts': posts,
         'followers': followers,
-        'following': following
-        'is_following': is_following
+        'following': following,
+        'is_following': is_following,
     })
 
 @login_required
