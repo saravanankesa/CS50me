@@ -100,7 +100,6 @@ def profile(request, username):
         'followers': followers,
         'following': following,
         'is_following': is_following,
-        'user': request.user
     })
 
 @login_required
