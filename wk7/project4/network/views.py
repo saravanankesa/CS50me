@@ -88,8 +88,8 @@ def new_post(request):
 
 @login_required
 def profile(request, username):
-    user = get_object_or_404(User, username=username)
-    posts = user.posts.all().order_by('-timestamp')
+    profile_user = get_object_or_404(User, username=username)
+    posts = profile_user.posts.all().order_by('-timestamp')
     followers = user.followers.count()
     following = user.following.count()
     return render(request, 'network/profile.html', {
