@@ -8,6 +8,7 @@ from .models import User, Post
 
 
 def index(request):
+    posts = Post.objects.all().order_by('-timestamp')
     if request.method == "POST":
         form = NewPostForm(request.POST)
         if form.is_valid():
@@ -17,7 +18,7 @@ def index(request):
             return redirect('index')
     else:
         form = NewPostForm()
-    return render(request, "network/index.html", {'form': form})
+    return render(request, "network/index.html", {'form': form, 'posts': posts})
 
 
 def login_view(request):
