@@ -3,8 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-    # You can add additional fields for the User model here, if needed
-    pass
+    followers = models.ManyToManyField('self', symmetrical=False, related_name='following', blank=True)
 
 class Post(models.Model):
     content = models.TextField()

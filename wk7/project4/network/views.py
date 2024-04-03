@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .forms import NewPostForm
@@ -83,3 +83,16 @@ def new_post(request):
     else:
         form = NewPostForm()
     return render(request, 'network/new_post.html', {'form': form})
+
+def profile(request, username):
+    user = get_object_or_404(User, username=username)
+    posts = user.posts.all().order_by('-timestamp')
+    followers = user.followers.count()
+    following = user.following.count()
+    return render(request, 'network/profile.html', {
+        'user': user,
+        'posts': posts,
+        'followers': followers,
+        'following': following
+    })
+
