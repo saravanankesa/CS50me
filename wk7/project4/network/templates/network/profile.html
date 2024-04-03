@@ -23,19 +23,9 @@
         </div>
     {% endfor %}
 
-    {% if user != request.user %}
-        <button id="follow-btn" data-username="{{ user.username }}">
-            {% if request.user in user.followers.all %}
-                Unfollow
-            {% else %}
-                Follow
-            {% endif %}
-        </button>
-    {% endif %}
-
     <script>
         document.getElementById("follow-btn").addEventListener("click", function() {
-            fetch("{% url 'follow' username=profile.user.username %}", { method: "POST" })
+            fetch("{% url 'follow' username=profile_user.username %}", { method: "POST" })
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === "success") {
