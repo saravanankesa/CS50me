@@ -93,6 +93,7 @@ def profile(request, username):
     followers = user.followers.count()
     following = user.following.count()
     return render(request, 'network/profile.html', {
+        'profile_user': profile_user,
         'user': user,
         'posts': posts,
         'followers': followers,
