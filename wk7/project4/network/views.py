@@ -8,7 +8,8 @@ from .models import User
 
 
 def index(request):
-    return render(request, "network/index.html")
+    form = NewPostForm()
+    return render(request, "network/index.html", {'form': form})
 
 
 def login_view(request):
