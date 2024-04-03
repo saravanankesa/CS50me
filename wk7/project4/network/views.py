@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -102,15 +103,21 @@ def profile(request, username):
     })
 
 @login_required
+@require_POST
 def follow(request, username):
-    if request.method == "POST":
-        user_to_follow = get_object_or_404(User, username=username)
-        if request.user in user_to_follow.followers.all():
-            user_to_follow.followers.remove(request.user)
-        else:
-            user_to_follow.followers.add(request.user)
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Authentication required'}, status=403)
+
+    if request.user.username == username:
+        return JsonResponse({'error': 'Cannot follow yourself'}, status=400)
+
+    profile_user = get_object_or_404(User, username=username)
+    if profile_user.followers.filter(id=request.user.id).exists():
+        profile_user.followers.remove(request.user)
+    else:
+        profile_user.followers.add(request.user)
+
+    return JsonResponse({'status': 'success'})
 
 @login_required
 def following(request):
