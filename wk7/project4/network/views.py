@@ -96,3 +96,12 @@ def profile(request, username):
         'following': following
     })
 
+def follow(request, username):
+    if request.method == "POST":
+        user_to_follow = get_object_or_404(User, username=username)
+        if request.user in user_to_follow.followers.all():
+            user_to_follow.followers.remove(request.user)
+        else:
+            user_to_follow.followers.add(request.user)
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
