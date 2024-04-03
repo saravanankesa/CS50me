@@ -25,13 +25,18 @@
 
     <script>
         document.getElementById("follow-btn").addEventListener("click", function() {
-            fetch("{% url 'follow' username=profile_user.username %}", { method: "POST" })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        location.reload();
-                    }
-                });
+            fetch("{% url 'follow' username=profile_user.username %}", {
+                method: "POST",
+                headers: {
+                    'X-CSRFToken': csrftoken  // Include the CSRF token in the request headers
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    location.reload();
+                }
+            });
         });
     </script>
 
