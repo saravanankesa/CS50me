@@ -12,4 +12,27 @@
             <small>Posted on {{ post.timestamp }}</small>
         </div>
     {% endfor %}
+
+    {% if user != request.user %}
+        <button id="follow-btn" data-username="{{ user.username }}">
+            {% if request.user in user.followers.all %}
+                Unfollow
+            {% else %}
+                Follow
+            {% endif %}
+        </button>
+    {% endif %}
+
+    <script>
+        document.getElementById("follow-btn").addEventListener("click", function() {
+            fetch("{% url 'follow' user.username %}", { method: "POST" })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        location.reload();
+                    }
+                });
+        });
+    </script>
+
 {% endblock %}
