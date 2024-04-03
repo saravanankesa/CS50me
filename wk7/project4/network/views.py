@@ -90,11 +90,10 @@ def new_post(request):
 def profile(request, username):
     profile_user = get_object_or_404(User, username=username)
     posts = profile_user.posts.all().order_by('-timestamp')
-    followers = user.followers.count()
-    following = user.following.count()
+    followers = profile_user.followers.count()
+    following = profile_user.following.count()
     return render(request, 'network/profile.html', {
         'profile_user': profile_user,
-        'user': user,
         'posts': posts,
         'followers': followers,
         'following': following
