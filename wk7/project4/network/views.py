@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .forms import NewPostForm
-from .models import User
+from .models import User, Post
 
 
 def index(request):
