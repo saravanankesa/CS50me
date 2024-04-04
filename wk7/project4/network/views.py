@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from django.core.paginator import Paginator
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -10,17 +11,14 @@ from .models import User, Post
 
 @login_required
 def index(request):
-    posts = Post.objects.all().order_by('-timestamp')
-    if request.method == "POST":
-        form = NewPostForm(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.creator = request.user
-            post.save()
-            return redirect('index')
-    else:
-        form = NewPostForm()
-    return render(request, "network/index.html", {'form': form, 'posts': posts})
+    
+    posts_list = Post.objects.all().order_by('-timestamp')
+    paginator = Paginator(posts_list, 10)  # Show 10 posts per page
+    page_number = request.GET.get('page')
+    posts = paginator.get_page(page_number)
+
+
+    return render(request, "network/index.html", {'posts': posts})
 
 
 def login_view(request):
