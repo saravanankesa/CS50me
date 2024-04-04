@@ -10,6 +10,14 @@
                     <h3>{{ post.creator.username }}</h3>
                     <p>{{ post.content }}</p>
                     <small>Posted on {{ post.timestamp|date:"F d, Y, H:i" }}</small>
+                    <span id="like-count-{{ post.id }}">{{ post.likes.count }}</span>
+                <button class="like-btn" data-post-id="{{ post.id }}" data-liked="{% if user in post.likes.all %}true{% else %}false{% endif %}">
+                    {% if user in post.likes.all %}
+                        Unlike
+                    {% else %}
+                        Like
+                    {% endif %}
+                </button>
                 </div>
             {% endfor %}
         {% else %}
@@ -27,4 +35,34 @@
             {% endif %}
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll('.like-btn').forEach(button => {
+        button.onclick = function() {
+            let postId = this.dataset.postId;
+            let liked = this.dataset.liked === 'true';
+            let likeCountSpan = document.getElementById(`like-count-${postId}`);
+            fetch(`/like_post/${postId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === 'success') {
+                    if (result.liked) {
+                        this.innerText = 'Unlike';
+                        this.dataset.liked = 'true';
+                    } else {
+                        this.innerText = 'Like';
+                        this.dataset.liked = 'false';
+                    }
+                    likeCountSpan.innerText = result.like_count;
+                }
+            });
+        };
+    });
+</script>
+
 {% endblock %}

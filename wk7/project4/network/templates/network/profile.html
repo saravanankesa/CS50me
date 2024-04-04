@@ -18,18 +18,28 @@
 
     <!-- Display posts -->
     <div class="container">
-        {% for post in posts %}
-    <div class="post" id="post-{{ post.id }}">
-        <div class="post-content">
-            <p>{{ post.content }}</p>
+        <div class="container">
+            <h2>My Posts</h2>
+            {% for post in posts %}
+                <div class="post" id="post-{{ post.id }}">
+                    <div class="post-content">
+                        <p>{{ post.content }}</p>
+                    </div>
+                    <small>Posted on {{ post.timestamp }}</small>
+                    <span id="like-count-{{ post.id }}">{{ post.likes.count }}</span>
+                    <button class="like-btn" data-post-id="{{ post.id }}" data-liked="{% if user in post.likes.all %}true{% else %}false{% endif %}">
+                        {% if user in post.likes.all %}
+                            Unlike
+                        {% else %}
+                            Like
+                        {% endif %}
+                    </button>
+                    {% if user == post.creator %}
+                        <button class="edit-btn" data-post-id="{{ post.id }}" data-edit-url="{% url 'edit_post' post.id %}">Edit</button>
+                    {% endif %}
+                </div>
+            {% endfor %}
         </div>
-        <small>Posted on {{ post.timestamp }}</small>
-        {% if user == post.creator %}
-        <button class="edit-btn" data-post-id="{{ post.id }}" data-edit-url="{% url 'edit_post' post.id %}">Edit</button>
-        {% endif %}
-    </div>
-{% endfor %}
-    </div>
 
     <!-- Pagination controls -->
     <div class="pagination">
@@ -104,6 +114,36 @@
                 button.onclick = function() { editPost(this); };
             });
         });
+       
+        document.querySelectorAll('.like-btn').forEach(button => {
+            button.onclick = function() {
+                let postId = this.dataset.postId;
+                let liked = this.dataset.liked === 'true';
+                let likeCountSpan = document.getElementById(`like-count-${postId}`);
+                fetch(`/like_post/${postId}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    }
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.status === 'success') {
+                        if (result.liked) {
+                            this.innerText = 'Unlike';
+                            this.dataset.liked = 'true';
+                        } else {
+                            this.innerText = 'Like';
+                            this.dataset.liked = 'false';
+                        }
+                        likeCountSpan.innerText = result.like_count;
+                    }
+                });
+            };
+        });
+    
+
+
     </script>
     
 {% endblock %}

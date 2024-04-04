@@ -156,3 +156,16 @@ def edit_post(request, post_id):
         return JsonResponse({'status': 'success'})
     except Post.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'Post not found or not authorized to edit'}, status=404)
+    
+
+@login_required
+@require_POST
+def like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
+        liked = False
+    else:
+        post.likes.add(request.user)
+        liked = True
+    return JsonResponse({'status': 'success', 'liked': liked, 'like_count': post.likes.count()})
