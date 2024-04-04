@@ -24,7 +24,6 @@
                     <p>{{ post.content }}</p>
                 </div>
                 <small>Posted on {{ post.timestamp }}</small>
-                <span id="like-count-{{ post.id }}">{{ post.likes.count }}</span>
                 <button class="like-btn" data-post-id="{{ post.id }}" data-liked="{% if user in post.likes.all %}true{% else %}false{% endif %}">
                     {% if user in post.likes.all %}
                         Unlike
@@ -32,6 +31,7 @@
                         Like
                     {% endif %}
                 </button>
+                <span class="like-count" id="like-count-{{ post.id }}">{{ post.likes.count }}</span>
                 {% if user == post.creator %}
                     <button class="edit-btn" data-post-id="{{ post.id }}" data-edit-url="{% url 'edit_post' post.id %}">Edit</button>
                 {% endif %}
@@ -121,13 +121,13 @@
             .then(result => {
                 if (result.status === 'success') {
                     if (result.liked) {
-                        this.innerText = 'Unlike';
-                        this.dataset.liked = 'true';
+                        button.innerText = 'Unlike';
+                        button.dataset.liked = 'true';
                     } else {
-                        this.innerText = 'Like';
-                        this.dataset.liked = 'false';
+                        button.innerText = 'Like';
+                        button.dataset.liked = 'false';
                     }
-                    likeCountSpan.innerText = result.like_count;
+                    document.getElementById(`like-count-${postId}`).innerText = result.like_count;
                 }
             });
         };
