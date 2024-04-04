@@ -2,13 +2,15 @@
 
 {% block body %}
     {% if user.is_authenticated %}
-    <div class="new-post-form">
-        <h2>New Post</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+    <div class="new-post-container">
+        <div class="new-post-form">
+            <h2>New Post</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
     </div>
     
     <div class="container">

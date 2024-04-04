@@ -33,10 +33,40 @@ body {
     margin-bottom: 10px;
 }
 
-.new-post-form textarea {
-    height: 60px; /* Adjusts the height of the New Post textarea */
-    resize: none;  /* Prevents resizing */
+.new-post-container {
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f8f9fa; /* Slightly lighter than the All Posts section */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #dee2e6; /* Slight border for distinction */
 }
+
+.new-post-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+
+.new-post-form form {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.new-post-form textarea {
+    flex-grow: 1;
+    height: 60px; /* Adjusts the height of the New Post textarea */
+    width: 80%;
+}
+
 
 button {
     background-color: #007bff;
@@ -52,7 +82,8 @@ button:hover {
 }
 
 .pagination {
-    text-align: center;
+    display: flex;
+    justify-content: center;
     margin-top: 20px;
 }
 
@@ -69,12 +100,41 @@ button:hover {
     background-color: #f0f0f0;
 }
 
+.navbar {
+    background-color: #88b5e2; /* Dark gray background color */
+    padding: 10px 20px;
+}
+
 .navbar-brand {
-    font-family: 'Georgia', serif;
-    font-size: 24px;
-    font-weight: bold;
+    font-family: 'Georgia', serif; /* Use a fancier font */
+    font-size: 60px; /* Increase the size */
+    color: #08212b; 
+    padding: 5px 15px;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.navbar-brand:hover {
+    color: rgba(1, 53, 73, 0.5)
+}
+
+.navbar .nav-link {
+    color: rgba(1, 53, 73, 1);
+}
+
+.navbar .nav-link:hover {
+    color: rgb(1, 53, 73, 0.5);
+}
+
+
+.navbar-nav {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
 }
 
 .nav-link {
+    text-align: right;
     margin-right: 10px;
 }
