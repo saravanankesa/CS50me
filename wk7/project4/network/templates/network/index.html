@@ -14,13 +14,17 @@
     <div class="container">
         <h2>All Posts</h2>
         {% for post in posts %}
-            <div class="post">
-                <h3><a href="{% url 'profile' username=post.creator.username %}">{{ post.creator.username }}</a></h3>
-                <p>{{ post.content }}</p>
-                <small>Posted on {{ post.timestamp }}</small>
-                <!-- Likes will be implemented later -->
-            </div>
-        {% endfor %}
+    <div class="post" id="post-{{ post.id }}">
+        <div class="post-content">
+            <p>{{ post.content }}</p>
+        </div>
+        <small>Posted on {{ post.timestamp }}</small>
+        {% if user == post.creator %}
+        <button class="edit-btn" data-post-id="{{ post.id }}" data-edit-url="{% url 'edit_post' post.id %}">Edit</button>
+
+        {% endif %}
+    </div>
+{% endfor %}
     </div>
 
     <div class="pagination">
@@ -35,4 +39,60 @@
         {% endif %}
     </div>
     {% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.onclick = function() {
+            let postId = this.dataset.postId;
+            let postDiv = document.getElementById(`post-${postId}`);
+            let postContent = postDiv.querySelector('.post-content p').innerText;
+            postDiv.querySelector('.post-content').innerHTML = `<textarea id="edit-content-${postId}">${postContent}</textarea>`;
+            this.innerText = 'Save';
+            this.onclick = saveEdit;
+        };
+    });
+    // Function to save the edited post
+    function saveEdit() {
+                let postId = this.dataset.postId;
+                let postDiv = document.getElementById(`post-${postId}`);
+                let editedContent = document.getElementById(`edit-content-${postId}`).value;
+                let editUrl = this.dataset.editUrl;
+                fetch(editUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        content: editedContent
+                    })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.status == 'success') {
+                        postDiv.querySelector('.post-content').innerHTML = `<p>${editedContent}</p>`;
+                        this.innerText = 'Edit';
+                        this.onclick = function() { editPost(this); };
+                    }
+                });
+            }
+    
+            // Event listeners for the edit buttons
+            function editPost(button) {
+                let postId = button.dataset.postId;
+                let postDiv = document.getElementById(`post-${postId}`);
+                let postContent = postDiv.querySelector('.post-content p').innerText;
+                postDiv.querySelector('.post-content').innerHTML = `<textarea id="edit-content-${postId}">${postContent}</textarea>`;
+                button.innerText = 'Save';
+                button.onclick = saveEdit;
+            }
+    
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.onclick = function() { editPost(this); };
+            });
+        });
+
+
+</script>
 {% endblock %}

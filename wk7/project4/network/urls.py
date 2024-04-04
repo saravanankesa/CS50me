@@ -1,4 +1,3 @@
-
 from django.urls import path
 
 from . import views
@@ -12,4 +11,5 @@ urlpatterns = [
     path("profile/<str:username>", views.profile, name="profile"),
     path("follow/<str:username>", views.follow, name="follow"),
     path("following", views.following, name="following"),
+    path('edit_post/<int:post_id>', views.edit_post, name='edit_post'),
 ]

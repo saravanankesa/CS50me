@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -8,6 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .forms import NewPostForm
 from .models import User, Post
+import json
 
 @login_required
 def index(request):
@@ -140,3 +142,17 @@ def following(request):
     page_number = request.GET.get('page')
     posts = paginator.get_page(page_number)
     return render(request, 'network/following.html', {'posts': posts})
+
+
+@login_required
+@csrf_exempt
+@require_POST
+def edit_post(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id, creator=request.user)
+        data = json.loads(request.body)
+        post.content = data['content']
+        post.save()
+        return JsonResponse({'status': 'success'})
+    except Post.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Post not found or not authorized to edit'}, status=404)
