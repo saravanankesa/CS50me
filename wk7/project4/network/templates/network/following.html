@@ -9,11 +9,22 @@
                 <div class="post">
                     <h3>{{ post.creator.username }}</h3>
                     <p>{{ post.content }}</p>
-                    <small>Posted on {{ post.timestamp }}</small>
+                    <small>Posted on {{ post.timestamp|date:"F d, Y, H:i" }}</small>
                 </div>
             {% endfor %}
         {% else %}
             <p>You are not following anyone yet.</p>
         {% endif %}
+        <div class="pagination">
+            {% if posts.has_previous %}
+                <a href="?page=1">&laquo; First</a>
+                <a href="?page={{ posts.previous_page_number }}">Previous</a>
+            {% endif %}
+    
+            {% if posts.has_next %}
+                <a href="?page={{ posts.next_page_number }}">Next</a>
+                <a href="?page={{ posts.paginator.num_pages }}">Last &raquo;</a>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

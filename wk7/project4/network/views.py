@@ -96,10 +96,15 @@ def new_post(request):
 @login_required
 def profile(request, username):
     profile_user = get_object_or_404(User, username=username)
-    posts = profile_user.posts.all().order_by('-timestamp')
+    posts_list = profile_user.posts.all().order_by('-timestamp')
+    paginator = Paginator(posts_list, 10)  # Show 10 posts per page
+    page_number = request.GET.get('page')
+    posts = paginator.get_page(page_number)
+
     followers = profile_user.followers.count()
     following = profile_user.following.count()
     is_following = request.user.is_authenticated and profile_user.followers.filter(id=request.user.id).exists()
+
     return render(request, 'network/profile.html', {
         'profile_user': profile_user,
         'posts': posts,
@@ -107,6 +112,7 @@ def profile(request, username):
         'following': following,
         'is_following': is_following,
     })
+
 
 @login_required
 @require_POST
@@ -129,5 +135,8 @@ def follow(request, username):
 def following(request):
     user = request.user
     following_users = user.following.all()
-    posts = Post.objects.filter(creator__in=following_users).order_by('-timestamp')
+    posts_list = Post.objects.filter(creator__in=following_users).order_by('-timestamp')
+    paginator = Paginator(posts_list, 10)  # Show 10 posts per page
+    page_number = request.GET.get('page')
+    posts = paginator.get_page(page_number)
     return render(request, 'network/following.html', {'posts': posts})
