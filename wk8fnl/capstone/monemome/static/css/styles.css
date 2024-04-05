@@ -1,15 +1,36 @@
+@media (max-width: 768px) {
+    .navbar-nav {
+        flex-direction: column !important; /* Force vertical stacking */
+    }
+}
+
 body {
     font-family: 'Arial', sans-serif;
     background-color: #E8F5E9; /* Lighter shade of sage green */
+}
+
+.navbar-brand {
+    color: #A5D6A7
+}
+
+.navbar {
+    background-color: #C8E6C9; /* Darker shade of sage green */
 }
 
 .navbar-brand, .nav-link {
     color: #40755E !important; /* Darker shade of green for better readability */
 }
 
-.navbar {
-    background-color: #C8E6C9; /* Darker shade of sage green */
-}
+.navbar-toggler {
+    padding: 0.25rem 0.75rem;
+    font-size: 1.25rem;
+    color: #FF8A65;
+    line-height: 1;
+    background-color: #FFAB91;
+    border: 1px;
+    border-radius: 0.25rem;
+    transition: box-shadow .15s ease-in-out;
+}    
 
 .footer {
     background-color: #C8E6C9; /* Darker shade of sage green */

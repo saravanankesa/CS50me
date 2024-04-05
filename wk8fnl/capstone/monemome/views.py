@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -24,6 +25,7 @@ def register(request):
         return redirect('index')
     return render(request, 'monemome/register.html')
 
+@never_cache
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -38,6 +40,7 @@ def login_view(request):
     return render(request, 'monemome/login.html')  # Render the login template
 
 @login_required
+@never_cache
 def index(request):
     # You can add context data to pass to the index template if needed.
     context = {
@@ -46,6 +49,7 @@ def index(request):
     return render(request, 'monemome/index.html', context)
 
 @login_required
+@never_cache
 def transaction_list(request):
     transactions = Transaction.objects.filter(user=request.user)
     return render(request, 'transactions/list.html', {'transactions': transactions})
