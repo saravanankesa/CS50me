@@ -39,3 +39,15 @@ body {
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: #f3f7f3; /* Very light shade of green for striped rows */
 }
+
+/* Custom styles for the login button */
+#login-button {
+    background-color: #fa7a53d3; /* Orange/beige color */
+    border-color: #fd7c55da; /* Orange/beige border color */
+    color: white; /* White text color */
+}
+
+#login-button:hover {
+    background-color: #f7a58ce7; /* Darker shade of orange/beige for hover effect */
+    border-color: #f7a58ce7; /* Darker shade of orange/beige border color for hover effect */
+}

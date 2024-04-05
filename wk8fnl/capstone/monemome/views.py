@@ -8,8 +8,18 @@ from django.shortcuts import render, redirect
 def register(request):
     if request.method == 'POST':
         username = request.POST['username']
+        email = request.POST['email']  # Get the email from the form
         password = request.POST['password']
-        user = User.objects.create_user(username=username, password=password)
+        password_confirm = request.POST['password_confirm']
+
+        if password != password_confirm:
+            messages.error(request, "Passwords do not match.")
+            return render(request, 'register.html')
+
+        # Create a new user with the provided email
+        user = User.objects.create_user(username=username, email=email, password=password)
+        user.save()
+
         login(request, user)
         return redirect('index')
     return render(request, 'monemome/register.html')
