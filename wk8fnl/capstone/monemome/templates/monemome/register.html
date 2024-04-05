@@ -1,14 +1,8 @@
 {% extends layout.html %}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-</head>
-<body>
+{% block content %}
     <div class="container">
-        <h2>Login</h2>
+        <h2>Register</h2>
         <form method="post">
             {% csrf_token %}
             <div class="mb-3">
@@ -19,9 +13,8 @@
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <button type="submit" class="btn btn-primary">Log in</button>
+            <button type="submit" class="btn btn-primary">Register</button>
         </form>
-        <p>Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+        <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
     </div>
-</body>
-</html>
+{% block content %}

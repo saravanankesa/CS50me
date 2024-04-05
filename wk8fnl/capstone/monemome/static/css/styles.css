@@ -1,0 +1,41 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #E8F5E9; /* Lighter shade of sage green */
+}
+
+.navbar-brand, .nav-link {
+    color: #40755E !important; /* Darker shade of green for better readability */
+}
+
+.navbar {
+    background-color: #C8E6C9; /* Darker shade of sage green */
+}
+
+.footer {
+    background-color: #C8E6C9; /* Darker shade of sage green */
+    color: #40755E; /* Darker shade of green for better readability */
+}
+
+/* Add custom styles for buttons, tables, and other elements here using the sage green and orange/beige color scheme */
+.btn-custom {
+    background-color: #FFAB91; /* Orange/beige color */
+    color: white;
+}
+
+.btn-custom:hover {
+    background-color: #FF8A65; /* A darker shade of orange/beige for hover effect */
+}
+
+/* Styles for form labels */
+.form-label {
+    color: #40755E; /* Darker shade of green for better readability */
+}
+
+/* Styles for table */
+.table {
+    color: #40755E; /* Darker shade of green for better readability */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f3f7f3; /* Very light shade of green for striped rows */
+}

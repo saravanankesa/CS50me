@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.urls import reverse
 from django.shortcuts import render, redirect
 
 def register(request):
@@ -10,7 +12,28 @@ def register(request):
         user = User.objects.create_user(username=username, password=password)
         login(request, user)
         return redirect('index')
-    return render(request, 'registration/register.html')
+    return render(request, 'monemome/register.html')
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect(reverse('index'))  # Redirect to the index page after login
+        else:
+            messages.error(request, 'Invalid username or password.')
+
+    return render(request, 'monemome/login.html')  # Render the login template
+
+@login_required
+def index(request):
+    # You can add context data to pass to the index template if needed.
+    context = {
+        'message': 'Welcome to MonE-MomE! Your personal financial tracking tool.',
+    }
+    return render(request, 'monemome/index.html', context)
 
 @login_required
 def transaction_list(request):
