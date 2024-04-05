@@ -1,8 +1,8 @@
 import pytest
 import sqlite3
 from datetime import datetime, timedelta
-from project import initialize_db, add_transaction_refactored, edit_transaction_refactored, upcoming_payments
-from helper import process_expense_categories, process_income_categories, calculate_current_balance, calculate_summary_for_period
+from wk8fnl.capstone.old.project import initialize_db, add_transaction_refactored, edit_transaction_refactored, upcoming_payments
+from wk8fnl.capstone.old.helper import process_expense_categories, process_income_categories, calculate_current_balance, calculate_summary_for_period
 from unittest.mock import MagicMock, patch
 
 @pytest.fixture

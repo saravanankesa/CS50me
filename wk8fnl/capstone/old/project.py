@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import datetime, timedelta
 from typing import Dict, Tuple, Optional, List, Any
-from helper import (
+from wk8fnl.capstone.old.helper import (
     print_menu, process_expense_categories, process_income_categories,
     print_formatted_transaction, calculate_current_balance,
     calculate_summary_for_period
