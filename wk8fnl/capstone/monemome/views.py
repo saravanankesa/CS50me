@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.urls import reverse
 from django.shortcuts import render, redirect
+from .forms import ProfileUpdateForm
 
 def register(request):
     if request.method == 'POST':
@@ -47,6 +48,18 @@ def index(request):
         'message': 'Welcome to MonE-MomE! Your personal financial tracking tool.',
     }
     return render(request, 'monemome/index.html', context)
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ProfileUpdateForm(instance=request.user)
+    return render(request, 'monemome/profile.html', {'form': form})
+
 
 @login_required
 @never_cache
