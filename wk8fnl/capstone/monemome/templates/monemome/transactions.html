@@ -1,0 +1,79 @@
+{% extends 'monemome/layout.html' %}
+
+{% block content %}
+<h2>Transactions</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Transaction</button>
+</form>
+<hr>
+<h3>Your Transactions</h3>
+<table>
+    <tr>
+        <th>Account Name</th>
+        <th>Type</th>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Pre-Auth Date</th>
+        <th>Actions</th>
+    </tr>
+    {% for transaction in transactions %}
+    <tr>
+        <td>{{ transaction.account_name }}</td>
+        <td>{{ transaction.transaction_type }}</td>
+        <td>{{ transaction.category }}</td>
+        <td>{{ transaction.amount }}</td>
+        <td>{{ transaction.date }}</td>
+        <td>{{ transaction.pre_auth_date }}</td>
+        <td>
+            <!-- Add links for editing and deleting transactions -->
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="7">No transactions found.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<script>
+    (function() {
+        const transactionType = document.querySelector('#id_transaction_type');
+        const categorySelect = document.querySelector('#id_category');
+        const preAuthDateField = document.querySelector('#id_pre_auth_date').closest('.form-group');
+        const categoryChoices = {{ category_choices|safe }};
+    
+        function togglePreAuthDateField() {
+            if (categorySelect.value === 'Pre-Auth Payments') {
+                preAuthDateField.style.display = 'block';
+            } else {
+                preAuthDateField.style.display = 'none';
+            }
+        }
+    
+        transactionType.addEventListener('change', function() {
+            let categories = categoryChoices[this.value] || [];
+            
+            categorySelect.innerHTML = '';
+            categories.forEach(function(category) {
+                const option = document.createElement('option');
+                option.value = category[0];
+                option.textContent = category[1];
+                categorySelect.appendChild(option);
+            });
+            togglePreAuthDateField(); // Call this function whenever the transaction type changes
+        });
+    
+        categorySelect.addEventListener('change', function() {
+            togglePreAuthDateField(); // Call this function whenever the category changes
+        });
+    
+        // Initial check to ensure correct display on page load
+        togglePreAuthDateField();
+    })();
+</script>
+
+{% endblock %}
+    

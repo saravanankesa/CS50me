@@ -21,11 +21,31 @@ class Account(models.Model):
         return self.name
 
 class Transaction(models.Model):
+    TRANSACTION_TYPES = [
+        ('Income', 'Income'),
+        ('Expense', 'Expense'),
+    ]
+    EXPENSE_CATEGORIES = [
+        ('Bills', 'Bills'),
+        ('Groceries', 'Groceries'),
+        ('Rent', 'Rent'),
+        # Add more categories...
+    ]
+    INCOME_CATEGORIES = [
+        ('CPP', 'CPP'),
+        ('OAS', 'OAS'),
+        # Add more categories...
+    ]
+
+    CATEGORIES = {
+        'Expense': EXPENSE_CATEGORIES,
+        'Income': INCOME_CATEGORIES,
+    }
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    type = models.CharField(max_length=7, choices=TRANSACTION_TYPES)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    account_name = models.CharField(max_length=100)
+    transaction_type = models.CharField(max_length=7, choices=TRANSACTION_TYPES, default='Expense')
+    category = models.CharField(max_length=100)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField()
     pre_auth_date = models.DateField(null=True, blank=True)

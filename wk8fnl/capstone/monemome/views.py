@@ -5,7 +5,11 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.urls import reverse
 from django.shortcuts import render, redirect
-from .forms import ProfileUpdateForm
+from .forms import ProfileUpdateForm, TransactionForm
+from .models import Transaction
+import logging
+
+logger = logging.getLogger(__name__)
 
 def register(request):
     if request.method == 'POST':
@@ -60,6 +64,35 @@ def profile(request):
         form = ProfileUpdateForm(instance=request.user)
     return render(request, 'monemome/profile.html', {'form': form})
 
+@login_required
+@never_cache
+def transactions(request):
+    logger.info(f"User {request.user.username} accessed the transactions page.")
+
+    if request.method == 'POST':
+        form = TransactionForm(request.POST, user=request.user)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            transaction.user = request.user
+            transaction.save()
+            logger.info(f"Transaction {transaction.id} created successfully for user {request.user.username}.")
+            return redirect('transactions')
+        else:
+            logger.warning(f"Transaction form is not valid for user {request.user.username}. Errors: {form.errors}")
+    else:
+        form = TransactionForm(user=request.user)
+
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    
+    category_choices = Transaction.CATEGORIES
+
+    context = {
+        'form': form,
+        'transactions': transactions,
+        'category_choices': category_choices
+    }
+
+    return render(request, 'monemome/transactions.html', context=context)
 
 @login_required
 @never_cache
