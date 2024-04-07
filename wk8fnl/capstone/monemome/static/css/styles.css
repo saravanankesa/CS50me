@@ -52,6 +52,54 @@ body {
     color: #40755E; /* Darker shade of green for better readability */
 }
 
+form select {
+    width: 30%; /* Adjust the width as needed */
+}
+
+
+/* Styles for the pre-auth date field */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-group .form-control {
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-group .form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Adjust the display of the pre-auth date field */
+#id_pre_auth_date {
+    display: none; /* Hide by default */
+}
+
+/* Style for the pre-auth date field when visible */
+.pre-auth-visible #id_pre_auth_date {
+    display: block; /* Show when the field is visible */
+    margin-top: 0.5rem; /* Add some margin for spacing */
+}
+
+
 /* Styles for table */
 .table {
     color: #40755E; /* Darker shade of green for better readability */
@@ -73,6 +121,18 @@ body {
     border-color: #f7a58ce7; /* Darker shade of orange/beige border color for hover effect */
 }
 
-form select {
-    width: 30%; /* Adjust the width as needed */
+.success-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
 }
+
+.highlight {
+    background-color: #ffff99; /* Light yellow background */
+}
+

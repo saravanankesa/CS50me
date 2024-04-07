@@ -21,6 +21,10 @@ class Account(models.Model):
         return self.name
 
 class Transaction(models.Model):
+    TRANSACTION_TYPES = [
+        ('Expense', 'Expense'),
+        ('Income', 'Income')
+    ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     account_name = models.CharField(max_length=100, blank=True)  # Allow blank for dynamic input
     transaction_type = models.CharField(max_length=7, choices=TRANSACTION_TYPES, default='Expense')
