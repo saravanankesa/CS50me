@@ -19,9 +19,12 @@
         <label for="id_account_name">Account:</label>
         <select id="id_account_name" name="account_name">
             <option value="">--- Select Account ---</option>
+            {% for account_name in unique_account_names %}
+                <option value="{{ account_name }}">{{ account_name }}</option>
+            {% endfor %}
         </select>
-        <input type="text" id="id_new_account_name" placeholder="New account name">
-        <button type="button" id="add_account_button">Add Account</button>
+        <label for="id_new_account_name">New Account Name:</label>
+        <input type="text" id="id_new_account_name" name="new_account_name" placeholder="New account name">
     </div>
     <div class="form-group">
         <label>Transaction Type:</label>
@@ -35,9 +38,14 @@
         <label for="id_category">Category:</label>
         <select id="id_category" name="category">
             <option value="">--- Select Category ---</option>
+            {% for category in expense_categories %}
+                <option class="expense-category" value="{{ category }}">{{ category }}</option>
+            {% endfor %}
+            {% for category in income_categories %}
+                <option class="income-category" value="{{ category }}">{{ category }}</option>
+            {% endfor %}
         </select>
-        <input type="text" id="id_new_category" placeholder="New category">
-        <button type="button" id="add_category_button">Add Category</button>
+        <input type="text" id="id_new_category" name="category" placeholder="New category">
     </div>
     <div class="form-group">
         <label for="id_amount">Amount:</label>

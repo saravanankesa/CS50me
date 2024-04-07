@@ -43,8 +43,22 @@ document.addEventListener("DOMContentLoaded", function() {
                     option.textContent = category;
                     categorySelect.appendChild(option);
                 });
+                // Show/hide options based on transaction type
+                const expenseCategories = document.querySelectorAll('.expense-category');
+                const incomeCategories = document.querySelectorAll('.income-category');
+                if (transactionType === 'Expense') {
+                    expenseCategories.forEach(option => option.style.display = 'block');
+                    incomeCategories.forEach(option => option.style.display = 'none');
+                } else if (transactionType === 'Income') {
+                    expenseCategories.forEach(option => option.style.display = 'none');
+                    incomeCategories.forEach(option => option.style.display = 'block');
+                }
             });
     }
+
+    transactionTypeSelect.addEventListener("change", function() {
+        updateCategoryOptions(this.value);
+    });
 
     function addNewAccount() {
         const newAccountName = newAccountNameField.value.trim();
@@ -60,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function() {
             newAccountNameField.value = '';
         }
     }
+    addAccountButton.addEventListener("click", addNewAccount);
 
     function addNewCategory() {
         const newCategory = newCategoryField.value.trim();
@@ -75,6 +90,7 @@ document.addEventListener("DOMContentLoaded", function() {
             newCategoryField.value = '';
         }
     }
+    addCategoryButton.addEventListener("click", addNewCategory);
 
     transactionTypeSelect.addEventListener("change", function() {
         updateCategoryOptions(this.value);
@@ -82,9 +98,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     preAuthCheckbox.addEventListener("change", togglePreAuthDateVisibility);
-
-    addAccountButton.addEventListener("click", addNewAccount);
-    addCategoryButton.addEventListener("click", addNewCategory);
 
     // Initial setup
     togglePreAuthDateVisibility();

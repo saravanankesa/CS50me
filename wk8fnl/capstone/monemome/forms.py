@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Transaction, Account, Category
+import re
 
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
@@ -49,8 +50,8 @@ class TransactionForm(forms.ModelForm):
         return round(amount, 2)
 
     def clean_category(self):
-        category = self.cleaned_data.get('category')
-        if not category.isalnum():
+        category = self.cleaned_data.get('category').strip()
+        if not re.match(r'^[\w\s]+$', category):
             raise forms.ValidationError("Category name should only contain letters and numbers.")
         # Check for duplicate categories
         if Category.objects.filter(user=self.user, name=category).exists():
