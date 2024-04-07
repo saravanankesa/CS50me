@@ -12,12 +12,49 @@
     {% endfor %}
 {% endif %}
 
-<h2>Transactions</h2>
-<form method="post">
+<h2>Add Transactions</h2>
+<form method="post" id="transaction_form">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div class="form-group">
+        <label for="id_account_name">Account:</label>
+        <select id="id_account_name" name="account_name">
+            <option value="">--- Select Account ---</option>
+        </select>
+        <input type="text" id="id_new_account_name" placeholder="New account name">
+        <button type="button" id="add_account_button">Add Account</button>
+    </div>
+    <div class="form-group">
+        <label>Transaction Type:</label>
+        {{ form.transaction_type }}
+    </div>
+    <div class="form-group">
+        <label for="id_name">Name:</label>
+        {{ form.name }}
+    </div>
+    <div class="form-group">
+        <label for="id_category">Category:</label>
+        <select id="id_category" name="category">
+            <option value="">--- Select Category ---</option>
+        </select>
+        <input type="text" id="id_new_category" placeholder="New category">
+        <button type="button" id="add_category_button">Add Category</button>
+    </div>
+    <div class="form-group">
+        <label for="id_amount">Amount:</label>
+        {{ form.amount }}
+    </div>
+    <div class="form-group" id="pre_auth_group">
+        <label for="id_pre_auth">Pre-Auth Payments:</label>
+        <input type="checkbox" id="id_pre_auth">
+        <input type="date" id="id_pre_auth_date" name="pre_auth_date">
+    </div>
+    <div class="form-group">
+        <label for="id_date">Transaction Date:</label>
+        {{ form.date }}
+    </div>
     <button type="submit">Add Transaction</button>
 </form>
+
 <hr>
 <h3>Your Transactions</h3>
 <table>
@@ -49,6 +86,11 @@
     {% endfor %}
 </table>
 
-<script src="{% static 'js/transactions.js' %}"></script>
 {% endblock %}
-    
+
+{% block extra_js %}
+<script src="{% static 'js/transactions.js' %}"></script>
+<script>
+    var accountNames = {{ unique_account_names|safe }};
+</script>
+{% endblock %}

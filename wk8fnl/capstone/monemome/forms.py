@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Transaction, Category
+from .models import Transaction, Account, Category
 
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
@@ -10,14 +10,15 @@ class ProfileUpdateForm(forms.ModelForm):
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
-        fields = ['account_name', 'transaction_type', 'category', 'amount', 'date', 'pre_auth_date']
+        fields = ['account_name', 'transaction_type', 'name', 'category', 'amount', 'date', 'pre_auth_date']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super(TransactionForm, self).__init__(*args, **kwargs)
-        self.fields['transaction_type'].widget = forms.Select(choices=Transaction.TRANSACTION_TYPES)
+
+        self.fields['transaction_type'].widget = forms.RadioSelect(choices=Transaction.TRANSACTION_TYPES)
         self.fields['date'].widget = forms.DateInput(attrs={'type': 'date'})
-        self.fields['pre_auth_date'].widget = forms.HiddenInput()  # Hide initially
+        self.fields['pre_auth_date'].widget = forms.DateInput(attrs={'type': 'date'})
 
         if self.user:
             # Populate account_name with user's previous account names or allow adding a new one
@@ -29,13 +30,23 @@ class TransactionForm(forms.ModelForm):
 
             # Populate category based on the transaction type and user's previous categories
             # This will be further handled in JavaScript to dynamically update based on transaction type
-            expense_categories = list(Category.objects.filter(transaction_type='Expense')
+            expense_categories = list(Category.objects.filter(user=self.user, transaction_type='Expense')
                                      .values_list('name', flat=True).distinct())
-            income_categories = list(Category.objects.filter(transaction_type='Income')
+            income_categories = list(Category.objects.filter(user=self.user, transaction_type='Income')
                                     .values_list('name', flat=True).distinct())
             category_choices = [('', '--- Select Category ---')] + \
                                [(cat, cat) for cat in expense_categories + income_categories]
             self.fields['category'].widget = forms.Select(choices=category_choices)
+
+    def clean_amount(self):
+        amount = self.cleaned_data.get('amount')
+        try:
+            amount = float(amount)
+        except ValueError:
+            raise forms.ValidationError("Amount must be a number.")
+        if amount <= 0:
+            raise forms.ValidationError("Amount must be greater than zero.")
+        return round(amount, 2)
 
     def clean_category(self):
         category = self.cleaned_data.get('category')
