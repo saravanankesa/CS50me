@@ -11,7 +11,7 @@ class ProfileUpdateForm(forms.ModelForm):
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
-        fields = ['account_name', 'transaction_type', 'name', 'category', 'amount', 'date', 'pre_auth_date']
+        fields = ['account_name', 'transaction_type', 'transaction_name', 'category', 'amount', 'date', 'pre_auth_date']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)

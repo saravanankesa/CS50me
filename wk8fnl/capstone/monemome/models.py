@@ -16,7 +16,7 @@ class Category(models.Model):
 
 class Account(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='accounts')
-    name = models.CharField(max_length=100)
+    account_name = models.CharField(max_length=100)
     balance = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
@@ -30,7 +30,7 @@ class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     account_name = models.CharField(max_length=100, blank=True)  # Allow blank for dynamic input
     transaction_type = models.CharField(max_length=7, choices=TRANSACTION_TYPES, default='Expense')
-    name = models.CharField(max_length=100)
+    transaction_name = models.CharField(max_length=100)
     category = models.CharField(max_length=100, blank=True)  # Allow blank for dynamic input
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField()

@@ -136,3 +136,32 @@ form select {
     background-color: #ffff99; /* Light yellow background */
 }
 
+.transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.transaction-table th, .transaction-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.transaction-table th {
+    background-color: #f2f2f2;
+}
+
+/* Set minimum width for columns */
+.transaction-table th:nth-child(1),
+.transaction-table th:nth-child(3),
+.transaction-table th:nth-child(4) {
+    min-width: 120px; /* Adjust as needed */
+}
+
+.transaction-table th:nth-child(2),
+.transaction-table th:nth-child(5),
+.transaction-table th:nth-child(6),
+.transaction-table th:nth-child(7) {
+    min-width: 100px; /* Adjust as needed */
+}
+

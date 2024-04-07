@@ -3,7 +3,7 @@ from django.views.decorators.cache import never_cache
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.db.models import Q
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction as db_transaction
 from django.http import JsonResponse
 from django.contrib import messages
 from django.urls import reverse
@@ -73,34 +73,36 @@ def transactions(request):
     if request.method == 'POST':
         form = TransactionForm(request.POST, user=request.user)
         if form.is_valid():
-            transaction = form.save(commit=False)
-            transaction.user = request.user
-            
-            # Handle new account creation
-            new_account_name = form.cleaned_data.get('new_account_name')
-            if new_account_name and not Account.objects.filter(user=request.user, name=new_account_name).exists():
-                try:
-                    account, created = Account.objects.get_or_create(user=request.user, name=new_account_name)
-                    transaction.account_name = account.name
-                except IntegrityError:
-                    # Handle the case where a duplicate account is attempted to be created
-                    messages.error(request, "An account with this name already exists.")
-                    return render(request, 'monemome/transactions.html', {'form': form})
-            
-            # Handle new category creation
-            new_category_name = form.cleaned_data.get('category')
-            if new_category_name and not Category.objects.filter(user=request.user, name=new_category_name).exists():
-                try:
-                    category, created = Category.objects.get_or_create(user=request.user, name=new_category_name, transaction_type=transaction.transaction_type)
-                    transaction.category = category.name
-                except IntegrityError:
-                    # Handle the case where a duplicate category is attempted to be created
-                    messages.error(request, "A category with this name already exists.")
-                    return render(request, 'monemome/transactions.html', {'form': form})
-            
-            transaction.save()
-            messages.success(request, "Transaction added successfully!")
-            return redirect('transactions')
+            with db_transaction.atomic():  # Use the renamed import
+                txn = form.save(commit=False)  # Renamed variable
+                txn.user = request.user
+                
+                # Handle account_name selection or new account creation
+                selected_account_name = form.cleaned_data.get('account_name')
+                new_account_name = request.POST.get('new_account_name').strip()
+                if new_account_name:
+                    account, created = Account.objects.get_or_create(
+                        user=request.user, 
+                        account_name=new_account_name,
+                        defaults={'balance': 0}  # Provide a default value for balance
+                    )
+                    txn.account_name = account.account_name
+                elif selected_account_name:
+                    txn.account_name = selected_account_name
+
+                
+                # Handle category selection or new category creation
+                selected_category = form.cleaned_data.get('category')
+                new_category_name = request.POST.get('new_category')
+                if new_category_name:
+                    category, created = Category.objects.get_or_create(user=request.user, name=new_category_name, transaction_type=txn.transaction_type)  # Renamed variable
+                    txn.category = category.name  # Renamed variable
+                elif selected_category:
+                    txn.category = selected_category  # Renamed variable
+                
+                txn.save()  # Renamed variable
+                messages.success(request, "Transaction added successfully!")
+                return redirect('transactions')
         else:
             error_message = "Please correct the errors below: "
             for field, errors in form.errors.items():
@@ -111,20 +113,20 @@ def transactions(request):
         form = TransactionForm(user=request.user)
 
 
-    user_transactions = Transaction.objects.filter(user=request.user).order_by('-date')
-    unique_account_names = Account.objects.filter(user=request.user).values_list('name', flat=True).distinct()
-    expense_categories = Category.objects.filter(user=request.user, transaction_type='Expense').values_list('name', flat=True).distinct()
-    income_categories = Category.objects.filter(user=request.user, transaction_type='Income').values_list('name', flat=True).distinct()
+        user_transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+        unique_account_names = Account.objects.filter(user=request.user).values_list('account_name', flat=True).distinct()
+        expense_categories = Category.objects.filter(user=request.user, transaction_type='Expense').values_list('name', flat=True).distinct()
+        income_categories = Category.objects.filter(user=request.user, transaction_type='Income').values_list('name', flat=True).distinct()
 
 
-    context = {
-        'form': form,
-        'transactions': user_transactions,
-        'unique_account_names': unique_account_names,
-        'expense_categories': expense_categories,
-        'income_categories': income_categories
-    }
-    return render(request, 'monemome/transactions.html', context=context)
+        context = {
+            'form': form,
+            'transactions': user_transactions,
+            'unique_account_names': unique_account_names,
+            'expense_categories': expense_categories,
+            'income_categories': income_categories
+        }
+        return render(request, 'monemome/transactions.html', context=context)
 
 def get_categories(request):
     transaction_type = request.GET.get('transaction_type')
