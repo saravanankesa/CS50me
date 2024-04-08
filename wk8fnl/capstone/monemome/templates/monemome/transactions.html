@@ -53,9 +53,8 @@
         {{ form.amount }}
     </div>
     <div class="form-group" id="pre_auth_group">
-        <label for="id_pre_auth">Pre-Auth Payments:</label>
-        <input type="checkbox" id="id_pre_auth">
-        <input type="date" id="id_pre_auth_date" name="pre_auth_date">
+        <label for="id_is_pre_auth">Is this a Pre-Authorized payment?</label>
+        {{ form.is_pre_auth }}
     </div>
     <div class="form-group">
         <label for="id_date">Transaction Date:</label>
@@ -85,7 +84,7 @@
         <td>{{ transaction.category }}</td>
         <td>{{ transaction.amount }}</td>
         <td>{{ transaction.date }}</td>
-        <td>{{ transaction.pre_auth_date }}</td>
+        <td>{{ transaction.is_pre_auth|yesno:"Yes,No" }}</td>
         <td>
             <!-- Add links for editing and deleting transactions -->
         </td>

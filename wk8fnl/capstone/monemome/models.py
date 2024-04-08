@@ -33,8 +33,8 @@ class Transaction(models.Model):
     transaction_name = models.CharField(max_length=100)
     category = models.CharField(max_length=100, blank=True)  # Allow blank for dynamic input
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateField()
-    pre_auth_date = models.DateField(null=True, blank=True)
+    date = models.DateField(null="0000-00-00")
+    is_pre_auth = models.BooleanField(default=False, verbose_name="Pre-Auth Payment")
 
     def __str__(self):
         return f"{self.transaction_type}: {self.category} - ${self.amount}"

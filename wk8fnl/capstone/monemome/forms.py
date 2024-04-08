@@ -11,7 +11,7 @@ class ProfileUpdateForm(forms.ModelForm):
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
-        fields = ['account_name', 'transaction_type', 'transaction_name', 'category', 'amount', 'date', 'pre_auth_date']
+        fields = ['account_name', 'transaction_type', 'transaction_name', 'category', 'amount', 'date', 'is_pre_auth']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -19,7 +19,6 @@ class TransactionForm(forms.ModelForm):
 
         self.fields['transaction_type'].widget = forms.RadioSelect(choices=Transaction.TRANSACTION_TYPES)
         self.fields['date'].widget = forms.DateInput(attrs={'type': 'date'})
-        self.fields['pre_auth_date'].widget = forms.DateInput(attrs={'type': 'date'})
 
         if self.user:
             # Populate account_name with user's previous account names or allow adding a new one
