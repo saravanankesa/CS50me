@@ -3,19 +3,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const categorySelect = document.getElementById("id_category");
     const newCategoryField = document.getElementById("id_new_category");
     const addCategoryButton = document.getElementById("add_category_button");
-    const preAuthCheckbox = document.getElementById("id_pre_auth");
-    const preAuthDateField = document.getElementById("id_pre_auth_date").closest(".form-group");
     const accountNameSelect = document.getElementById("id_account_name");
     const newAccountNameField = document.getElementById("id_new_account_name");
     const addAccountButton = document.getElementById("add_account_button");
 
-    function togglePreAuthDateVisibility() {
-        if (preAuthCheckbox.checked) {
-            preAuthDateField.style.display = 'block';
-        } else {
-            preAuthDateField.style.display = 'none';
-        }
-    }    
 
     function populateAccountNames() {
         accountNames.forEach(name => {
@@ -94,13 +85,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     transactionTypeSelect.addEventListener("change", function() {
         updateCategoryOptions(this.value);
-        togglePreAuthDateVisibility();
     });
 
-    preAuthCheckbox.addEventListener("change", togglePreAuthDateVisibility);
-
     // Initial setup
-    togglePreAuthDateVisibility();
     updateCategoryOptions(transactionTypeSelect.value);
 });
 

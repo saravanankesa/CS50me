@@ -20,7 +20,7 @@ class Account(models.Model):
     balance = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return self.name
+        return self.account_name
 
 class Transaction(models.Model):
     TRANSACTION_TYPES = [

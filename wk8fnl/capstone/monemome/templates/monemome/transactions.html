@@ -38,15 +38,12 @@
         <label for="id_category">Category:</label>
         <select id="id_category" name="category">
             <option value="">--- Select Category ---</option>
-            {% for category in expense_categories %}
-                <option class="expense-category" value="{{ category }}">{{ category }}</option>
-            {% endfor %}
-            {% for category in income_categories %}
-                <option class="income-category" value="{{ category }}">{{ category }}</option>
+            {% for category in unique_categories %}
+                <option value="{{ category }}">{{ category }}</option>
             {% endfor %}
         </select>
         <label for="id_new_category">New Category:</label>
-        <input type="text" id="id_new_category" name="category" placeholder="New category">
+        <input type="text" id="id_new_category" name="new_category_name" placeholder="New category">
     </div>
     <div class="form-group">
         <label for="id_amount">Amount:</label>

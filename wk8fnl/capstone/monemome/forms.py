@@ -50,23 +50,16 @@ class TransactionForm(forms.ModelForm):
 
     def clean_category(self):
         category = self.cleaned_data.get('category').strip()
-        if not re.match(r'^[\w\s]+$', category):
-            raise forms.ValidationError("Category name should only contain letters and numbers.")
+        
         # Check for duplicate categories
-        if Category.objects.filter(user=self.user, name=category).exists():
+        if Category.objects.filter(user=self.user, name__iexact=category).exists():
             raise forms.ValidationError("This category already exists.")
         return category
 
 
     def clean(self):
         cleaned_data = super().clean()
-        category = cleaned_data.get("category")
-        pre_auth_date = cleaned_data.get("pre_auth_date")
-
-        # Validate pre_auth_date for Pre-Auth Payments category only
-        if category != 'Pre-Auth Payments' and pre_auth_date:
-            self.add_error('pre_auth_date', "Pre-auth date is only allowed for Pre-Auth Payments category.")
-
+        
         if self.user:
             # Populate account_name with user's previous account names or allow adding a new one
             account_names = list(Transaction.objects.filter(user=self.user)
