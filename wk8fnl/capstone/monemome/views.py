@@ -59,35 +59,40 @@ def index(request):
 @login_required
 def profile_view(request):
     user = request.user
-    # Fetch existing accounts and categories
     accounts = Account.objects.filter(user=user)
     categories = Category.objects.filter(user=user)
 
+    # Initialize forms
+    profile_form = ProfileUpdateForm(instance=user)
+    account_form = AccountForm()
+    category_form = CategoryForm()
+
     if request.method == 'POST':
-        profile_form = ProfileUpdateForm(request.POST, instance=request.user)
-        account_form = AccountForm(request.POST)
-        category_form = CategoryForm(request.POST)
-        if profile_form.is_valid():
-            profile_form.save()
-            messages.success(request, 'Your profile was updated successfully.')
-        if account_form.is_valid():
-            new_account = account_form.save(commit=False)
-            new_account.user = user
-            new_account.save()
-            messages.success(request, 'Account added successfully.')
-        if category_form.is_valid():
-            new_category = category_form.save(commit=False)
-            new_category.user = user
-            new_category.save()
-            messages.success(request, 'Category added successfully.')
-        return redirect('profile')  # Redirect to the same profile page after POST
-    else:
-        # Initialize the forms
-        profile_form = ProfileUpdateForm(instance=user)
-        account_form = AccountForm()
-        category_form = CategoryForm()
-        profile_form.fields['email'].initial = None  # Clear the email field
-    
+        if 'submit_email' in request.POST:
+            profile_form = ProfileUpdateForm(request.POST, instance=request.user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'Your profile was updated successfully.')
+                return redirect('profile')  # Redirect to clear the form
+
+        elif 'submit_account' in request.POST:
+            account_form = AccountForm(request.POST)
+            if account_form.is_valid():
+                new_account = account_form.save(commit=False)
+                new_account.user = user
+                new_account.save()
+                messages.success(request, 'Account added successfully.')
+                return redirect('profile')  # Redirect to clear the form
+
+        elif 'submit_category' in request.POST:
+            category_form = CategoryForm(request.POST)
+            if category_form.is_valid():
+                new_category = category_form.save(commit=False)
+                new_category.user = user
+                new_category.save()
+                messages.success(request, 'Category added successfully.')
+                return redirect('profile')  # Redirect to clear the form
+
     context = {
         'profile_form': profile_form,
         'account_form': account_form,

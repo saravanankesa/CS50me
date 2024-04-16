@@ -20,16 +20,22 @@ class ProfileUpdateForm(forms.ModelForm):
 class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
-        fields = ['name', 'purpose']
+        fields = ['account_name', 'purpose']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'purpose': forms.Textarea(attrs={'class': 'form-control'})
+            'account_name': forms.TextInput(attrs={'class': 'form-control', 'id': 'account_name', 'style': 'width: 40%;'}),
+            'purpose': forms.Textarea(attrs={'class': 'form-control', 'rows': 1})
         }
 
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['name']
+        fields = ['category_name', 'transaction_type']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'})
+            'category_name': forms.TextInput(attrs={'class': 'form-control', 'id': 'account_name'}),
+            'transaction_type': forms.Select(choices=Category.TRANSACTION_TYPES, attrs={'class': 'form-control', 'placeholder': 'Select one'})
         }
+    def __init__(self, *args, **kwargs):
+        super(CategoryForm, self).__init__(*args, **kwargs)
+        self.fields['transaction_type'].required = True
+        self.fields['transaction_type'].widget.attrs['placeholder'] = 'Select one'
+        self.fields['transaction_type'].empty_label = "Select one"

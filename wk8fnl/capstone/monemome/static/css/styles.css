@@ -72,3 +72,8 @@ body {
     background-color: #f7a58ce7; /* Darker shade of orange/beige for hover effect */
     border-color: #f7a58ce7; /* Darker shade of orange/beige border color for hover effect */
 }
+
+form .form-control {
+    width: 50%; /* Adjust width to 50% of its container */
+}
+
