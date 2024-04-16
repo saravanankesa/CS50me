@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Edit Transaction</h1>
+<form id="edit-transaction-form" action="{% url 'edit_transaction' transaction.id %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Changes</button>
+</form>
+{% endblock %}

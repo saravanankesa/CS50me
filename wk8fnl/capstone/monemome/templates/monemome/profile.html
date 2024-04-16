@@ -4,7 +4,7 @@
 {% block content %}
 <h2>User Profile</h2>
 <p>Username: {{ user.username }}</p>
-<p>Email: {{ user.email }}</p>
+<p>Current Email: {{ user.email }}</p>
 
 <form method="post">
     {% csrf_token %}

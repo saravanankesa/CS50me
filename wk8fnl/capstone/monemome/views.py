@@ -49,20 +49,21 @@ def index(request):
     }
     return render(request, 'monemome/index.html', context)
 
+
 @login_required
-def profile(request):
+def profile_view(request):
     if request.method == 'POST':
         form = ProfileUpdateForm(request.POST, instance=request.user)
         if form.is_valid():
-            form.save()
+            user = request.user
+            user.email = form.cleaned_data['email']
+            user.save()
+            messages.success(request, 'Your profile was updated successfully.')
             return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
     else:
-        form = ProfileUpdateForm(instance=request.user)
+        form = ProfileUpdateForm()
+        form.fields['email'].initial = None  # Clear the email field
+
     return render(request, 'monemome/profile.html', {'form': form})
-
-
-@login_required
-@never_cache
-def transaction_list(request):
-    transactions = Transaction.objects.filter(user=request.user)
-    return render(request, 'transactions/list.html', {'transactions': transactions})
