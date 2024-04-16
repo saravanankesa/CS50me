@@ -1,10 +1,19 @@
-{% extends 'base.html' %}
+{% extends 'monemome/layout.html' %}
 
 {% block content %}
-<h1>Edit Transaction</h1>
-<form id="edit-transaction-form" action="{% url 'edit_transaction' transaction.id %}" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Changes</button>
-</form>
+<div class="container">
+    <h2>Edit Transaction</h2>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
 {% endblock %}

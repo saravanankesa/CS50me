@@ -1,0 +1,96 @@
+{% extends 'monemome/layout.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Manage Categories</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Category Name</th>
+                <th>Transaction Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+            <tr>
+                <td>{{ category.category_name }}</td>
+                <td>{{ category.transaction_type }}</td>
+                <td>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ category.id }}">Edit</button>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ category.id }}">Delete</button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No categories found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- Edit Modals -->
+    {% for category in categories %}
+    <div class="modal fade" id="editModal{{ category.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ category.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel{{ category.id }}">Edit Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{% url 'edit_category' category.id %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="categoryName{{ category.id }}" class="form-label">Category Name:</label>
+                            <input type="text" class="form-control" id="categoryName{{ category.id }}" name="category_name" value="{{ category.category_name }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="transactionType{{ category.id }}" class="form-label">Transaction Type:</label>
+                            <select class="form-control" id="transactionType{{ category.id }}" name="transaction_type">
+                                <option value="Income" {% if category.transaction_type == 'Income' %}selected{% endif %}>Income</option>
+                                <option value="Expense" {% if category.transaction_type == 'Expense' %}selected{% endif %}>Expense</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Delete Modals -->
+    {% for category in categories %}
+    <div class="modal fade" id="deleteModal{{ category.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ category.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ category.id }}">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete the category "{{ category.category_name }}"? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <form method="post" action="{% url 'delete_category' category.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

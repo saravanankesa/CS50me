@@ -78,7 +78,7 @@
             </ul>
 
             <!-- Display Existing Categories -->
-            <h3>Your Categories</h3>
+            <h3><a href="{% url 'categories' %}" class="h3-link">Your Categories</a></h3>
             <ul>
                 {% for category in categories %}
                 <li>{{ category.category_name }} - {{ category.transaction_type }}</li>

@@ -6,8 +6,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ProfileUpdateForm, AccountForm, CategoryForm
-from .models import Account, Category
+from .forms import ProfileUpdateForm, AccountForm, CategoryForm, TransactionForm
+from .models import Account, Category, Transaction
 
 def register(request):
         if request.method == 'POST':
@@ -113,17 +113,6 @@ def accounts_view(request):
     return render(request, 'monemome/accounts.html', {'accounts': accounts})
 
 @login_required
-def delete_account(request, id):
-    account = get_object_or_404(Account, id=id, user=request.user)  # Ensures user owns the account
-    if request.method == 'POST':
-        account.delete()
-        messages.success(request, "Account deleted successfully.")
-        return redirect('accounts')  # Redirect to accounts overview page
-    else:
-        # Confirm deletion
-        return render(request, 'monemome/delete_account.html', {'account': account})
-    
-@login_required
 def edit_account(request, id):
     account = get_object_or_404(Account, id=id, user=request.user)
     if request.method == 'POST':
@@ -135,5 +124,109 @@ def edit_account(request, id):
     else:
         # Just redirecting back for GET request or render a specific template to edit
         return render(request, 'monemome/edit_account.html', {'account': account})
+
+@login_required
+def delete_account(request, id):
+    account = get_object_or_404(Account, id=id, user=request.user)  # Ensures user owns the account
+    if request.method == 'POST':
+        account.delete()
+        messages.success(request, "Account deleted successfully.")
+        return redirect('accounts')  # Redirect to accounts overview page
+    else:
+        # Confirm deletion
+        return render(request, 'monemome/delete_account.html', {'account': account})
+
+
+@login_required
+def categories_view(request):
+    user = request.user
+    categories = Category.objects.filter(user=user)
+    return render(request, 'monemome/categories.html', {'categories': categories})
+
+@login_required
+def edit_category(request, id):
+    category = get_object_or_404(Category, id=id, user=request.user)
+    if request.method == 'POST':
+        category.category_name = request.POST.get('category_name')
+        category.transaction_type = request.POST.get('transaction_type')
+        category.save()
+        messages.success(request, "Category updated successfully.")
+        return redirect('categories')
+    return render(request, 'monemome/edit_category.html', {'category': category})
+
+@login_required
+def delete_category(request, id):
+    category = get_object_or_404(Category, id=id, user=request.user)
+    if request.method == 'POST':
+        category.delete()
+        messages.success(request, "Category deleted successfully.")
+        return redirect('categories')
+    return render(request, 'monemome/delete_category.html', {'category': category})
+
+@login_required
+def list_transactions(request):
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    if request.GET.get('recurring') == 'true':
+        transactions = transactions.filter(is_recurring=True)
+    return render(request, 'monemome/transactions.html', {'transactions': transactions})
+
+@login_required
+def add_transaction(request):
+    if request.method == 'POST':
+        form = TransactionForm(request.POST, user=request.user)
+        if form.is_valid():
+            new_transaction = form.save(commit=False)
+            new_transaction.user = request.user
+            new_transaction.save()
+            messages.success(request, 'Transaction added successfully.')
+            return redirect('list_transactions')
+    else:
+        form = TransactionForm(user=request.user)
+    return render(request, 'monemome/add_transaction.html', {'form': form})
+
+@login_required
+def edit_transaction(request, id):
+    transaction = get_object_or_404(Transaction, id=id, user=request.user)
+    if request.method == 'POST':
+        form = TransactionForm(request.POST, instance=transaction)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Transaction updated successfully.")
+            return redirect('transactions_view')
+        else:
+            messages.error(request, "There was a problem updating the transaction.")
+
+    else:
+        form = TransactionForm(instance=transaction)
+    
+    return render(request, 'monemome/edit_transaction.html', {'form': form})
+
+@login_required
+def delete_transaction(request, id):
+    transaction = get_object_or_404(Transaction, id=id, user=request.user)  # Ensure the transaction belongs to the logged-in user
+    if request.method == 'POST':
+        transaction.delete()
+        messages.success(request, "Transaction successfully deleted.")
+        return redirect('list_transactions')  # Redirect to a view where transactions are listed
+    else:
+        messages.error(request, "Invalid request.")
+        return redirect('list_transactions')
+
+@login_required
+def pre_auth_payments(request):
+    # Assuming there is a boolean field 'is_pre_auth' in the Transaction model
+    transactions = Transaction.objects.filter(user=request.user, is_pre_auth=True, transaction_type='Expense')
+    return render(request, 'monemome/pre_auth_payments.html', {'transactions': transactions})
+
+@login_required
+def recurring_incomes(request):
+    # Assuming there is a boolean field 'is_recurring' in the Transaction model that indicates recurring incomes
+    recurring_transactions = Transaction.objects.filter(user=request.user, is_recurring=True, transaction_type='Income')
+    return render(request, 'monemome/recurring_incomes.html', {'transactions': recurring_transactions})
+
+@login_required
+def transactions_view(request):
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    return render(request, 'monemome/transactions.html', {'transactions': transactions})
 
 

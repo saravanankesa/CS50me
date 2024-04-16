@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Account, Category  # Ensure you import your Account and Category models
+from .models import Account, Category, Transaction
 
 class ProfileUpdateForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={
@@ -41,3 +41,34 @@ class CategoryForm(forms.ModelForm):
         self.fields['transaction_type'].required = True
         self.fields['transaction_type'].widget.attrs['placeholder'] = 'Select one'
         self.fields['transaction_type'].empty_label = "Select one"
+
+class TransactionForm(forms.ModelForm):
+    pre_auth = forms.BooleanField(required=False, label='Pre-Authorized Payment', widget=forms.CheckboxInput())
+    recurring = forms.BooleanField(required=False, label='Recurring Income', widget=forms.CheckboxInput())
+
+    account_name = forms.ModelChoiceField(
+        queryset=Account.objects.none(),  # Initially empty, will be set in the view
+        empty_label="Select Account",
+        label='Account Name',
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+
+    class Meta:
+        model = Transaction
+        fields = ['account_name', 'transaction_name', 'category', 'amount', 'date', 'transaction_type', 'is_pre_auth', 'is_recurring']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            'transaction_type': forms.Select(choices=Transaction.TRANSACTION_TYPES),
+            'is_pre_auth': forms.CheckboxInput(attrs={'class': 'toggle-checkbox', 'style': 'display:none;'}),
+            'is_recurring': forms.CheckboxInput(attrs={'class': 'toggle-checkbox', 'style': 'display:none;'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(TransactionForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['account_name'].queryset = Account.objects.filter(user=user)
+        # Setting initial visibility states for checkboxes can be managed in JavaScript or here
+        
+
