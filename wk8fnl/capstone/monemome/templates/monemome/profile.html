@@ -67,7 +67,8 @@
         <!-- Right Column for Lists -->
         <div class="col-md-6">
             <!-- Display Existing Accounts -->
-            <h3>Your Accounts</h3>
+            <!-- Link to the accounts management page -->
+            <h3><a href="{% url 'accounts' %}" class="h3-link">Your Accounts</a></h3>
             <ul>
                 {% for account in accounts %}
                 <li>{{ account.account_name }} - {{ account.purpose }}</li>

@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.urls import reverse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProfileUpdateForm, AccountForm, CategoryForm
 from .models import Account, Category
 
@@ -104,3 +104,21 @@ def profile_view(request):
         'categories': categories
     }
     return render(request, 'monemome/profile.html', context)
+
+
+@login_required
+def accounts_view(request):
+    user = request.user
+    accounts = Account.objects.filter(user=user)
+    return render(request, 'monemome/accounts.html', {'accounts': accounts})
+
+@login_required
+def delete_account(request, id):
+    account = get_object_or_404(Account, id=id, user=request.user)  # Ensures user owns the account
+    if request.method == 'POST':
+        account.delete()
+        messages.success(request, "Account deleted successfully.")
+        return redirect('accounts')  # Redirect to accounts overview page
+    else:
+        # Confirm deletion
+        return render(request, 'monemome/delete_account.html', {'account': account})

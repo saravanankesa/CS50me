@@ -1,0 +1,62 @@
+{% extends 'monemome/layout.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Manage Accounts</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Account Name</th>
+                <th>Purpose</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for account in accounts %}
+            <tr>
+                <td>{{ account.account_name }}</td>
+                <td>{{ account.purpose }}</td>
+                <td>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ account.id }}">Delete</button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No accounts found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Modals for each account for deletion confirmation -->
+    {% for account in accounts %}
+    <div class="modal fade" id="deleteModal{{ account.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ account.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ account.id }}">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete the account "{{ account.account_name }}"? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <form method="post" action="{% url 'delete_account' account.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
