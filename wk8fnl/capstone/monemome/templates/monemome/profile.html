@@ -1,86 +1,91 @@
-<!-- monemome/templates/monemome/profile.html -->
 {% extends 'monemome/layout.html' %}
 
 {% block content %}
-<h2>User Profile</h2>
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-danger" role="alert">
-            {{ message }}
+<div class="container">
+    <h2>User Profile</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="row">
+        <!-- Left Column for Forms -->
+        <div class="col-md-6">
+            <p><a href="{% url 'password_change' %}">Change Password</a></p>
+            <p>Username: {{ user.username }}</p>
+            <p>Current Email: {{ user.email }}</p>
+            <!-- User Profile Update Form -->
+            <form method="post" action="{% url 'profile' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ profile_form.email.id_for_label }}">Email:</label>
+                    {{ profile_form.email }}
+                    {{ profile_form.email.errors }}
+                </div>
+                <button type="submit" name="submit_email" class="btn btn-primary form-button">Update Email</button>
+            </form>
+            <p></p>
+            <!-- Account Creation Form -->
+            <h3>Create New Account</h3>
+            <form method="post" action="{% url 'profile' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ account_form.account_name.id_for_label }}">Account Name:</label>
+                    {{ account_form.account_name }}
+                    {{ account_form.account_name.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ account_form.purpose.id_for_label }}">Purpose:</label>
+                    {{ account_form.purpose }}
+                    {{ account_form.purpose.errors }}
+                </div>
+                <button type="submit" name="submit_account" class="btn btn-primary form-button">Add Account</button>
+            </form>
+            <p></p>
+            <!-- Category Creation Form -->
+            <h3>Create New Category</h3>
+            <form method="post" action="{% url 'profile' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ category_form.category_name.id_for_label }}">Category Name:</label>
+                    {{ category_form.category_name }}
+                    {{ category_form.category_name.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ category_form.transaction_type.id_for_label }}">Transaction Type:</label>
+                    {{ category_form.transaction_type }}
+                    {{ category_form.transaction_type.errors }}
+                </div>
+                <button type="submit" name="submit_category" class="btn btn-primary form-button">Add Category</button>
+            </form>
+            <p></p>
+            <p></p>
         </div>
-    {% endfor %}
-{% endif %}
-<p>Username: {{ user.username }}</p>
-<p>Current Email: {{ user.email }}</p>
-<a href="{% url 'password_change' %}">Change Password</a>
-<p></p>
-<!-- User Profile Update Form -->
-<form method="post" action="{% url 'profile' %}">
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="{{ profile_form.email.id_for_label }}">Email:</label>
-        {{ profile_form.email }}
-        {{ profile_form.email.errors }}
-    </div>
-    <button type="submit" name="submit_email" class="btn btn-primary">Update Email</button>
-</form>
 
-<p></p>
-<!-- Account Creation Form -->
-<h3>Create New Account</h3>
-<form method="post" action="{% url 'profile' %}">
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="{{ account_form.account_name.id_for_label }}">Account Name:</label>
-        {{ account_form.account_name }}
-        {{ account_form.account_name.errors }}
-    </div>
-    <div class="form-group">
-        <label for="{{ account_form.purpose.id_for_label }}">Purpose:</label>
-        {{ account_form.purpose }}
-        {{ account_form.purpose.errors }}
-    </div>
-    <button type="submit" name="submit_account" class="btn btn-primary">Add Account</button>
-</form>
-<p></p>
-<!-- Category Creation Form -->
-<h3>Create New Category</h3>
-<form method="post" action="{% url 'profile' %}">
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="{{ category_form.category_name.id_for_label }}">Category Name:</label>
-        {{ category_form.category_name }}
-        {{ category_form.category_name.errors }}
-    </div>
-    <div class="form-group">
-        <label for="{{ category_form.transaction_type.id_for_label }}">Transaction Type:</label>
-        {{ category_form.transaction_type }}
-        {{ category_form.transaction_type.errors }}
-    </div>
-    <button type="submit" name="submit_category" class="btn btn-primary">Add Category</button>
-</form>
+        <!-- Right Column for Lists -->
+        <div class="col-md-6">
+            <!-- Display Existing Accounts -->
+            <h3>Your Accounts</h3>
+            <ul>
+                {% for account in accounts %}
+                <li>{{ account.account_name }} - {{ account.purpose }}</li>
+                {% empty %}
+                <li>No accounts found.</li>
+                {% endfor %}
+            </ul>
 
-<p></p>
-<p></p>
-<!-- Display Existing Accounts -->
-<h3>Your Accounts</h3>
-<ul>
-    {% for account in accounts %}
-    <li>{{ account.account_name }} - {{ account.purpose }}</li>
-    {% empty %}
-    <li>No accounts found.</li>
-    {% endfor %}
-</ul>
-
-<!-- Display Existing Categories -->
-<h3>Your Categories</h3>
-<ul>
-    {% for category in categories %}
-    <li>{{ category.category_name }} - {{ category.transaction_type }}</li>
-    {% empty %}
-    <li>No categories found.</li>
-    {% endfor %}
-</ul>
-
-
+            <!-- Display Existing Categories -->
+            <h3>Your Categories</h3>
+            <ul>
+                {% for category in categories %}
+                <li>{{ category.category_name }} - {{ category.transaction_type }}</li>
+                {% empty %}
+                <li>No categories found.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
 {% endblock %}

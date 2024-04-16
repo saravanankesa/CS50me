@@ -93,6 +93,9 @@ def profile_view(request):
                 messages.success(request, 'Category added successfully.')
                 return redirect('profile')  # Redirect to clear the form
 
+        else:
+            profile_form = ProfileUpdateForm(instance=request.user, initial={'email': None}) 
+
     context = {
         'profile_form': profile_form,
         'account_form': account_form,

@@ -9,6 +9,12 @@ body {
     background-color: #E8F5E9; /* Lighter shade of sage green */
 }
 
+.centered-content {
+    display: flex;
+    justify-content: center;
+}
+
+
 .navbar-brand {
     color: #A5D6A7
 }
@@ -51,6 +57,12 @@ body {
 .form-label {
     color: #40755E; /* Darker shade of green for better readability */
 }
+
+.form-button {
+    padding: 10px 20px; /* Top-Bottom, Left-Right padding */
+    margin-top: 10px;  /* Additional spacing above the button */
+}
+
 
 /* Styles for table */
 .table {

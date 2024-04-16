@@ -15,6 +15,8 @@ class ProfileUpdateForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super(ProfileUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs['placeholder'] = 'New Email'
+        self.fields['email'].required = False
         self.fields['email'].initial = None  # Clear the initial email field
 
 class AccountForm(forms.ModelForm):
