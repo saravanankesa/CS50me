@@ -122,3 +122,18 @@ def delete_account(request, id):
     else:
         # Confirm deletion
         return render(request, 'monemome/delete_account.html', {'account': account})
+    
+@login_required
+def edit_account(request, id):
+    account = get_object_or_404(Account, id=id, user=request.user)
+    if request.method == 'POST':
+        account.account_name = request.POST.get('name')
+        account.purpose = request.POST.get('purpose')
+        account.save()
+        messages.success(request, 'Account updated successfully.')
+        return redirect('accounts')
+    else:
+        # Just redirecting back for GET request or render a specific template to edit
+        return render(request, 'monemome/edit_account.html', {'account': account})
+
+

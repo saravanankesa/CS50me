@@ -24,6 +24,7 @@
                 <td>{{ account.account_name }}</td>
                 <td>{{ account.purpose }}</td>
                 <td>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ account.id }}">Edit</button>
                     <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ account.id }}">Delete</button>
                 </td>
             </tr>
@@ -35,7 +36,38 @@
         </tbody>
     </table>
 
-    <!-- Modals for each account for deletion confirmation -->
+    <!-- Edit Modals -->
+    {% for account in accounts %}
+    <div class="modal fade" id="editModal{{ account.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ account.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel{{ account.id }}">Edit Account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{% url 'edit_account' account.id %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="accountName{{ account.id }}" class="form-label">Account Name:</label>
+                            <input type="text" class="form-control" id="accountName{{ account.id }}" name="name" value="{{ account.account_name }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="accountPurpose{{ account.id }}" class="form-label">Purpose:</label>
+                            <textarea class="form-control" id="accountPurpose{{ account.id }}" name="purpose">{{ account.purpose }}</textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Delete Modals -->
     {% for account in accounts %}
     <div class="modal fade" id="deleteModal{{ account.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ account.id }}" aria-hidden="true">
         <div class="modal-dialog">

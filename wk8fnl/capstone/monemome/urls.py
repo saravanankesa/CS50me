@@ -12,5 +12,6 @@ urlpatterns = [
     path('password_change/', auth_views.PasswordChangeView.as_view(template_name='monemome/password_change_form.html'), name='password_change'),
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(template_name='monemome/password_change_done.html'), name='password_change_done'),
     path('accounts/', views.accounts_view, name='accounts'),
+    path('accounts/edit/<int:id>/', views.edit_account, name='edit_account'),
     path('accounts/delete/<int:id>/', views.delete_account, name='delete_account'),
 ]
