@@ -1,30 +1,36 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.urls import reverse
 from django.shortcuts import render, redirect
-from .forms import ProfileUpdateForm
+from .forms import ProfileUpdateForm, AccountForm, CategoryForm
+from .models import Account, Category
 
 def register(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']  # Get the email from the form
-        password = request.POST['password']
-        password_confirm = request.POST['password_confirm']
+        if request.method == 'POST':
+            user_form = UserCreationForm(request.POST)
+            account_form = AccountForm(request.POST)
+            if user_form.is_valid() and account_form.is_valid():
+                user = user_form.save()
+                # Now create an account linked to this user
+                account = account_form.save(commit=False)
+                account.user = user
+                account.save()
+                login(request, user)
+                return redirect('index')
+            else:
+                messages.error(request, 'Please correct the errors below.')
+        else:
+            user_form = UserCreationForm()
+            account_form = AccountForm()
+        return render(request, 'monemome/register.html', {
+            'user_form': user_form,
+            'account_form': account_form
+        })
 
-        if password != password_confirm:
-            messages.error(request, "Passwords do not match.")
-            return render(request, 'register.html')
-
-        # Create a new user with the provided email
-        user = User.objects.create_user(username=username, email=email, password=password)
-        user.save()
-
-        login(request, user)
-        return redirect('index')
-    return render(request, 'monemome/register.html')
 
 @never_cache
 def login_view(request):
@@ -52,18 +58,41 @@ def index(request):
 
 @login_required
 def profile_view(request):
-    if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, instance=request.user)
-        if form.is_valid():
-            user = request.user
-            user.email = form.cleaned_data['email']
-            user.save()
-            messages.success(request, 'Your profile was updated successfully.')
-            return redirect('profile')
-        else:
-            messages.error(request, 'Please correct the error below.')
-    else:
-        form = ProfileUpdateForm()
-        form.fields['email'].initial = None  # Clear the email field
+    user = request.user
+    # Fetch existing accounts and categories
+    accounts = Account.objects.filter(user=user)
+    categories = Category.objects.filter(user=user)
 
-    return render(request, 'monemome/profile.html', {'form': form})
+    if request.method == 'POST':
+        profile_form = ProfileUpdateForm(request.POST, instance=request.user)
+        account_form = AccountForm(request.POST)
+        category_form = CategoryForm(request.POST)
+        if profile_form.is_valid():
+            profile_form.save()
+            messages.success(request, 'Your profile was updated successfully.')
+        if account_form.is_valid():
+            new_account = account_form.save(commit=False)
+            new_account.user = user
+            new_account.save()
+            messages.success(request, 'Account added successfully.')
+        if category_form.is_valid():
+            new_category = category_form.save(commit=False)
+            new_category.user = user
+            new_category.save()
+            messages.success(request, 'Category added successfully.')
+        return redirect('profile')  # Redirect to the same profile page after POST
+    else:
+        # Initialize the forms
+        profile_form = ProfileUpdateForm(instance=user)
+        account_form = AccountForm()
+        category_form = CategoryForm()
+        profile_form.fields['email'].initial = None  # Clear the email field
+    
+    context = {
+        'profile_form': profile_form,
+        'account_form': account_form,
+        'category_form': category_form,
+        'accounts': accounts,
+        'categories': categories
+    }
+    return render(request, 'monemome/profile.html', context)
