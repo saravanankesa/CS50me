@@ -166,8 +166,6 @@ def delete_category(request, id):
 @login_required
 def list_transactions(request):
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
-    if request.GET.get('recurring') == 'true':
-        transactions = transactions.filter(is_recurring=True)
     return render(request, 'monemome/transactions.html', {'transactions': transactions})
 
 @login_required
@@ -188,16 +186,16 @@ def add_transaction(request):
 def edit_transaction(request, id):
     transaction = get_object_or_404(Transaction, id=id, user=request.user)
     if request.method == 'POST':
-        form = TransactionForm(request.POST, instance=transaction)
+        form = TransactionForm(request.POST, instance=transaction, user=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, "Transaction updated successfully.")
-            return redirect('transactions_view')
+            return redirect('list_transactions')
         else:
-            messages.error(request, "There was a problem updating the transaction.")
-
+            errors = form.errors.as_text()
+            messages.error(request, f"There was a problem updating the transaction: {errors}")
     else:
-        form = TransactionForm(instance=transaction)
+        form = TransactionForm(instance=transaction, user=request.user)
     
     return render(request, 'monemome/edit_transaction.html', {'form': form})
 

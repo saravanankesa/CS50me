@@ -43,8 +43,12 @@ class CategoryForm(forms.ModelForm):
         self.fields['transaction_type'].empty_label = "Select one"
 
 class TransactionForm(forms.ModelForm):
-    pre_auth = forms.BooleanField(required=False, label='Pre-Authorized Payment', widget=forms.CheckboxInput())
-    recurring = forms.BooleanField(required=False, label='Recurring Income', widget=forms.CheckboxInput())
+    TRANSACTION_TYPES = [
+        ('Expense', 'Expense'),
+        ('Income', 'Income'),
+    ]
+    
+    transaction_type = forms.ChoiceField(choices=TRANSACTION_TYPES, widget=forms.RadioSelect)
 
     account_name = forms.ModelChoiceField(
         queryset=Account.objects.none(),  # Initially empty, will be set in the view
@@ -60,15 +64,17 @@ class TransactionForm(forms.ModelForm):
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
             'transaction_type': forms.Select(choices=Transaction.TRANSACTION_TYPES),
-            'is_pre_auth': forms.CheckboxInput(attrs={'class': 'toggle-checkbox', 'style': 'display:none;'}),
-            'is_recurring': forms.CheckboxInput(attrs={'class': 'toggle-checkbox', 'style': 'display:none;'}),
         }
 
     def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
+        if instance:
+            initial = kwargs.get('initial', {})
+            initial['account_name'] = instance.account_name
+            kwargs['initial'] = initial
         user = kwargs.pop('user', None)
         super(TransactionForm, self).__init__(*args, **kwargs)
         if user:
             self.fields['account_name'].queryset = Account.objects.filter(user=user)
-        # Setting initial visibility states for checkboxes can be managed in JavaScript or here
         
 

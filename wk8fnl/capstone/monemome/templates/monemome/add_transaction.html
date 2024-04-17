@@ -2,12 +2,28 @@
 
 {% block content %}
 <div class="container">
+    <div class="sub-header">
+        <div class="btn-group" role="group" aria-label="Transaction navigation">
+            <a href="{% url 'list_transactions' %}" class="btn btn-secondary">List Transactions</a>
+            <a href="{% url 'add_transaction' %}" class="btn btn-secondary">Add Transaction</a>
+            <a href="{% url 'pre_auth_payments' %}" class="btn btn-secondary">Pre-Auth Payments</a>
+            <a href="{% url 'recurring_incomes' %}" class="btn btn-secondary">Recurring Incomes</a>
+        </div>
+    </div>
     <h2>Add Transaction</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
     <form method="post" action="{% url 'add_transaction' %}">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
-    
+
+
 {% endblock %}

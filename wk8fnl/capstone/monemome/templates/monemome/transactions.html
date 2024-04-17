@@ -13,11 +13,13 @@
     
     <!-- Transaction listing view -->
     <h2>Transactions</h2>
-    <form method="get" action="{% url 'list_transactions' %}">
-        <input type="checkbox" name="recurring" value="true" onchange="this.form.submit();" {% if request.GET.recurring == 'true' %}checked{% endif %}>
-        <label>Show only recurring transactions</label>
-    </form>
-    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
     <table class="table">
         <thead>
             <tr>
