@@ -178,7 +178,24 @@ def list_transactions(request):
 @login_required
 def add_transaction(request):
     if request.method == 'POST':
+        print(request.POST)  # Check what data is being submitted
         form = TransactionForm(request.POST, user=request.user)
+        # Dynamically set the queryset for categories based on transaction type
+        if 'transaction_type' in request.POST:
+            transaction_type = request.POST['transaction_type']
+            # Ensure it's a valid type
+            if transaction_type not in [choice[0] for choice in Transaction.TRANSACTION_TYPES]:
+                messages.error(request, 'Invalid transaction type selected.')
+                form = TransactionForm(request.POST, user=request.user)
+                return render(request, 'monemome/add_transaction.html', {'form': form})
+        else:
+            messages.error(request, 'Transaction type is required.')
+            form = TransactionForm(request.POST, user=request.user)
+            return render(request, 'monemome/add_transaction.html', {'form': form})
+
+        form.fields['category'].queryset = Category.objects.filter(transaction_type=transaction_type)
+
+
         if form.is_valid():
             new_transaction = form.save(commit=False)
             new_transaction.user = request.user

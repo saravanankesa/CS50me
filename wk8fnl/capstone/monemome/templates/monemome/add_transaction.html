@@ -50,49 +50,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Activate updateFormFields on radio button change
     document.querySelectorAll('input[name="transaction_type"]').forEach(radio => {
-        radio.addEventListener('change', updateFormFields);
+        radio.addEventListener('change', () => {
+            updateFormFields();
+            const transactionType = document.querySelector('input[name="transaction_type"]:checked').value;
+            loadCategories(transactionType);
+        });
     });
 
     // Call updateFormFields on page load if a type is already selected
     const checkedRadio = document.querySelector('input[name="transaction_type"]:checked');
     if (checkedRadio) {
         updateFormFields();
+        loadCategories(checkedRadio.value);
     }
 });
 
 function updateFormFields() {
-    const transactionType = document.querySelector('input[name="transaction_type"]:checked')?.value;
+    const transactionType = document.querySelector('input[name="transaction_type"]:checked').value;
 
-    // Initially hide all groups
-    document.querySelectorAll('.form-group').forEach(group => {
-        group.style.display = 'none';
-    });
-
+    // Hide all form groups initially
+    document.querySelectorAll('.form-group').forEach(group => group.style.display = 'none');
 
     // Show the transaction type radio buttons always
-    document.querySelectorAll('.transaction-type').forEach(elem => {
-        elem.style.display = 'block'; // adjust this depending on your specific structure, possibly you need 'inline-block' or 'flex' etc.
-    });
+    document.querySelectorAll('.transaction-type').forEach(elem => elem.style.display = 'block');
 
     // Conditionally display fields based on transaction type
     if (transactionType === 'Income') {
-        // Hide all expense-only fields
-        document.querySelectorAll('.expense-only').forEach(elem => {
-            elem.style.display = 'none';
-        });
-        // Show all income-only fields
-        document.querySelectorAll('.income-only').forEach(elem => {
-            elem.style.display = 'block'; // adjust display style if needed
-        });
+        document.querySelectorAll('.expense-only').forEach(elem => elem.style.display = 'none');
+        document.querySelectorAll('.income-only').forEach(elem => elem.style.display = 'block');
     } else if (transactionType === 'Expense') {
-        // Hide all income-only fields
-        document.querySelectorAll('.income-only').forEach(elem => {
-            elem.style.display = 'none';
-        });
-        // Show all expense-only fields
-        document.querySelectorAll('.expense-only').forEach(elem => {
-            elem.style.display = 'block'; // adjust display style if needed
-        });
+        document.querySelectorAll('.income-only').forEach(elem => elem.style.display = 'none');
+        document.querySelectorAll('.expense-only').forEach(elem => elem.style.display = 'block');
     }
 
     // Show other fields common to both types, adjust selector as needed

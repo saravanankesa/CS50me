@@ -74,14 +74,65 @@ class TransactionForm(forms.ModelForm):
             initial = kwargs.get('initial', {})
             initial['account_name'] = instance.account_name
             kwargs['initial'] = initial
-        user = kwargs.pop('user', None)
+        self.user = kwargs.pop('user', None)
         super(TransactionForm, self).__init__(*args, **kwargs)
-        if user:
-            self.fields['account_name'].queryset = Account.objects.filter(user=user)
-        if user:
-            self.fields['category'].queryset = Category.objects.none()  # Initially empty, will be set by JavaScript
+
+        # Populate account_name with names from the Account model
+        self.fields['account_name'] = forms.ChoiceField(
+            choices=[(account.account_name, account.account_name) for account in Account.objects.all()]
+        )
+        if 'transaction_type' in self.data:
+            # If the form is being submitted, update the queryset based on the selected transaction type.
+            transaction_type = self.data.get('transaction_type')
+            self.fields['category'].queryset = Category.objects.filter(transaction_type=transaction_type)
+        elif self.instance.pk:
+            # This ensures that during form editing, the current value is valid.
+            self.fields['category'].queryset = Category.objects.filter(transaction_type=self.instance.transaction_type)
+        elif self.user:
+            self.fields['account_name'].queryset = Account.objects.filter(user=self.user)
+
+        instance = kwargs.get('instance')
+        if instance:
+            initial = kwargs.get('initial', {})
+            initial['account_name'] = instance.account_name
+            kwargs['initial'] = initial
         self.fields['is_pre_auth'].widget = forms.CheckboxInput(attrs={'class': 'expense-only', 'style': 'display:none;'})
         self.fields['is_recurring'].widget = forms.CheckboxInput(attrs={'class': 'income-only', 'style': 'display:none;'})
 
- 
+    def save(self, commit=True):
+        instance = super(TransactionForm, self).save(commit=False)
+        if not instance.user_id:  # Only set user if it's not already set
+            instance.user = self.user
+        if commit:
+            instance.save()
+            self.save_m2m()  # Needed for saving many-to-many relations
+        return instance
+
+    def clean_category(self):
+        # Explicitly fetch the category ID to handle cases where the model instance might be passed
+        category_id = self.cleaned_data.get('category')
+        if isinstance(category_id, Category):
+            return category_id
+        try:
+            # Attempt to get the Category instance by ID
+            category = Category.objects.get(id=category_id)
+        except Category.DoesNotExist:
+            raise forms.ValidationError("This category does not exist.")
+        return category
+
+    def clean(self):
+        cleaned_data = super().clean()
+        transaction_type = cleaned_data.get('transaction_type')
+        category = cleaned_data.get('category')
+
+        # Add a check to ensure category is not None before accessing its ID
+        if category is None:
+            print("Transaction Type:", transaction_type)
+            print("Category:", category)
+            raise forms.ValidationError("Category is required.")
+        
+        if not Category.objects.filter(transaction_type=transaction_type, id=category.id).exists():
+            raise forms.ValidationError("Select a valid choice. That choice is not one of the available choices.")
+
+        return cleaned_data
 

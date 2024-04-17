@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 
 class Account(models.Model):
@@ -28,7 +29,7 @@ class Transaction(models.Model):
         ('Expense', 'Expense'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     account_name = models.CharField(max_length=100)
     transaction_name = models.CharField(max_length=100)
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
