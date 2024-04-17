@@ -68,6 +68,10 @@ body {
     margin-top: 10px;  /* Additional spacing above the button */
 }
 
+.hide-field {
+    display: none;
+}
+
 
 /* Styles for table */
 .table {

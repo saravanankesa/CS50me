@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from django.http import JsonResponse
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProfileUpdateForm, AccountForm, CategoryForm, TransactionForm
@@ -144,6 +145,12 @@ def categories_view(request):
     return render(request, 'monemome/categories.html', {'categories': categories})
 
 @login_required
+def categories_by_type(request, transaction_type):
+    # Filter categories by the transaction type
+    categories = Category.objects.filter(transaction_type=transaction_type).values('id', 'category_name')
+    return JsonResponse(list(categories), safe=False)
+
+@login_required
 def edit_category(request, id):
     category = get_object_or_404(Category, id=id, user=request.user)
     if request.method == 'POST':
@@ -178,6 +185,8 @@ def add_transaction(request):
             new_transaction.save()
             messages.success(request, 'Transaction added successfully.')
             return redirect('list_transactions')
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = TransactionForm(user=request.user)
     return render(request, 'monemome/add_transaction.html', {'form': form})

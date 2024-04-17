@@ -24,6 +24,103 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const pTags = document.querySelectorAll('#form-container p');
+    pTags.forEach(p => {
+        const div = document.createElement('div');
+        div.innerHTML = p.innerHTML;
+        div.className = 'form-group';
 
+        // Add IDs and classes based on the name attribute of the input within the <p> tag
+        const input = p.querySelector('input, select');
+        if (input) {
+            div.id = 'div_' + input.name; // Create an ID based on the input name
+
+            // Apply visibility classes based on specific criteria
+            if (input.name === 'is_pre_auth') {
+                div.classList.add('expense-only');
+            } else if (input.name === 'is_recurring') {
+                div.classList.add('income-only');
+            }
+        }
+
+        p.parentNode.replaceChild(div, p);
+    });
+
+    // Activate updateFormFields on radio button change
+    document.querySelectorAll('input[name="transaction_type"]').forEach(radio => {
+        radio.addEventListener('change', updateFormFields);
+    });
+
+    // Call updateFormFields on page load if a type is already selected
+    const checkedRadio = document.querySelector('input[name="transaction_type"]:checked');
+    if (checkedRadio) {
+        updateFormFields();
+    }
+});
+
+function updateFormFields() {
+    const transactionType = document.querySelector('input[name="transaction_type"]:checked')?.value;
+
+    // Initially hide all groups
+    document.querySelectorAll('.form-group').forEach(group => {
+        group.style.display = 'none';
+    });
+
+
+    // Show the transaction type radio buttons always
+    document.querySelectorAll('.transaction-type').forEach(elem => {
+        elem.style.display = 'block'; // adjust this depending on your specific structure, possibly you need 'inline-block' or 'flex' etc.
+    });
+
+    // Conditionally display fields based on transaction type
+    if (transactionType === 'Income') {
+        // Hide all expense-only fields
+        document.querySelectorAll('.expense-only').forEach(elem => {
+            elem.style.display = 'none';
+        });
+        // Show all income-only fields
+        document.querySelectorAll('.income-only').forEach(elem => {
+            elem.style.display = 'block'; // adjust display style if needed
+        });
+    } else if (transactionType === 'Expense') {
+        // Hide all income-only fields
+        document.querySelectorAll('.income-only').forEach(elem => {
+            elem.style.display = 'none';
+        });
+        // Show all expense-only fields
+        document.querySelectorAll('.expense-only').forEach(elem => {
+            elem.style.display = 'block'; // adjust display style if needed
+        });
+    }
+
+    // Show other fields common to both types, adjust selector as needed
+    document.querySelectorAll('.common-fields').forEach(elem => {
+        elem.style.display = 'block';
+    });
+
+    // Trigger loading of categories
+    loadCategories(transactionType);
+}
+
+
+function loadCategories(transactionType) {
+    fetch(`/api/categories/${transactionType}/`)  
+        .then(response => response.json())
+        .then(data => {
+            const categorySelect = document.querySelector('#id_category');
+            categorySelect.innerHTML = '';
+            data.forEach(cat => {
+                const option = new Option(cat.category_name, cat.id);
+                categorySelect.append(option);
+            });
+            categorySelect.style.display = 'block';
+        })
+        .catch(error => console.error('Error loading categories:', error));
+}
+</script>
+    
+    
 
 {% endblock %}

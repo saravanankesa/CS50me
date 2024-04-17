@@ -24,4 +24,5 @@ urlpatterns = [
     path('transactions/delete/<int:id>/', views.delete_transaction, name='delete_transaction'),
     path('transactions/pre-auth/', views.pre_auth_payments, name='pre_auth_payments'),
     path('transactions/recurring/', views.recurring_incomes, name='recurring_incomes'),
+    path('api/categories/<str:transaction_type>/', views.categories_by_type, name='categories_by_type'),
 ]

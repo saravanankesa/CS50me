@@ -48,7 +48,7 @@ class TransactionForm(forms.ModelForm):
         ('Income', 'Income'),
     ]
     
-    transaction_type = forms.ChoiceField(choices=TRANSACTION_TYPES, widget=forms.RadioSelect)
+    transaction_type = forms.ChoiceField(choices=TRANSACTION_TYPES, widget=forms.RadioSelect(attrs={'onchange': 'updateFormFields();'}))
 
     account_name = forms.ModelChoiceField(
         queryset=Account.objects.none(),  # Initially empty, will be set in the view
@@ -60,10 +60,12 @@ class TransactionForm(forms.ModelForm):
 
     class Meta:
         model = Transaction
-        fields = ['account_name', 'transaction_name', 'category', 'amount', 'date', 'transaction_type', 'is_pre_auth', 'is_recurring']
+        fields = ['transaction_type', 'account_name', 'transaction_name', 'category', 'amount', 'date', 'is_pre_auth', 'is_recurring']
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
-            'transaction_type': forms.Select(choices=Transaction.TRANSACTION_TYPES),
+            'transaction_type': forms.RadioSelect,
+            'is_pre_auth': forms.CheckboxInput(attrs={'class': 'expense-only'}),
+            'is_recurring': forms.CheckboxInput(attrs={'class': 'income-only'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -76,5 +78,10 @@ class TransactionForm(forms.ModelForm):
         super(TransactionForm, self).__init__(*args, **kwargs)
         if user:
             self.fields['account_name'].queryset = Account.objects.filter(user=user)
-        
+        if user:
+            self.fields['category'].queryset = Category.objects.none()  # Initially empty, will be set by JavaScript
+        self.fields['is_pre_auth'].widget = forms.CheckboxInput(attrs={'class': 'expense-only', 'style': 'display:none;'})
+        self.fields['is_recurring'].widget = forms.CheckboxInput(attrs={'class': 'income-only', 'style': 'display:none;'})
+
+ 
 
