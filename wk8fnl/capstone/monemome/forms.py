@@ -33,7 +33,7 @@ class CategoryForm(forms.ModelForm):
         model = Category
         fields = ['category_name', 'transaction_type']
         widgets = {
-            'category_name': forms.TextInput(attrs={'class': 'form-control', 'id': 'account_name'}),
+            'category_name': forms.TextInput(attrs={'class': 'form-control', 'id': 'account'}),
             'transaction_type': forms.Select(choices=Category.TRANSACTION_TYPES, attrs={'class': 'form-control', 'placeholder': 'Select one'})
         }
     def __init__(self, *args, **kwargs):
@@ -60,7 +60,7 @@ class TransactionForm(forms.ModelForm):
 
     class Meta:
         model = Transaction
-        fields = ['transaction_type', 'account_name', 'transaction_name', 'category', 'amount', 'date', 'is_pre_auth', 'is_recurring']
+        fields = ['transaction_type', 'account', 'transaction_name', 'category', 'amount', 'date', 'is_pre_auth', 'is_recurring']
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
             'transaction_type': forms.RadioSelect,
@@ -72,7 +72,7 @@ class TransactionForm(forms.ModelForm):
         instance = kwargs.get('instance')
         if instance:
             initial = kwargs.get('initial', {})
-            initial['account_name'] = instance.account_name
+            initial['account'] = instance.account
             kwargs['initial'] = initial
         self.user = kwargs.pop('user', None)
         super(TransactionForm, self).__init__(*args, **kwargs)
@@ -89,12 +89,12 @@ class TransactionForm(forms.ModelForm):
             # This ensures that during form editing, the current value is valid.
             self.fields['category'].queryset = Category.objects.filter(transaction_type=self.instance.transaction_type)
         elif self.user:
-            self.fields['account_name'].queryset = Account.objects.filter(user=self.user)
+            self.fields['account'].queryset = Account.objects.filter(user=self.user)
 
         instance = kwargs.get('instance')
         if instance:
             initial = kwargs.get('initial', {})
-            initial['account_name'] = instance.account_name
+            initial['account'] = instance.account
             kwargs['initial'] = initial
         self.fields['is_pre_auth'].widget = forms.CheckboxInput(attrs={'class': 'expense-only', 'style': 'display:none;'})
         self.fields['is_recurring'].widget = forms.CheckboxInput(attrs={'class': 'income-only', 'style': 'display:none;'})

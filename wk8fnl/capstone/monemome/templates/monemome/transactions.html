@@ -37,7 +37,7 @@
             {% for transaction in transactions %}
             <tr>
                 <td>{{ transaction.date }}</td>
-                <td>{{ transaction.account_name }}</td>
+                <td>{{ transaction.account }}</td>
                 <td>{{ transaction.transaction_name }}</td>
                 <td>{{ transaction.category.category_name }}</td>
                 <td>{{ transaction.amount }}</td>
@@ -75,7 +75,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="accountName{{ transaction.id }}" class="form-label">Account Name:</label>
-                        <input type="text" class="form-control" id="accountName{{ transaction.id }}" name="account_name" value="{{ transaction.account_name }}">
+                        <input type="text" class="form-control" id="accountName{{ transaction.id }}" name="account" value="{{ transaction.account }}">
                     </div>
                     <div class="mb-3">
                         <label for="amount{{ transaction.id }}" class="form-label">Amount:</label>

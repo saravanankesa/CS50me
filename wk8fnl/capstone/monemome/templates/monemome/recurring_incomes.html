@@ -25,7 +25,7 @@
             {% for transaction in transactions %}
             <tr>
                 <td>{{ transaction.date }}</td>
-                <td>{{ transaction.account_name }}</td>
+                <td>{{ transaction.account }}</td>
                 <td>{{ transaction.category.category_name }}</td>
                 <td>{{ transaction.amount }}</td>
                 <td>Recurring</td>
