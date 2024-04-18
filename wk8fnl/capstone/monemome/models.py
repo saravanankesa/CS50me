@@ -1,11 +1,20 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db.models import Sum, Case, When, Value, IntegerField
 
 class Account(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     account_name = models.CharField(max_length=100)
     purpose = models.TextField(default='')
+
+    def calculate_balance(self):
+        # Ensure you prefetch related transactions if calling this method multiple times
+        transactions = self.transactions.all()  # Assuming related_name='transactions'
+        income = sum(t.amount for t in transactions if t.transaction_type == 'Income')
+        expense = sum(t.amount for t in transactions if t.transaction_type == 'Expense')
+        return income - expense
+
 
     def __str__(self):
         return self.account_name
@@ -30,7 +39,7 @@ class Transaction(models.Model):
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    account_name = models.CharField(max_length=100)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='transactions')
     transaction_name = models.CharField(max_length=100)
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)

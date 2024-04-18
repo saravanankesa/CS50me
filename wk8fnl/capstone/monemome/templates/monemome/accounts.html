@@ -2,7 +2,13 @@
 
 {% block content %}
 <div class="container">
-    <h2>Manage Accounts</h2>
+    <div class="sub-header">
+        <div class="btn-group" role="group" aria-label="Account navigation">
+            <a href="{% url 'list_accounts' %}" class="btn btn-secondary">List Accounts</a>
+            <a href="{% url 'account_balances' %}" class="btn btn-secondary">Account Balances</a>
+        </div>
+    </div>
+    <p><h2>Manage Accounts</h2></p>
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-danger" role="alert">

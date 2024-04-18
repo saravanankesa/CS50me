@@ -137,6 +137,11 @@ def delete_account(request, id):
         # Confirm deletion
         return render(request, 'monemome/delete_account.html', {'account': account})
 
+@login_required
+def account_balances(request):
+    accounts = Account.objects.filter(user=request.user)  # Fetch all accounts for the user
+    balances = [(account, account.calculate_balance()) for account in accounts]  # List of tuples (account, balance)
+    return render(request, 'monemome/account_balances.html', {'balances': balances})
 
 @login_required
 def categories_view(request):
