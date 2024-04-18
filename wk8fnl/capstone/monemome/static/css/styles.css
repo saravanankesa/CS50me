@@ -9,6 +9,14 @@ body {
     background-color: #E8F5E9; /* Lighter shade of sage green */
 }
 
+
+.sub-header {
+    width: 100%;  
+    display: flex;
+    justify-content: center;
+    align-items: center;  
+}
+
 .centered-content {
     display: flex;
     justify-content: center;
