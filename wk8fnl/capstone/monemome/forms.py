@@ -50,10 +50,10 @@ class TransactionForm(forms.ModelForm):
     
     transaction_type = forms.ChoiceField(choices=TRANSACTION_TYPES, widget=forms.RadioSelect(attrs={'onchange': 'updateFormFields();'}))
 
-    account_name = forms.ModelChoiceField(
+    account = forms.ModelChoiceField(
         queryset=Account.objects.none(),  # Initially empty, will be set in the view
         empty_label="Select Account",
-        label='Account Name',
+        label='Account',
         widget=forms.Select(attrs={'class': 'form-control'})
     )
 
@@ -69,33 +69,21 @@ class TransactionForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        instance = kwargs.get('instance')
-        if instance:
-            initial = kwargs.get('initial', {})
-            initial['account'] = instance.account
-            kwargs['initial'] = initial
         self.user = kwargs.pop('user', None)
         super(TransactionForm, self).__init__(*args, **kwargs)
 
-        # Populate account_name with names from the Account model
-        self.fields['account_name'] = forms.ChoiceField(
-            choices=[(account.account_name, account.account_name) for account in Account.objects.all()]
-        )
+        # Setting the queryset for account to user-specific accounts and initializing selected value if instance exists
+        if self.user:
+            self.fields['account'].queryset = Account.objects.filter(user=self.user)
+
         if 'transaction_type' in self.data:
             # If the form is being submitted, update the queryset based on the selected transaction type.
             transaction_type = self.data.get('transaction_type')
             self.fields['category'].queryset = Category.objects.filter(transaction_type=transaction_type)
-        elif self.instance.pk:
+        elif self.instance and self.instance.pk:
             # This ensures that during form editing, the current value is valid.
             self.fields['category'].queryset = Category.objects.filter(transaction_type=self.instance.transaction_type)
-        elif self.user:
-            self.fields['account'].queryset = Account.objects.filter(user=self.user)
 
-        instance = kwargs.get('instance')
-        if instance:
-            initial = kwargs.get('initial', {})
-            initial['account'] = instance.account
-            kwargs['initial'] = initial
         self.fields['is_pre_auth'].widget = forms.CheckboxInput(attrs={'class': 'expense-only', 'style': 'display:none;'})
         self.fields['is_recurring'].widget = forms.CheckboxInput(attrs={'class': 'income-only', 'style': 'display:none;'})
 
