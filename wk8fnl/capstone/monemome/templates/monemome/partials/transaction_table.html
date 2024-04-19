@@ -1,0 +1,105 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Account</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transaction in transactions %}
+        <tr>
+            <td>{{ transaction.date }}</td>
+            <td>{{ transaction.account }}</td>
+            <td>{{ transaction.transaction_name }}</td>
+            <td>{{ transaction.category.category_name }}</td>
+            <td>{{ transaction.amount }}</td>
+            <td>{{ transaction.transaction_type }}</td>
+            <td>
+                <a href="{% url 'edit_transaction' transaction.id %}" class="btn btn-primary">Edit</a>
+                <form method="post" action="{% url 'delete_transaction' transaction.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this transaction?');">
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">No transactions found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<!-- Edit Modals for Transactions -->
+{% for transaction in transactions %}
+<div class="modal fade" id="editModal{{ transaction.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ transaction.id }}" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel{{ transaction.id }}">Edit Transaction</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <form method="post" action="{% url 'edit_transaction' transaction.id %}">
+        {% csrf_token %}
+        <div class="modal-body">
+            <div class="mb-3">
+                <label for="transactionName{{ transaction.id }}" class="form-label">Transaction Name:</label>
+                <input type="text" class="form-control" id="transactionName{{ transaction.id }}" name="transaction_name" value="{{ transaction.transaction_name }}">
+            </div>
+            <div class="mb-3">
+                <label for="accountName{{ transaction.id }}" class="form-label">Account Name:</label>
+                <input type="text" class="form-control" id="accountName{{ transaction.id }}" name="account" value="{{ transaction.account }}">
+            </div>
+            <div class="mb-3">
+                <label for="amount{{ transaction.id }}" class="form-label">Amount:</label>
+                <input type="number" class="form-control" id="amount{{ transaction.id }}" name="amount" value="{{ transaction.amount }}">
+            </div>
+            <div class="mb-3">
+                <label for="category{{ transaction.id }}" class="form-label">Category:</label>
+                <select class="form-control" id="category{{ transaction.id }}" name="category_name">
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if transaction.category.id == category.id %}selected{% endif %}>{{ category.category_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="date{{ transaction.id }}" class="form-label">Date:</label>
+                <input type="date" class="form-control" id="date{{ transaction.id }}" name="date" value="{{ transaction.date|date:'Y-m-d' }}">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+    </form>
+</div>
+</div>
+</div>
+{% endfor %}
+<!-- Delete Modals for Transactions -->
+{% for transaction in transactions %}
+<div class="modal fade" id="deleteModal{{ transaction.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ transaction.id }}" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel{{ transaction.id }}">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to delete this transaction for "{{ transaction.amount }}" dated "{{ transaction.date|date:'Y-m-d' }}"? This action cannot be undone.
+    </div>
+    <div class="modal-footer">
+        <form method="post" action="{% url 'delete_transaction' transaction.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+{% endfor %}

@@ -3,8 +3,9 @@ from django.views.decorators.cache import never_cache
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
+from django.template.loader import render_to_string
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProfileUpdateForm, AccountForm, CategoryForm, TransactionForm
@@ -177,7 +178,27 @@ def delete_category(request, id):
 
 @login_required
 def list_transactions(request):
-    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    sort = request.GET.get('sort', 'date')
+    order = request.GET.get('order', 'desc')
+
+    # Define how the sorting should be applied based on user selection
+    if sort == 'account':
+        sort_key = 'account__account_name' if order == 'asc' else '-account__account_name'
+    elif sort == 'category':
+        sort_key = 'category__category_name' if order == 'asc' else '-category__category_name'
+    elif sort == 'type':
+        sort_key = 'transaction_type' if order == 'asc' else '-transaction_type'
+    else:  # default is by date
+        sort_key = 'date' if order == 'asc' else '-date'
+
+    # Fetch the transactions according to the specified order
+    transactions = Transaction.objects.filter(user=request.user).order_by(sort_key)
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Render only the transaction table part for AJAX requests
+        html = render_to_string('monemome/partials/transaction_table.html', {'transactions': transactions}, request=request)
+        return HttpResponse(html)
+    
     return render(request, 'monemome/transactions.html', {'transactions': transactions})
 
 @login_required

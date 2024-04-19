@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.db.models import Sum, Case, When, Value, IntegerField
 
 class Account(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
