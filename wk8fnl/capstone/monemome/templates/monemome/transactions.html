@@ -20,14 +20,14 @@
                     <option value="date">Date</option>
                     <option value="account">Account</option>
                     <option value="category">Category</option>
-                    <option value="type">Transaction Type</option>
+                    <option value="transaction_type">Transaction Type</option>
                 </select>
             </div>
             <div class="col-auto">
                 <label for="order" class="form-label">Order:</label>
                 <select name="order" id="order" class="form-select">
-                    <option value="asc">Ascending</option>
                     <option value="desc">Descending</option>
+                    <option value="asc">Ascending</option>
                 </select>
             </div>
         </div>
@@ -42,11 +42,10 @@
             </div>
         {% endfor %}
     {% endif %}
-    <div id="transaction-list"></div>
+    <div id="transaction-list">
         {% include 'monemome/partials/transaction_table.html' %}
     </div>
-</div>
-        
+</div>   
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const sortSelect = document.getElementById('sort');
@@ -57,14 +56,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const sort = sortSelect.value;
         const order = orderSelect.value;
 
-        fetch(`/transactions/?sort=${sort}&order=${order}`, {
+        fetch(`/transactions/list/?sort=${sort}&order=${order}`, {
+            method: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
         .then(response => response.text())
-        .then(data => {
-            document.getElementById('transaction-list').innerHTML = data.html;
+        .then(html => {
+            document.getElementById('transaction-list').innerHTML = html;
         })
         .catch(error => console.error('Error loading the transactions:', error));
     }

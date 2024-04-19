@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProfileUpdateForm, AccountForm, CategoryForm, TransactionForm
 from .models import Account, Category, Transaction
+import logging
 
 def register(request):
         if request.method == 'POST':
@@ -178,28 +179,27 @@ def delete_category(request, id):
 
 @login_required
 def list_transactions(request):
+    logger = logging.getLogger(__name__)
     sort = request.GET.get('sort', 'date')
     order = request.GET.get('order', 'desc')
+    sort_key = f"{'' if order == 'asc' else '-'}{sort}"
+    logger.debug(f'Sorting by {sort} in {order} order')
 
-    # Define how the sorting should be applied based on user selection
-    if sort == 'account':
-        sort_key = 'account__account_name' if order == 'asc' else '-account__account_name'
-    elif sort == 'category':
-        sort_key = 'category__category_name' if order == 'asc' else '-category__category_name'
-    elif sort == 'type':
-        sort_key = 'transaction_type' if order == 'asc' else '-transaction_type'
-    else:  # default is by date
-        sort_key = 'date' if order == 'asc' else '-date'
+    # Debugging
+    print("Headers Received:", request.headers.get('X-Requested-With'))
 
     # Fetch the transactions according to the specified order
     transactions = Transaction.objects.filter(user=request.user).order_by(sort_key)
 
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        logger.debug('Handling AJAX request')
         # Render only the transaction table part for AJAX requests
         html = render_to_string('monemome/partials/transaction_table.html', {'transactions': transactions}, request=request)
         return HttpResponse(html)
     
-    return render(request, 'monemome/transactions.html', {'transactions': transactions})
+    else:
+        logger.debug('Handling full page request')
+        return render(request, 'monemome/transactions.html', {'transactions': transactions})
 
 @login_required
 def add_transaction(request):
@@ -278,5 +278,3 @@ def recurring_incomes(request):
 def transactions_view(request):
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
     return render(request, 'monemome/transactions.html', {'transactions': transactions})
-
-
