@@ -23,7 +23,7 @@
         </thead>
         <tbody>
             {% for transaction in transactions %}
-            <tr>
+            <tr class="{% if transaction.due_soon %}highlight{% endif %}">
                 <td>{{ transaction.date }}</td>
                 <td>{{ transaction.account }}</td>
                 <td>{{ transaction.category.category_name }}</td>

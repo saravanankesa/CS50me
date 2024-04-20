@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
+from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
@@ -11,6 +12,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProfileUpdateForm, AccountForm, CategoryForm, TransactionForm
 from .models import Account, Category, Transaction
 from .decorators import upcoming_payments_decorator
+from datetime import datetime, timedelta
 import logging
 
 def register(request):
@@ -54,6 +56,9 @@ def login_view(request):
 @upcoming_payments_decorator
 @never_cache
 def index(request):
+    # Log the session status
+    dismissed = request.session.get('warning_dismissed', False)
+    print("Warning dismissed status:", dismissed)
     # You can add context data to pass to the index template if needed.
     context = {
         'message': 'Welcome to MonE-MomE! Your personal financial tracking tool.',
@@ -266,8 +271,14 @@ def delete_transaction(request, id):
 
 @login_required
 def pre_auth_payments(request):
-    # Assuming there is a boolean field 'is_pre_auth' in the Transaction model
+    today = datetime.now().date()
+    threshold_date = today + timedelta(days=5)
     transactions = Transaction.objects.filter(user=request.user, is_pre_auth=True, transaction_type='Expense')
+    
+    # Enhance transactions with 'due_soon' flag
+    for transaction in transactions:
+        transaction.due_soon = (today <= transaction.date <= threshold_date)
+    
     return render(request, 'monemome/pre_auth_payments.html', {'transactions': transactions})
 
 @login_required
@@ -281,7 +292,8 @@ def transactions_view(request):
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
     return render(request, 'monemome/transactions.html', {'transactions': transactions})
 
-
+@require_POST
 def dismiss_warning(request):
     request.session['warning_dismissed'] = True
-    return JsonResponse({'status': 'success'})
+    request.session.save()  # Explicitly save the session
+    return HttpResponse('OK')

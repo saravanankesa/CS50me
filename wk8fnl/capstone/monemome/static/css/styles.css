@@ -106,3 +106,7 @@ form .form-control {
     width: 50%; /* Adjust width to 50% of its container */
 }
 
+.highlight {
+    background-color: yellow;  /* Or any color that fits your design */
+    font-weight: bold;
+}
