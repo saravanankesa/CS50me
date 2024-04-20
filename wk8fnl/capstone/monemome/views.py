@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProfileUpdateForm, AccountForm, CategoryForm, TransactionForm
 from .models import Account, Category, Transaction
+from .decorators import upcoming_payments_decorator
 import logging
 
 def register(request):
@@ -50,6 +51,7 @@ def login_view(request):
     return render(request, 'monemome/login.html')  # Render the login template
 
 @login_required
+@upcoming_payments_decorator
 @never_cache
 def index(request):
     # You can add context data to pass to the index template if needed.
@@ -60,6 +62,7 @@ def index(request):
 
 
 @login_required
+@upcoming_payments_decorator
 def profile_view(request):
     user = request.user
     accounts = Account.objects.filter(user=user)
@@ -263,6 +266,7 @@ def delete_transaction(request, id):
         return redirect('list_transactions')
 
 @login_required
+@upcoming_payments_decorator
 def pre_auth_payments(request):
     # Assuming there is a boolean field 'is_pre_auth' in the Transaction model
     transactions = Transaction.objects.filter(user=request.user, is_pre_auth=True, transaction_type='Expense')
