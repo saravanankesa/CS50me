@@ -62,7 +62,6 @@ def index(request):
 
 
 @login_required
-@upcoming_payments_decorator
 def profile_view(request):
     user = request.user
     accounts = Account.objects.filter(user=user)
@@ -266,7 +265,6 @@ def delete_transaction(request, id):
         return redirect('list_transactions')
 
 @login_required
-@upcoming_payments_decorator
 def pre_auth_payments(request):
     # Assuming there is a boolean field 'is_pre_auth' in the Transaction model
     transactions = Transaction.objects.filter(user=request.user, is_pre_auth=True, transaction_type='Expense')
@@ -282,3 +280,8 @@ def recurring_incomes(request):
 def transactions_view(request):
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
     return render(request, 'monemome/transactions.html', {'transactions': transactions})
+
+
+def dismiss_warning(request):
+    request.session['warning_dismissed'] = True
+    return JsonResponse({'status': 'success'})

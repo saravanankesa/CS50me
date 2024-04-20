@@ -7,10 +7,11 @@ from django.utils.safestring import mark_safe
 
 def upcoming_payments_decorator(view_func):
     def _wrapped_view(request, *args, **kwargs):
+        # Define 'today' and 'threshold_date' at the beginning of the function
         today = datetime.now().date()
         threshold_date = today + timedelta(days=5)
-        
-        # Query for upcoming Pre-Auth payments that are due within the next 5 days
+
+        # Initialize `upcoming_payments` query outside of the conditional to ensure it's always defined
         upcoming_payments = Transaction.objects.filter(
             user=request.user,
             is_pre_auth=True,
@@ -18,17 +19,18 @@ def upcoming_payments_decorator(view_func):
             date__lte=threshold_date  # Less than or equal to 5 days from now
         )
 
-        # Add a warning message if there are upcoming payments
-        if upcoming_payments.exists():
-            message = mark_safe(
-                "You have upcoming Pre-Auth payments due soon! "
-                "<a href='/transactions/pre-auth/' class='alert-link'>Check Pre-Auth Payments</a>"
-                "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>"
-            )
-
-            messages.warning(request, message)
+        if not request.session.get('warning_dismissed', False):
+            if upcoming_payments.exists():
+                link = '<a href="/transactions/pre-auth/">Check Pre-Auth Payments</a>'
+                message = mark_safe(f"You have upcoming Pre-Auth payments due soon! {link}")
+                messages.warning(request, message)
         
-        # Call the actual view function
-        return view_func(request, *args, **kwargs)
+        response = view_func(request, *args, **kwargs)
+        
+        # Reset the dismissal flag when the session ends or the user logs out
+        request.session['warning_dismissed'] = False
+        
+        return response
+
     return _wrapped_view
 

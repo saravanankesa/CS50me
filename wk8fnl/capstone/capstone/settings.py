@@ -134,8 +134,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'login'
 
-# Set session to expire after 3 minutes of inactivity
-SESSION_COOKIE_AGE = 180  # 3 minutes in seconds
+# CSRF configuration
+CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to access the CSRF cookie
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_NAME = 'csrftoken'  # Default CSRF token cookie name
+CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'  # Header name expected in AJAX requests
 
-# Expire session when the browser is closed
+# Security settings
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+
+
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False
+
