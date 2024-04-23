@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.template.loader import render_to_string
-from django.db.models import Sum
+from django.db.models import Sum, F
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
