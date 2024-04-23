@@ -31,10 +31,19 @@ class AccountForm(forms.ModelForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['category_name', 'transaction_type']
+        fields = ['category_name', 'transaction_type', 'value_score']
+        labels = {
+            'category_name': 'Category Name',
+            'transaction_type': 'Transaction Type',
+            'value_score': 'Value Score',
+        }
+        help_texts = {
+            'value_score': 'Select a value score from 1 (Low) to 5 (High) based on the importance of this category.'
+        }
         widgets = {
             'category_name': forms.TextInput(attrs={'class': 'form-control', 'id': 'account'}),
-            'transaction_type': forms.Select(choices=Category.TRANSACTION_TYPES, attrs={'class': 'form-control', 'placeholder': 'Select one'})
+            'transaction_type': forms.Select(choices=Category.TRANSACTION_TYPES, attrs={'class': 'form-control', 'placeholder': 'Select one'}),
+            'value_score': forms.Select(attrs={'class': 'form-control'}),
         }
     def __init__(self, *args, **kwargs):
         super(CategoryForm, self).__init__(*args, **kwargs)

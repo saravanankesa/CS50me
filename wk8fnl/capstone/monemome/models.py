@@ -24,9 +24,18 @@ class Category(models.Model):
         ('Expense', 'Expense'),
     ]
 
+    VALUE_SCORE_CHOICES = [
+        (1, '1 - Low'),
+        (2, '2'),
+        (3, '3 - Medium'),
+        (4, '4'),
+        (5, '5 - High')
+    ]
+
     category_name = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     transaction_type = models.CharField(max_length=7, choices=TRANSACTION_TYPES, blank=False)
+    value_score = models.IntegerField(choices=VALUE_SCORE_CHOICES, default=3, verbose_name="Value Score")
 
     def __str__(self):
         return self.category_name

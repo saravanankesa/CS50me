@@ -165,15 +165,31 @@ def categories_by_type(request, transaction_type):
     return JsonResponse(list(categories), safe=False)
 
 @login_required
+def add_category(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            new_category = form.save(commit=False)  # Save the form temporarily without committing to the database
+            new_category.user = request.user  # Assign the current user as the category's user
+            new_category.save()  # Now save the category to the database
+            messages.success(request, "Category added successfully.")
+            return redirect('categories')  # Redirect to the category list page or wherever appropriate
+    else:
+        form = CategoryForm()
+    return render(request, 'monemome/categories.html', {'form': form})
+
+@login_required
 def edit_category(request, id):
     category = get_object_or_404(Category, id=id, user=request.user)
     if request.method == 'POST':
-        category.category_name = request.POST.get('category_name')
-        category.transaction_type = request.POST.get('transaction_type')
-        category.save()
-        messages.success(request, "Category updated successfully.")
-        return redirect('categories')
-    return render(request, 'monemome/edit_category.html', {'category': category})
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Category updated successfully.")
+            return redirect('categories')  # Ensure this is the correct redirect endpoint
+    else:
+        form = CategoryForm(instance=category)
+    return render(request, 'monemome/categories.html', {'form': form})
 
 @login_required
 def delete_category(request, id):

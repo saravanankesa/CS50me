@@ -2,7 +2,10 @@
 
 {% block content %}
 <div class="container">
-    <h2>Manage Categories</h2>
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Manage Categories</h2>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add New Category</button>
+    </div>
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-danger" role="alert">
@@ -15,6 +18,7 @@
             <tr>
                 <th>Category Name</th>
                 <th>Transaction Type</th>
+                <th>Value Score</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -23,6 +27,7 @@
             <tr>
                 <td>{{ category.category_name }}</td>
                 <td>{{ category.transaction_type }}</td>
+                <td>{{ category.value_score }}</td>
                 <td>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ category.id }}">Edit</button>
                     <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ category.id }}">Delete</button>
@@ -30,11 +35,54 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="3">No categories found.</td>
+                <td colspan="4">No categories found.</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Add Category Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{% url 'add_category' %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="categoryName" class="form-label">Category Name:</label>
+                            <input type="text" class="form-control" id="categoryName" name="category_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="transactionType" class="form-label">Transaction Type:</label>
+                            <select class="form-control" id="transactionType" name="transaction_type">
+                                <option value="Income">Income</option>
+                                <option value="Expense">Expense</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="valueScore" class="form-label">Value Score:</label>
+                            <select class="form-control" id="valueScore" name="value_score">
+                                <option value="1">1 - Low</option>
+                                <option value="2">2</option>
+                                <option value="3">3 - Medium</option>
+                                <option value="4">4</option>
+                                <option value="5">5 - High</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Category</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Edit Modals -->
     {% for category in categories %}
     <div class="modal fade" id="editModal{{ category.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ category.id }}" aria-hidden="true">
@@ -56,6 +104,16 @@
                             <select class="form-control" id="transactionType{{ category.id }}" name="transaction_type">
                                 <option value="Income" {% if category.transaction_type == 'Income' %}selected{% endif %}>Income</option>
                                 <option value="Expense" {% if category.transaction_type == 'Expense' %}selected{% endif %}>Expense</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="valueScore{{ category.id }}" class="form-label">Value Score:</label>
+                            <select class="form-control" id="valueScore{{ category.id }}" name="value_score">
+                                <option value="1" {% if category.value_score == 1 %}selected{% endif %}>1 - Low</option>
+                                <option value="2" {% if category.value_score == 2 %}selected{% endif %}>2</option>
+                                <option value="3" {% if category.value_score == 3 %}selected{% endif %}>3 - Medium</option>
+                                <option value="4" {% if category.value_score == 4 %}selected{% endif %}>4</option>
+                                <option value="5" {% if category.value_score == 5 %}selected{% endif %}>5 - High</option>
                             </select>
                         </div>
                     </div>
@@ -92,5 +150,7 @@
         </div>
     </div>
     {% endfor %}
+
+    
 </div>
 {% endblock %}
