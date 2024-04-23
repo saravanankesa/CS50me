@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.template.loader import render_to_string
+from django.db.models import Sum
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
@@ -155,7 +156,8 @@ def account_balances(request):
 @login_required
 def categories_view(request):
     user = request.user
-    categories = Category.objects.filter(user=user)
+    # Fetch categories for the logged-in user and annotate each with the sum of transaction amounts
+    categories = Category.objects.filter(user=user).annotate(total_amount=Sum('transaction__amount'))
     return render(request, 'monemome/categories.html', {'categories': categories})
 
 @login_required

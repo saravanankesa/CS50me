@@ -18,6 +18,7 @@
             <tr>
                 <th>Category Name</th>
                 <th>Transaction Type</th>
+                <th>Total Amount</th>
                 <th>Value Score</th>
                 <th>Actions</th>
             </tr>
@@ -27,6 +28,7 @@
             <tr>
                 <td>{{ category.category_name }}</td>
                 <td>{{ category.transaction_type }}</td>
+                <td>${{ category.total_amount|default:"0.00" }}</td>
                 <td>{{ category.value_score }}</td>
                 <td>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ category.id }}">Edit</button>
@@ -35,7 +37,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="4">No categories found.</td>
+                <td colspan="5">No categories found.</td>
             </tr>
             {% endfor %}
         </tbody>
