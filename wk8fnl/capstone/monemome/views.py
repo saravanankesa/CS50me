@@ -156,8 +156,17 @@ def account_balances(request):
 @login_required
 def categories_view(request):
     user = request.user
+    sort_by = request.GET.get('sort', 'category_name')
+
+    # Define valid sort fields to prevent errors or malicious sorting attempts
+    valid_sort_fields = {'category_name', 'transaction_type', 'total_amount', 'value_score'}
+    if sort_by.lstrip('-') not in valid_sort_fields:
+        sort_by = 'category_name'  # Fallback to default if an invalid sort field is provided
+
     # Fetch categories for the logged-in user and annotate each with the sum of transaction amounts
     categories = Category.objects.filter(user=user).annotate(total_amount=Sum('transaction__amount'))
+    categories = categories.order_by(sort_by)
+    
     return render(request, 'monemome/categories.html', {'categories': categories})
 
 @login_required

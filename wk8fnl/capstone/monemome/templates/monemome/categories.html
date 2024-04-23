@@ -16,10 +16,10 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Category Name</th>
-                <th>Transaction Type</th>
-                <th>Total Amount</th>
-                <th>Value Score</th>
+                <th><a href="?sort={% if request.GET.sort == '-category_name' %}category_name{% else %}-category_name{% endif %}">Category Name {% if request.GET.sort == 'category_name' %}▲{% elif request.GET.sort == '-category_name' %}▼{% endif %}</a></th>
+                <th><a href="?sort={% if request.GET.sort == '-transaction_type' %}transaction_type{% else %}-transaction_type{% endif %}">Transaction Type {% if request.GET.sort == 'transaction_type' %}▲{% elif request.GET.sort == '-transaction_type' %}▼{% endif %}</a></th>
+                <th><a href="?sort={% if request.GET.sort == '-total_amount' %}total_amount{% else %}-total_amount{% endif %}">Total Amount {% if request.GET.sort == 'total_amount' %}▲{% elif request.GET.sort == '-total_amount' %}▼{% endif %}</a></th>
+                <th><a href="?sort={% if request.GET.sort == '-value_score' %}value_score{% else %}-value_score{% endif %}">Value Score {% if request.GET.sort == 'value_score' %}▲{% elif request.GET.sort == '-value_score' %}▼{% endif %}</a></th>
                 <th>Actions</th>
             </tr>
         </thead>
