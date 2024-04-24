@@ -86,16 +86,21 @@ def profile_view(request):
             profile_form = ProfileUpdateForm(request.POST, instance=user)
             if profile_form.is_valid():
                 profile_form.save()
-                messages.success(request, 'Your profile was updated successfully.')
+                messages.success(request, 'Your email was updated successfully.')
                 return redirect('profile')  # Redirect to clear the form
 
         elif 'change_password' in request.POST:
-            password_form = PasswordChangeForm(user, request.POST)
+            password_form = PasswordChangeForm(user=user, data=request.POST)
             if password_form.is_valid():
                 user = password_form.save()
                 update_session_auth_hash(request, user)  # Important to keep the user logged in after password change
                 messages.success(request, 'Password changed successfully.')
                 return redirect('profile')
+            else:
+                errors = password_form.errors.as_data()
+                for field, field_errors in errors.items():
+                    for error in field_errors:
+                        messages.error(request, f'{field}: {error}')
 
         elif 'submit_account' in request.POST:
             account_form = AccountForm(request.POST)
@@ -125,7 +130,8 @@ def profile_view(request):
         'account_form': account_form,
         'category_form': category_form,
         'accounts': accounts,
-        'categories': categories
+        'categories': categories,
+        'current_email': user.email
     }
     return render(request, 'monemome/profile.html', context)
 
