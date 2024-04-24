@@ -2,21 +2,17 @@
 
 {% block content %}
 <div class="container">
-    <h2>User Profile</h2>
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-danger" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-    <div class="row">
-        <!-- Left Column for Forms -->
-        <div class="col-md-6">
-            <p><a href="{% url 'password_change' %}">Change Password</a></p>
-            <p>Username: {{ user.username }}</p>
-            <p>Current Email: {{ user.email }}</p>
-            <!-- User Profile Update Form -->
+    <div class="row align-items-start"> 
+        <div class="col-md-6 d-flex flex-column"> 
+            <h2>User Profile</h2>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <!-- User Profile Email Update Form -->
             <form method="post" action="{% url 'profile' %}">
                 {% csrf_token %}
                 <div class="form-group">
@@ -27,37 +23,60 @@
                 <button type="submit" name="submit_email" class="btn btn-primary form-button">Update Email</button>
             </form>
             <p></p>
+            <!-- Password Change Form -->
+            <form method="post" action="{% url 'profile' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_new_password1">New Password:</label>
+                    <input type="password" name="new_password1" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="id_new_password2">Confirm New Password:</label>
+                    <input type="password" name="new_password2" class="form-control" required>
+                </div>
+                <p></p>
+                <button type="submit" name="change_password" class="btn btn-warning">Change Password</button>
+            </form>
+            <p></p>
         </div>
-        <!-- Right Column for Lists -->
+        <!-- Right Column for Data Management -->
         <div class="col-md-6">
-            <!-- Display Existing Accounts -->
             <div class="mb-3">
                 <h3>Manage Your Data</h3>
-                <button onclick="location.href='{% url 'accounts' %}'" type="button" class="btn btn-primary mb-2">
-                    Manage Accounts
-                </button>
-                <button onclick="location.href='{% url 'categories' %}'" type="button" class="btn btn-secondary mb-2">
-                    View Categories
-                </button>
+                <div class="d-flex justify-content-between">
+                    <div class="card card-custom-bg">
+                        <div class="card-body">
+                            <h5 class="card-title">Accounts</h5>
+                            <button onclick="location.href='{% url 'accounts' %}'" type="button" class="btn btn-primary mb-2">
+                                Manage Accounts
+                            </button>
+                            <ul>
+                                {% for account in accounts %}
+                                <li>{{ account.account_name }} - {{ account.purpose }}</li>
+                                {% empty %}
+                                <li>No accounts found.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card card-custom-bg">
+                        <div class="card-body">
+                            <h5 class="card-title">Categories</h5>
+                            <button onclick="location.href='{% url 'categories' %}'" type="button" class="btn btn-secondary mb-2">
+                                View Categories
+                            </button>
+                            <ul>
+                                {% for category in categories %}
+                                <li>{{ category.category_name }} - {{ category.transaction_type }}</li>
+                                {% empty %}
+                                <li>No categories found.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <ul>
-                {% for account in accounts %}
-                <li>{{ account.account_name }} - {{ account.purpose }}</li>
-                {% empty %}
-                <li>No accounts found.</li>
-                {% endfor %}
-            </ul>
-
-            <!-- Display Existing Categories -->
-            <ul>
-                {% for category in categories %}
-                <li>{{ category.category_name }} - {{ category.transaction_type }}</li>
-                {% empty %}
-                <li>No categories found.</li>
-                {% endfor %}
-            </ul>
         </div>
     </div>
 </div>
 {% endblock %}
-

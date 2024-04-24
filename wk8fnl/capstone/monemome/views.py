@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.template.loader import render_to_string
 from django.db.models import Sum, F
 from django.contrib import messages
@@ -75,21 +75,29 @@ def profile_view(request):
     accounts = Account.objects.filter(user=user)
     categories = Category.objects.filter(user=user)
 
-    # Initialize forms without pre-filling email
-    if request.method == 'GET':
-        profile_form = ProfileUpdateForm()  # No instance passed, no email pre-fill
-    else:
-        profile_form = ProfileUpdateForm(request.POST, instance=user)
-        if 'submit_email' in request.POST and profile_form.is_valid():
-            profile_form.save()
-            messages.success(request, 'Your profile was updated successfully.')
-            return redirect('profile')  # Redirect to clear the form
-
+    # Initialize forms
+    profile_form = ProfileUpdateForm()
+    password_form = PasswordChangeForm(user=user)  # Initialize password change form
     account_form = AccountForm()
     category_form = CategoryForm()
 
     if request.method == 'POST':
-        if 'submit_account' in request.POST:
+        if 'submit_email' in request.POST:
+            profile_form = ProfileUpdateForm(request.POST, instance=user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'Your profile was updated successfully.')
+                return redirect('profile')  # Redirect to clear the form
+
+        elif 'change_password' in request.POST:
+            password_form = PasswordChangeForm(user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)  # Important to keep the user logged in after password change
+                messages.success(request, 'Password changed successfully.')
+                return redirect('profile')
+
+        elif 'submit_account' in request.POST:
             account_form = AccountForm(request.POST)
             if account_form.is_valid():
                 new_account = account_form.save(commit=False)
@@ -107,8 +115,13 @@ def profile_view(request):
                 messages.success(request, 'Category added successfully.')
                 return redirect('profile')  # Redirect to clear the form
 
+    # Reinitialize password_form if not posted to avoid carrying over old data
+    if 'change_password' not in request.POST:
+        password_form = PasswordChangeForm(user=user)
+
     context = {
         'profile_form': profile_form,
+        'password_form': password_form,
         'account_form': account_form,
         'category_form': category_form,
         'accounts': accounts,

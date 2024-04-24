@@ -4,6 +4,12 @@
     }
 }
 
+.d-flex {
+    display: flex;
+    gap: 20px; /* Optional: adds space between cards */
+}
+
+
 body {
     font-family: 'Arial', sans-serif;
     background-color: #E8F5E9; /* Lighter shade of sage green */
@@ -109,4 +115,10 @@ form .form-control {
 .highlight {
     background-color: yellow;  /* Or any color that fits your design */
     font-weight: bold;
+}
+
+.card-custom-bg {
+    flex-grow: 1; /* Makes each card grow to fill the space equally */
+    background-color: #f0f8ff; /* Alice blue, very light and soothing */
+    border-color: #dee2e6; /* Slightly darker border for some contrast */
 }
