@@ -27,48 +27,19 @@
                 <button type="submit" name="submit_email" class="btn btn-primary form-button">Update Email</button>
             </form>
             <p></p>
-            <!-- Account Creation Form -->
-            <h3>Create New Account</h3>
-            <form method="post" action="{% url 'profile' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="{{ account_form.account_name.id_for_label }}">Account Name:</label>
-                    {{ account_form.account_name }}
-                    {{ account_form.account_name.errors }}
-                </div>
-                <div class="form-group">
-                    <label for="{{ account_form.purpose.id_for_label }}">Purpose:</label>
-                    {{ account_form.purpose }}
-                    {{ account_form.purpose.errors }}
-                </div>
-                <button type="submit" name="submit_account" class="btn btn-primary form-button">Add Account</button>
-            </form>
-            <p></p>
-            <!-- Category Creation Form -->
-            <h3>Create New Category</h3>
-            <form method="post" action="{% url 'profile' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="{{ category_form.category_name.id_for_label }}">Category Name:</label>
-                    {{ category_form.category_name }}
-                    {{ category_form.category_name.errors }}
-                </div>
-                <div class="form-group">
-                    <label for="{{ category_form.transaction_type.id_for_label }}">Transaction Type:</label>
-                    {{ category_form.transaction_type }}
-                    {{ category_form.transaction_type.errors }}
-                </div>
-                <button type="submit" name="submit_category" class="btn btn-primary form-button">Add Category</button>
-            </form>
-            <p></p>
-            <p></p>
         </div>
-
         <!-- Right Column for Lists -->
         <div class="col-md-6">
             <!-- Display Existing Accounts -->
-            <!-- Link to the accounts management page -->
-            <h3><a href="{% url 'accounts' %}" class="h3-link">Your Accounts</a></h3>
+            <div class="mb-3">
+                <h3>Manage Your Data</h3>
+                <button onclick="location.href='{% url 'accounts' %}'" type="button" class="btn btn-primary mb-2">
+                    Manage Accounts
+                </button>
+                <button onclick="location.href='{% url 'categories' %}'" type="button" class="btn btn-secondary mb-2">
+                    View Categories
+                </button>
+            </div>
             <ul>
                 {% for account in accounts %}
                 <li>{{ account.account_name }} - {{ account.purpose }}</li>
@@ -78,7 +49,6 @@
             </ul>
 
             <!-- Display Existing Categories -->
-            <h3><a href="{% url 'categories' %}" class="h3-link">Your Categories</a></h3>
             <ul>
                 {% for category in categories %}
                 <li>{{ category.category_name }} - {{ category.transaction_type }}</li>
@@ -90,3 +60,4 @@
     </div>
 </div>
 {% endblock %}
+

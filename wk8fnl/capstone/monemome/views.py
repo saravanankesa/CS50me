@@ -75,20 +75,21 @@ def profile_view(request):
     accounts = Account.objects.filter(user=user)
     categories = Category.objects.filter(user=user)
 
-    # Initialize forms
-    profile_form = ProfileUpdateForm(instance=user)
+    # Initialize forms without pre-filling email
+    if request.method == 'GET':
+        profile_form = ProfileUpdateForm()  # No instance passed, no email pre-fill
+    else:
+        profile_form = ProfileUpdateForm(request.POST, instance=user)
+        if 'submit_email' in request.POST and profile_form.is_valid():
+            profile_form.save()
+            messages.success(request, 'Your profile was updated successfully.')
+            return redirect('profile')  # Redirect to clear the form
+
     account_form = AccountForm()
     category_form = CategoryForm()
 
     if request.method == 'POST':
-        if 'submit_email' in request.POST:
-            profile_form = ProfileUpdateForm(request.POST, instance=request.user)
-            if profile_form.is_valid():
-                profile_form.save()
-                messages.success(request, 'Your profile was updated successfully.')
-                return redirect('profile')  # Redirect to clear the form
-
-        elif 'submit_account' in request.POST:
+        if 'submit_account' in request.POST:
             account_form = AccountForm(request.POST)
             if account_form.is_valid():
                 new_account = account_form.save(commit=False)
@@ -105,9 +106,6 @@ def profile_view(request):
                 new_category.save()
                 messages.success(request, 'Category added successfully.')
                 return redirect('profile')  # Redirect to clear the form
-
-        else:
-            profile_form = ProfileUpdateForm(instance=request.user, initial={'email': None}) 
 
     context = {
         'profile_form': profile_form,
@@ -241,7 +239,7 @@ def delete_category(request, id):
 def list_transactions(request):
     logger = logging.getLogger(__name__)
     sort = request.GET.get('sort', 'date')
-    order = request.GET.get('order', 'asc')
+    order = request.GET.get('order', 'desc')
 
     # Constructing the sort key dynamically based on user selection
     sort_key = f"{'-' if order == 'desc' else ''}{sort}"
