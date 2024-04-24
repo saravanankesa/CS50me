@@ -26,7 +26,6 @@ urlpatterns = [
     path('transactions/pre-auth/', views.pre_auth_payments, name='pre_auth_payments'),
     path('transactions/recurring/', views.recurring_incomes, name='recurring_incomes'),
     path('api/categories/<str:transaction_type>/', views.categories_by_type, name='categories_by_type'),
-    path('accounts/list', views.accounts_view, name='list_accounts'), 
     path('accounts/balances/', views.account_balances, name='account_balances'),
     path('dismiss-warning/', views.dismiss_warning, name='dismiss_warning'),
 ]

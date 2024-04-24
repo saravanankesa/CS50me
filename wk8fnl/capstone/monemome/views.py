@@ -121,7 +121,12 @@ def profile_view(request):
 def accounts_view(request):
     user = request.user
     accounts = Account.objects.filter(user=user)
-    return render(request, 'monemome/accounts.html', {'accounts': accounts})
+    # Fetching the balances along with the accounts
+    accounts_with_balances = [(account, account.calculate_balance()) for account in accounts]
+    # Debugging print
+    for account, balance in accounts_with_balances:
+        print(account.id, balance)  # This should print all account IDs and their balances
+    return render(request, 'monemome/accounts.html', {'accounts_with_balances': accounts_with_balances})
 
 @login_required
 def edit_account(request, id):
