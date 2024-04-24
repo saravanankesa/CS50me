@@ -16,6 +16,8 @@ from .decorators import upcoming_payments_decorator
 from datetime import datetime, timedelta
 import logging
 
+logger = logging.getLogger(__name__)
+
 def register(request):
         if request.method == 'POST':
             user_form = UserCreationForm(request.POST)
@@ -127,6 +129,25 @@ def accounts_view(request):
     for account, balance in accounts_with_balances:
         print(account.id, balance)  # This should print all account IDs and their balances
     return render(request, 'monemome/accounts.html', {'accounts_with_balances': accounts_with_balances})
+
+@login_required
+def add_account(request):
+    if request.method == 'POST':
+        form = AccountForm(request.POST)
+        if form.is_valid():
+            account = form.save(commit=False)
+            account.user = request.user
+            account.save()
+            messages.success(request, 'Account added successfully.')
+            return redirect('accounts')
+        else:
+            logger.error("Form errors: %s", form.errors)
+            messages.error(request, 'Please correct the errors below.')
+            return render(request, 'monemome/accounts.html', {'form': form})
+    else:
+        form = AccountForm()
+        return render(request, 'monemome/accounts.html', {'form': form})
+
 
 @login_required
 def edit_account(request, id):
