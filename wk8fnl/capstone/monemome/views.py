@@ -241,25 +241,19 @@ def delete_category(request, id):
 def list_transactions(request):
     logger = logging.getLogger(__name__)
     sort = request.GET.get('sort', 'date')
-    order = request.GET.get('order', 'desc')
-    sort_key = f"{'' if order == 'asc' else '-'}{sort}"
-    logger.debug(f'Sorting by {sort} in {order} order')
+    order = request.GET.get('order', 'asc')
 
-    # Debugging
-    print("Headers Received:", request.headers.get('X-Requested-With'))
+    # Constructing the sort key dynamically based on user selection
+    sort_key = f"{'-' if order == 'desc' else ''}{sort}"
 
-    # Fetch the transactions according to the specified order
+    # Fetch the transactions according to the specified order and sort
     transactions = Transaction.objects.filter(user=request.user).order_by(sort_key)
 
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        logger.debug('Handling AJAX request')
-        # Render only the transaction table part for AJAX requests
-        html = render_to_string('monemome/partials/transaction_table.html', {'transactions': transactions}, request=request)
-        return HttpResponse(html)
-    
-    else:
-        logger.debug('Handling full page request')
-        return render(request, 'monemome/transactions.html', {'transactions': transactions})
+    # Log the sorted output for debugging
+    for transaction in transactions:
+        logger.info(f"Transaction ID: {transaction.id}, Date: {transaction.date}, Amount: {transaction.amount}")
+
+    return render(request, 'monemome/transactions.html', {'transactions': transactions})
 
 @login_required
 def add_transaction(request):
@@ -339,11 +333,6 @@ def recurring_incomes(request):
     # Assuming there is a boolean field 'is_recurring' in the Transaction model that indicates recurring incomes
     recurring_transactions = Transaction.objects.filter(user=request.user, is_recurring=True, transaction_type='Income')
     return render(request, 'monemome/recurring_incomes.html', {'transactions': recurring_transactions})
-
-@login_required
-def transactions_view(request):
-    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
-    return render(request, 'monemome/transactions.html', {'transactions': transactions})
 
 @require_POST
 def dismiss_warning(request):

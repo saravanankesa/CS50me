@@ -11,30 +11,10 @@
         </div>
     </div>
     <p></p>
-    <!-- Sorting form -->
-    <form method="get" class="sorting-form mb-3">
-        <div class="row align-items-end">
-            <div class="col-auto">
-                <label for="sort" class="form-label">Sort by:</label>
-                <select name="sort" id="sort" class="form-select">
-                    <option value="date">Date</option>
-                    <option value="account">Account</option>
-                    <option value="category">Category</option>
-                    <option value="transaction_type">Transaction Type</option>
-                </select>
-            </div>
-            <div class="col-auto">
-                <label for="order" class="form-label">Order:</label>
-                <select name="order" id="order" class="form-select">
-                    <option value="desc">Descending</option>
-                    <option value="asc">Ascending</option>
-                </select>
-            </div>
-        </div>
-    </form>
-    <p></p>
     <!-- Transaction listing view -->
-    <h2>Transactions</h2>
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Manage Transactions</h2></p>
+    </div>
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-danger" role="alert">
@@ -42,44 +22,86 @@
             </div>
         {% endfor %}
     {% endif %}
-    <div id="transaction-list">
-        {% include 'monemome/partials/transaction_table.html' %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <a href="?sort={% if request.GET.sort == 'date' and request.GET.order == 'asc' %}date&order=desc{% else %}date&order=asc{% endif %}">
+                        Date {% if request.GET.sort == 'date' and request.GET.order == 'asc' %}▲{% elif request.GET.sort == 'date' and request.GET.order == 'desc' %}▼{% endif %}
+                    </a>
+                </th>
+                <th>
+                    <a href="?sort={% if request.GET.sort == 'transaction_name' and request.GET.order == 'asc' %}transaction_name&order=desc{% else %}transaction_name&order=asc{% endif %}">
+                        Name {% if request.GET.sort == 'transaction_name' and request.GET.order == 'asc' %}▲{% elif request.GET.sort == 'transaction_name' and request.GET.order == 'desc' %}▼{% endif %}
+                    </a>
+                </th>
+                <th>
+                    <a href="?sort={% if request.GET.sort == 'account' and request.GET.order == 'asc' %}account&order=desc{% else %}account&order=asc{% endif %}">
+                        Account {% if request.GET.sort == 'account' and request.GET.order == 'asc' %}▲{% elif request.GET.sort == 'account' and request.GET.order == 'desc' %}▼{% endif %}
+                    </a>
+                </th>
+                <th>
+                    <a href="?sort={% if request.GET.sort == 'category' and request.GET.order == 'asc' %}category&order=desc{% else %}category&order=asc{% endif %}">
+                        Category {% if request.GET.sort == 'category' and request.GET.order == 'asc' %}▲{% elif request.GET.sort == 'category' and request.GET.order == 'desc' %}▼{% endif %}
+                    </a>
+                </th>
+                <th>
+                    <a href="?sort={% if request.GET.sort == 'transaction_type' and request.GET.order == 'asc' %}transaction_type&order=desc{% else %}transaction_type&order=asc{% endif %}">
+                        Transaction Type {% if request.GET.sort == 'transaction_type' and request.GET.order == 'asc' %}▲{% elif request.GET.sort == 'transaction_type' and request.GET.order == 'desc' %}▼{% endif %}
+                    </a>
+                </th>
+                <th>
+                    <a href="?sort={% if request.GET.sort == 'amount' and request.GET.order == 'asc' %}amount&order=desc{% else %}amount&order=asc{% endif %}">
+                        Amount {% if request.GET.sort == 'amount' and request.GET.order == 'asc' %}▲{% elif request.GET.sort == 'amount' and request.GET.order == 'desc' %}▼{% endif %}
+                    </a>
+                </th>
+                <th>Actions</th>
+            </tr>            
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.transaction_name }}</td>
+                <td>{{ transaction.account.account_name }}</td>
+                <td>{{ transaction.category.category_name }}</td>
+                <td>{{ transaction.transaction_type }}</td>
+                <td>{{ transaction.amount }}</td>
+                <td>
+                    <a href="{% url 'edit_transaction' transaction.id %}" class="btn btn-primary">Edit</a>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ transaction.id }}">Delete</button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No transactions found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Delete Transaction Modal -->
+    {% for transaction in transactions %}
+    <div class="modal fade" id="deleteModal{{ transaction.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ transaction.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ transaction.id }}">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this transaction? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <form method="post" action="{% url 'delete_transaction' transaction.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-</div>   
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const sortSelect = document.getElementById('sort');
-    const orderSelect = document.getElementById('order');
-
-    // Function to update transactions based on the selected sort and order
-    function updateTransactions() {
-        const sort = sortSelect.value;
-        const order = orderSelect.value;
-
-        fetch(`/transactions/list/?sort=${sort}&order=${order}`, {
-            method: 'GET',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('transaction-list').innerHTML = html;
-        })
-        .catch(error => console.error('Error loading the transactions:', error));
-    }
-
-    // Attach event listeners to sort and order select elements
-    sortSelect.addEventListener('change', function(event) {
-        event.preventDefault(); // Prevent form submission
-        updateTransactions();
-    });
-
-    orderSelect.addEventListener('change', function(event) {
-        event.preventDefault(); // Prevent form submission
-        updateTransactions();
-    });
-});
-
-</script>
+    {% endfor %}
+</div>
 {% endblock %}
