@@ -27,6 +27,13 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const pTags = document.querySelectorAll('#form-container p');
+    var categorySelect = document.querySelector('select[name="category"]');
+    if (categorySelect) {
+        var errorParagraph = document.createElement('p');
+        errorParagraph.id = 'category-error';
+        errorParagraph.className = 'text-danger';
+        categorySelect.parentNode.insertBefore(errorParagraph, categorySelect.nextSibling);
+    }
     pTags.forEach(p => {
         const div = document.createElement('div');
         div.innerHTML = p.innerHTML;
@@ -95,17 +102,29 @@ function updateFormFields() {
 
 function loadCategories(transactionType) {
     fetch(`/api/categories/${transactionType}/`)  
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             const categorySelect = document.querySelector('#id_category');
             categorySelect.innerHTML = '';
-            data.forEach(cat => {
-                const option = new Option(cat.category_name, cat.id);
-                categorySelect.append(option);
-            });
+            if (data.length === 0) {
+                categorySelect.innerHTML = '<option>No categories available</option>';
+            } else {
+                data.forEach(cat => {
+                    const option = new Option(cat.category_name, cat.id);
+                    categorySelect.append(option);
+                });
+            }
             categorySelect.style.display = 'block';
         })
-        .catch(error => console.error('Error loading categories:', error));
+        .catch(error => {
+            console.error('Error loading categories:', error);
+            document.querySelector('#category-error').textContent = 'Failed to load categories. Please try again.';
+        });
 }
 </script>
     

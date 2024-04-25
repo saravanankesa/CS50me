@@ -215,7 +215,7 @@ def categories_view(request):
 @login_required
 def categories_by_type(request, transaction_type):
     # Filter categories by the transaction type
-    categories = Category.objects.filter(transaction_type=transaction_type).values('id', 'category_name')
+    categories = Category.objects.filter(user=request.user, transaction_type=transaction_type).values('id', 'category_name')
     return JsonResponse(list(categories), safe=False)
 
 @login_required
@@ -274,25 +274,23 @@ def list_transactions(request):
 
 @login_required
 def add_transaction(request):
+    # Ensure categories exist for the user
+    user_categories = Category.objects.filter(user=request.user)
+    if not user_categories.exists():
+        messages.error(request, 'No categories currently exist. Please create a category.')
+        return redirect('categories')  # Assuming 'categories' is the name of the URL to add categories
+
     if request.method == 'POST':
-        print(request.POST)  # Check what data is being submitted
         form = TransactionForm(request.POST, user=request.user)
-        # Dynamically set the queryset for categories based on transaction type
         if 'transaction_type' in request.POST:
             transaction_type = request.POST['transaction_type']
-            # Ensure it's a valid type
-            if transaction_type not in [choice[0] for choice in Transaction.TRANSACTION_TYPES]:
+            # Validate transaction type and filter categories accordingly
+            if transaction_type in [choice[0] for choice in Transaction.TRANSACTION_TYPES]:
+                form.fields['category'].queryset = user_categories.filter(transaction_type=transaction_type)
+            else:
                 messages.error(request, 'Invalid transaction type selected.')
-                form = TransactionForm(request.POST, user=request.user)
                 return render(request, 'monemome/add_transaction.html', {'form': form})
-        else:
-            messages.error(request, 'Transaction type is required.')
-            form = TransactionForm(request.POST, user=request.user)
-            return render(request, 'monemome/add_transaction.html', {'form': form})
-
-        form.fields['category'].queryset = Category.objects.filter(transaction_type=transaction_type)
-
-
+        
         if form.is_valid():
             new_transaction = form.save(commit=False)
             new_transaction.user = request.user
@@ -303,6 +301,8 @@ def add_transaction(request):
             messages.error(request, 'Please correct the errors below.')
     else:
         form = TransactionForm(user=request.user)
+        form.fields['category'].queryset = user_categories  # Set initial queryset for GET requests
+
     return render(request, 'monemome/add_transaction.html', {'form': form})
 
 @login_required
