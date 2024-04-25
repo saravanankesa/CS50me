@@ -89,9 +89,18 @@ def index(request):
     expense_data = [{'name': cat.category_name, 'value': cat.total_amount} for cat in expense_categories if cat.total_amount]
     income_data = [{'name': cat.category_name, 'value': cat.total_amount} for cat in income_categories if cat.total_amount]
 
+    today = datetime.now().date()
+    future = today + timedelta(days=30)  # Consider pre-auth payments within the next 30 days
+    upcoming_payments = Transaction.objects.filter(
+        user=request.user,
+        is_pre_auth=True,
+        date__range=(today, future)
+    ).order_by('date')[:3]  # Get the first 3 upcoming payments
+
     context = {
         'expense_data': expense_data,
         'income_data': income_data,
+        'upcoming_payments': upcoming_payments,
     }
     return render(request, 'monemome/index.html', context)
 

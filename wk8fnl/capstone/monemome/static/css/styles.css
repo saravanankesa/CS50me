@@ -168,3 +168,16 @@ form .form-control {
     font-size: 0.92rem; /* Adjust size as needed */
 }
 
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px; /* Optional, for slightly rounded corners */
+}
+
+.card-header {
+    background-color: #f8f9fa; /* Light grey header */
+    font-weight: bold;
+}
+
+.list-group-item {
+    border: none; /* Remove borders within the list for a cleaner look */
+}

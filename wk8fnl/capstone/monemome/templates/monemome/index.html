@@ -19,9 +19,20 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <!-- You can add other content or additional information here -->
-                <p>Other details or links can be placed here, or more insights related to the data.</p>
-                <h4>COMING SOON!</h4>
+                <div class="card-header">
+                    Upcoming Pre-Auth Payments
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for payment in upcoming_payments %}
+                            <li class="list-group-item">
+                                {{ payment.transaction_name }} - ${{ payment.amount }} - Due: {{ payment.date|date:"M d, Y" }}
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">No upcoming payments.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
         {{ expense_data|json_script:"expense-data" }}
