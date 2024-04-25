@@ -277,11 +277,13 @@ def add_transaction(request):
     # Ensure categories exist for the user
     user_categories = Category.objects.filter(user=request.user)
     if not user_categories.exists():
-        messages.error(request, 'No categories currently exist. Please create a category.')
-        return redirect('categories')  # Assuming 'categories' is the name of the URL to add categories
+        messages.error(request, 'No categories currently exist. Please <a href="/categories/">create a category</a> to continue with adding transactions.', extra_tags='safe')
+        return redirect('add_transaction')  # Redirect back to add transaction to show the message
 
     if request.method == 'POST':
         form = TransactionForm(request.POST, user=request.user)
+        form.fields['category'].queryset = user_categories
+
         if 'transaction_type' in request.POST:
             transaction_type = request.POST['transaction_type']
             # Validate transaction type and filter categories accordingly
@@ -298,6 +300,8 @@ def add_transaction(request):
             messages.success(request, 'Transaction added successfully.')
             return redirect('list_transactions')
         else:
+            if 'category' in form.errors:
+                messages.error(request, 'Please ensure a valid category is selected. If no categories are available, please <a href="/categories/">create a category</a>.', extra_tags='safe')
             messages.error(request, 'Please correct the errors below.')
     else:
         form = TransactionForm(user=request.user)

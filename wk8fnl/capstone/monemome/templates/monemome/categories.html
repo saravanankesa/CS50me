@@ -5,14 +5,22 @@
     <div class="d-flex justify-content-between align-items-center">
         <p><h2>Manage Categories</h2></p>
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add New Category</button>
+        <a href="{% url 'add_transaction' %}" class="btn btn-primary">Add a Transaction</a>
     </div>
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-danger" role="alert">
-                {{ message }}
+                {{ message|safe }}
             </div>
         {% endfor %}
     {% endif %}
+
+    <!-- Instruction message for users redirected here because no categories exist -->
+    {% if not categories.exists %}
+        <p class="alert alert-warning">No categories currently exist. Please <a href="{% url 'add_category' %}" class="alert-link">create a category</a> to continue with adding transactions.</p>
+    {% endif %}
+
+
     <table class="table">
         <thead>
             <tr>
