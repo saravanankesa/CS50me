@@ -72,14 +72,32 @@ def index(request):
     # Log the session status
     dismissed = request.session.get('warning_dismissed', False)
     print("Warning dismissed status:", dismissed)
-    # You can add context data to pass to the index template if needed.
+    
+    # Aggregate Expense categories
+    expense_categories = Category.objects.filter(
+        user=request.user, 
+        transaction_type='Expense'
+    ).annotate(total_amount=Sum('transactions__amount'))
+
+    # Aggregate Income categories
+    income_categories = Category.objects.filter(
+        user=request.user, 
+        transaction_type='Income'
+    ).annotate(total_amount=Sum('transactions__amount'))
+
+    # Convert to a format that can be easily used in JavaScript
+    expense_data = [{'name': cat.category_name, 'value': cat.total_amount} for cat in expense_categories if cat.total_amount]
+    income_data = [{'name': cat.category_name, 'value': cat.total_amount} for cat in income_categories if cat.total_amount]
+
     context = {
-        'message': 'Welcome to MonE-MomE! Your personal financial tracking tool.',
+        'expense_data': expense_data,
+        'income_data': income_data,
     }
     return render(request, 'monemome/index.html', context)
 
 
 @login_required
+@upcoming_payments_decorator
 def profile_view(request):
     user = request.user
     accounts = Account.objects.filter(user=user)
@@ -217,7 +235,7 @@ def categories_view(request):
         sort_by = 'category_name'  # Fallback to default if an invalid sort field is provided
 
     # Fetch categories for the logged-in user and annotate each with the sum of transaction amounts
-    categories = Category.objects.filter(user=user).annotate(total_amount=Sum('transaction__amount'))
+    categories = Category.objects.filter(user=user).annotate(total_amount=Sum('transactions__amount'))
     categories = categories.order_by(sort_by)
     
     return render(request, 'monemome/categories.html', {'categories': categories})
