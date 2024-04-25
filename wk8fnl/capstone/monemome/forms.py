@@ -1,6 +1,21 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Account, Category, Transaction
+
+class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True, help_text="Enter your email address")
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = UserCreationForm.Meta.fields + ('email',)
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data["email"]
+        if commit:
+            user.save()
+        return user
 
 class ProfileUpdateForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={
@@ -23,9 +38,13 @@ class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
         fields = ['account_name', 'purpose']
+        help_texts = {
+            'account_name': 'Enter a name for your account',
+            'purpose': 'What is the purpose of this account?'
+        }
         widgets = {
-            'account_name': forms.TextInput(attrs={'class': 'form-control', 'id': 'account_name', 'style': 'width: 40%;'}),
-            'purpose': forms.Textarea(attrs={'class': 'form-control', 'rows': 1})
+            'account_name': forms.TextInput(attrs={'class': 'form-control', 'id': 'account_name', 'style': 'width: 40%;', 'title': 'Enter a name, e.g. Chequing, Main.', 'data-bs-toggle': 'tooltip'}),
+            'purpose': forms.Textarea(attrs={'class': 'form-control', 'rows': 1, 'title': 'Describe the purpose of this account... Purposes will possess a purpose when future app developments occur.', 'data-bs-toggle': 'tooltip'}),
         }
 
 class CategoryForm(forms.ModelForm):
@@ -38,12 +57,13 @@ class CategoryForm(forms.ModelForm):
             'value_score': 'Value Score',
         }
         help_texts = {
-            'value_score': 'Select a value score from 1 (Low) to 5 (High) based on the importance of this category.'
+            'category_name': 'Create a category name for your transactions to keep track of them',
+            'value_score': 'Select a value score based on the importance of this category to you',
         }
         widgets = {
-            'category_name': forms.TextInput(attrs={'class': 'form-control', 'id': 'account'}),
-            'transaction_type': forms.Select(choices=Category.TRANSACTION_TYPES, attrs={'class': 'form-control', 'placeholder': 'Select one'}),
-            'value_score': forms.Select(attrs={'class': 'form-control'}),
+            'category_name': forms.TextInput(attrs={'class': 'form-control', 'id': 'account', 'title': 'Enter a name for your category, e.g. groceries, fixed income', 'data-bs-toggle': 'tooltip'}),
+            'transaction_type': forms.Select(choices=Category.TRANSACTION_TYPES, attrs={'class': 'form-control', 'placeholder': 'Select one', 'title': 'Select the type of transactions this category will represent.', 'data-bs-toggle': 'tooltip'}),
+            'value_score': forms.Select(attrs={'class': 'form-control', 'title': 'Rate the importance of tracking this category from 1 (Low) to 5 (High).', 'data-bs-toggle': 'tooltip'}),
         }
     def __init__(self, *args, **kwargs):
         super(CategoryForm, self).__init__(*args, **kwargs)
@@ -70,6 +90,13 @@ class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
         fields = ['transaction_type', 'account', 'transaction_name', 'category', 'amount', 'date', 'is_pre_auth', 'is_recurring']
+        help_texts = {
+            'account': 'Select the account this transaction is for',
+            'transaction_name': 'Create a name to remember this transaction, e.g. business name, bill payee',
+            'category': 'Select the category this transaction belongs in',
+            'is_pre_auth': 'Is this a pre-authorized payment?',
+            'is_recurring': 'Is this a recurring payment?',
+        }
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
             'transaction_type': forms.RadioSelect,

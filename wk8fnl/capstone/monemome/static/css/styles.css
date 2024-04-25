@@ -122,3 +122,9 @@ form .form-control {
     background-color: #f0f8ff; /* Alice blue, very light and soothing */
     border-color: #dee2e6; /* Slightly darker border for some contrast */
 }
+
+.helptext {
+    color: #C0604D; /* A darker shade of terra cotta */
+    font-size: 0.92rem; /* Adjust size as needed */
+}
+

@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ProfileUpdateForm, AccountForm, CategoryForm, TransactionForm
+from .forms import ProfileUpdateForm, AccountForm, CategoryForm, TransactionForm, CustomUserCreationForm
 from .models import Account, Category, Transaction
 from .decorators import upcoming_payments_decorator
 from datetime import datetime, timedelta
@@ -19,26 +19,36 @@ import logging
 logger = logging.getLogger(__name__)
 
 def register(request):
-        if request.method == 'POST':
-            user_form = UserCreationForm(request.POST)
-            account_form = AccountForm(request.POST)
-            if user_form.is_valid() and account_form.is_valid():
-                user = user_form.save()
-                # Now create an account linked to this user
-                account = account_form.save(commit=False)
-                account.user = user
-                account.save()
-                login(request, user)
-                return redirect('index')
-            else:
-                messages.error(request, 'Please correct the errors below.')
+    if request.method == 'POST':
+        user_form = CustomUserCreationForm(request.POST)
+        account_form = AccountForm(request.POST)
+        category_form = CategoryForm(request.POST)
+        
+        if user_form.is_valid() and account_form.is_valid() and category_form.is_valid():
+            user = user_form.save()
+            account = account_form.save(commit=False)
+            account.user = user
+            account.save()
+            
+            category = category_form.save(commit=False)
+            category.user = user
+            category.save()
+
+            login(request, user)
+            return redirect('index')
         else:
-            user_form = UserCreationForm()
-            account_form = AccountForm()
-        return render(request, 'monemome/register.html', {
-            'user_form': user_form,
-            'account_form': account_form
-        })
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        user_form = CustomUserCreationForm()
+        account_form = AccountForm()
+        category_form = CategoryForm()
+
+    return render(request, 'monemome/register.html', {
+        'user_form': user_form,
+        'account_form': account_form,
+        'category_form': category_form
+    })
+
 
 
 @never_cache
@@ -341,7 +351,12 @@ def delete_transaction(request, id):
 def pre_auth_payments(request):
     today = datetime.now().date()
     threshold_date = today + timedelta(days=5)
-    transactions = Transaction.objects.filter(user=request.user, is_pre_auth=True, transaction_type='Expense')
+    transactions = Transaction.objects.filter(
+        user=request.user,
+        is_pre_auth=True,
+        transaction_type='Expense',
+        date__lte=threshold_date
+    ).order_by('-date')
     
     # Enhance transactions with 'due_soon' flag
     for transaction in transactions:
