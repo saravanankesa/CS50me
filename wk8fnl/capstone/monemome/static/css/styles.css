@@ -38,7 +38,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
     font-family: 'Arial', sans-serif;
-    background-color: #E8F5E9; /* Lighter shade of sage green */
+    background-color: #bbe7bf; /* Lighter shade of sage green */
 }
 
 html, body {
@@ -74,8 +74,11 @@ footer {
     bottom: 0px;
     width: 100%;
     height: 60px; 
-    background-color: #C8E6C9; /* Darker shade of sage green */
-    color: #40755E; /* Darker shade of green for better readability */
+    background-color: #80c982; /* Darker shade of sage green */
+    color: #0e3821; /* Darker shade of green for better readability */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .chart-container {
@@ -84,6 +87,10 @@ footer {
     margin: 20px; /* Center it horizontally with some margin at the top */
     margin-bottom: 400px;
     position: relative;
+}
+
+.chart-spacing {
+    height: 40px;
 }
 
 canvas {
@@ -97,6 +104,10 @@ canvas {
     display: flex;
     justify-content: center;
     align-items: center;  
+}
+
+.header-link {
+    color: #0e3821;
 }
 
 .centered-content {
@@ -115,19 +126,19 @@ canvas {
 }
 
 .navbar {
-    background-color: #C8E6C9; /* Darker shade of sage green */
+    background-color: #80c982; /* Darker shade of sage green */
 }
 
 .navbar-brand, .nav-link {
-    color: #40755E !important; /* Darker shade of green for better readability */
+    color: #0e3821 !important; /* Darker shade of green for better readability */
 }
 
 .navbar-toggler {
     padding: 0.25rem 0.75rem;
     font-size: 1.25rem;
-    color: #FF8A65;
+    color: #fc5827;
     line-height: 1;
-    background-color: #FFAB91;
+    background-color: #f1935c;
     border: 1px;
     border-radius: 0.25rem;
     transition: box-shadow .15s ease-in-out;
@@ -209,16 +220,15 @@ form .form-control {
 
 .card-header {
     width: 30vw; /* Set or adjust the width as needed */
-    padding: 20px;
+    padding: 10px;
     border-radius: 20px; /* Optional, for slightly rounded corners */
-    background-color: #FF7F50; 
+    background-color: #ecbe78; 
     font-weight: bold;
 }
 
 .card-body {
     padding-left: 20px;
     width: 30vw; 
-    background-color: #faad81;
 }
 
 .div-card {
@@ -239,11 +249,13 @@ form .form-control {
     justify-content: center; /* Centers content horizontally */
     align-items: center; /* Centers content vertically */
     text-align: center; /* Ensures text within these elements is centered */
+    border: 1px solid #94453d;
+    border-radius: 8px;
 }
 
 .list-group-item {
-    width: 25vw; 
-    background-color: #a0daa2;
+    width: 30vw; 
+    background-color: #f5c66f;
     justify-content: center;
     align-items: center;
 }

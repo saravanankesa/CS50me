@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="container">
-        <h1>Welcome to MonE-MomE</h1>
+        <h1>Welcome, {{ user.username }}!</h1>
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -15,12 +15,13 @@
             <div class="col-md-5">
                 <div class="chart-container">
                     <canvas id="expenseChart"></canvas>
+                    <div class="chart-spacing"></div>
                     <canvas id="incomeChart"></canvas>
                 </div>
             </div>
             <div class="col-md-5">
                 <div class="card-header">
-                    Upcoming Pre-Auth Payments
+                    <a href="{% url 'pre_auth_payments' %}" class="header-link">Upcoming Pre-Auth Payments</a>
                 </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
@@ -35,13 +36,13 @@
                 </div>
                 <div class="div-card-spacing"></div>
                 <div class="card-header">
-                    Account Balances
+                    <a href="{% url 'accounts' %}" class="header-link">Account Balances</a>
                 </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
                         {% for account in accounts %}
                         <li class="list-group-item">
-                            {{ account.name }} - ${{ account.total_balance }}
+                            {{ account.account_name }} - ${{ account.total_balance|floatformat:2 }}
                         </li>
                         {% empty %}
                         <li class="list-group-item">No accounts found.</li>
@@ -66,7 +67,7 @@
                     datasets: [{
                         label: 'Expense Breakdown',
                         data: expenseData.map(data => data.value),
-                        backgroundColor: ['#e6a19f', '#d38377', '#bc6f66'], // Define colors
+                        backgroundColor: ['#FFB280', '#FF7043', '#FF8966', '#FF6347', '#D85F52'], // Define colors
                         borderColor: '#94453d',  // Define border colors
                         borderWidth: 1
                     }]
@@ -95,8 +96,8 @@
                     datasets: [{
                         label: 'Income Breakdown',
                         data: incomeData.map(data => data.value),
-                        backgroundColor: ['#b2c2bf', '#8da9a0', '#748c87'], // Define colors
-                        borderColor: '#5c6f6b',  // Define border colors
+                        backgroundColor: ['#FFCC99', '#FF6600', '#FF7F50', '#FF4500', '#CC5500'], // Define colors
+                        borderColor: '#94453d',  // Define border colors
                         borderWidth: 1
                     }]
                 },
