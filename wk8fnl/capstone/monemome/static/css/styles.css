@@ -41,7 +41,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
     font-family: 'Arial', sans-serif;
-    background-color: #ceffdd; /* Lighter shade of sage green */
+    background-color: #dbf7e3; /* Lighter shade of sage green */
 }
 
 html, body {
@@ -62,7 +62,7 @@ main {
 
 .container {
     align-items: center;
-    padding: 20px;
+    padding: 5px;
     padding-bottom: 30px; /* Adjust this value as needed */
 }
 
@@ -164,10 +164,15 @@ h3 {
     padding-left: 1vw;
 }
 
-
-.navbar-brand, .nav-link {
+.nav-link {
     color: #0e3821; /* Darker shade of green for better readability */
+    background-color: #ecbd65; /* Existing background color */
+    display: inline-block; /* Align items in line and respect width and padding */
+    width: 100px; /* Set a uniform width for each link */
+    text-align: center; /* Center the text within each link */
+    padding: 10px 10px; /* Adjust padding to ensure sufficient space around text */
 }
+
 
 .navbar-toggler {
     padding: 0.5rem 0.8rem;

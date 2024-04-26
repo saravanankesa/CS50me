@@ -152,7 +152,11 @@
                 <div class="modal-footer">
                     <form method="post" action="{% url 'delete_category' category.id %}">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        {% if categories|length > 1 %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        {% else %}
+                            <button type="button" class="btn btn-danger" disabled>Last Category Cannot Be Deleted</button>
+                        {% endif %}
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     </form>
                 </div>
