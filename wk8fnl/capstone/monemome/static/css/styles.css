@@ -119,14 +119,14 @@ canvas {
 
 h1, h2, h3 {
     font-family: 'Tangerine', cursive; /* Change to your preferred font */
-    color: #fa5b2b; /* A darker shade of green for better readability */
+    color: #f87851; /* A darker shade of green for better readability */
     text-align: center; /* Center align titles */
     
     text-shadow: 
-        -1px -1px 0 #721a01,  
-         1px -1px 0 #721a01,
-        -1px  1px 0 #721a01,
-         1px  1px 0 #721a01;
+        -1px -1px 0 #b12803,  
+         1px -1px 0 #b12803,
+        -1px  1px 0 #b12803,
+         1px  1px 0 #b12803;
 }
 
 h1 {
@@ -184,16 +184,20 @@ h3 {
 }
 
 .btn-primary {
-    background-color: #f37227;
+    background-color: #fa6b19;
 }
 
 .btn-secondary {
-    background-color: rgb(248, 163, 65);
+    background-color: rgb(252, 154, 43);
+}
+
+.btn-subheader {
+    background-color: #f7a75d;
 }
 
 /* Styles for form labels */
 .form-label {
-    color: #40755E; /* Darker shade of green for better readability */
+    color: #2f5745; /* Darker shade of green for better readability */
 }
 
 .form-button {
@@ -208,12 +212,34 @@ h3 {
 
 /* Styles for table */
 .table {
-    color: #40755E; /* Darker shade of green for better readability */
+    color: #35614e; /* Darker shade of green for better readability */
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: #f3f7f3; /* Very light shade of green for striped rows */
 }
+
+/* Styles for text in table cells */
+.table td {
+    color: #2d5744; /* Darker shade of green for better readability */
+}
+
+.table th {
+    color: #c74d28;
+}
+
+/* Styles for hyperlinks in table headers */
+.table th a {
+    color: #c74d28; /* Terra cotta color for hyperlinks */
+    text-decoration: none; /* Optional: removes underline from links */
+}
+
+/* Hover effect for hyperlinks in table headers */
+.table th a:hover {
+    color: #f08a5d; /* Lighter terra cotta shade for hover effect */
+    text-decoration: underline; /* Optional: adds underline on hover */
+}
+
 
 /* Custom styles for the login button */
 #login-button {
