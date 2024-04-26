@@ -3,11 +3,11 @@
 {% block content %}
 <div class="container">
     <div class="row align-items-start"> 
-        <div class="col-md-6 d-flex flex-column"> 
+        <div class="col-md-5 d-flex flex-column"> 
             <h2>User Profile</h2>
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-success" role="alert">
+                    <div class="alert alert-success" role="alert d-flex">
                         {{ message }}
                     </div>
                 {% endfor %}
@@ -44,12 +44,12 @@
             <p></p>
         </div>
         <!-- Right Column for Data Management -->
-        <div class="col-md-6">
-            <div class="mb-3">
+        <div class="col-md-5">
+            <div class="mb-3 d-flex">
                 <h3>Manage Your Data</h3>
                 <div class="d-flex justify-content-between">
-                    <div class="card card-custom-bg">
-                        <div class="card-body">
+                    <div class="div-card card-custom-bg">
+                        <div class="div-card-body">
                           
                             <button onclick="location.href='{% url 'accounts' %}'" type="button" class="btn btn-primary mb-2">
                                 Manage Accounts
@@ -63,8 +63,8 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="card card-custom-bg">
-                        <div class="card-body">
+                    <div class="div-card card-custom-bg">
+                        <div class="div-card-body">
                            
                             <button onclick="location.href='{% url 'categories' %}'" type="button" class="btn btn-secondary mb-2">
                                 Manage Categories

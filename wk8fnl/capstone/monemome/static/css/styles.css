@@ -27,7 +27,9 @@
 
 .d-flex {
     display: flex;
+    padding-left: 50px;
     gap: 20px; /* Optional: adds space between cards */
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
 }
 
 
@@ -186,6 +188,7 @@ form .form-control {
 }
 
 .card-custom-bg {
+    min-width: 300px;
     flex-grow: 1; /* Makes each card grow to fill the space equally */
     background-color: #f0f8ff; /* Alice blue, very light and soothing */
     border-color: #dee2e6; /* Slightly darker border for some contrast */
@@ -215,6 +218,14 @@ form .form-control {
     padding-left: 20px;
     width: 30vw; 
     background-color: #faad81;
+}
+
+.div-card {
+    max-width: 50px;
+}
+
+.div-card-body {
+    max-width: 300px;
 }
 
 .card-header, .card-body {
