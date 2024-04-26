@@ -98,7 +98,10 @@ def index(request):
     ).order_by('date')[:3]  # Get the first 3 upcoming payments
     print(upcoming_payments)
 
+    accounts = Account.objects.filter(user=request.user).annotate(total_balance=Sum('transactions__amount'))
+
     context = {
+        'accounts': accounts,
         'expense_data': expense_data,
         'income_data': income_data,
         'upcoming_payments': upcoming_payments,

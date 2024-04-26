@@ -33,6 +33,21 @@
                         {% endfor %}
                     </ul>
                 </div>
+                <div class="div-card-spacing"></div>
+                <div class="card-header">
+                    Account Balances
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for account in accounts %}
+                        <li class="list-group-item">
+                            {{ account.name }} - ${{ account.total_balance }}
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item">No accounts found.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
         {{ expense_data|json_script:"expense-data" }}

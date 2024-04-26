@@ -20,7 +20,7 @@
         /* Ensure these elements don't exceed the column width */
         width: 100%;
         margin: 20px;
-        padding: 10px; /* Adjust padding as needed but keep it within the column width */
+        padding: 0px; /* Adjust padding as needed but keep it within the column width */
     }
 }
 
@@ -70,9 +70,10 @@ main {
 
 footer {
     position: fixed;
-    bottom: 0;
+    text-align: center;
+    bottom: 0px;
     width: 100%;
-    height: 50px; 
+    height: 60px; 
     background-color: #C8E6C9; /* Darker shade of sage green */
     color: #40755E; /* Darker shade of green for better readability */
 }
@@ -222,6 +223,10 @@ form .form-control {
 
 .div-card {
     max-width: 50px;
+}
+
+.div-card-spacing {
+    height: 40px;
 }
 
 .div-card-body {
