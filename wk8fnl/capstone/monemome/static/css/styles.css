@@ -2,6 +2,9 @@
     .navbar-nav {
         flex-direction: column !important; /* Force vertical stacking */
     }
+    .card-header, .card-body {
+        margin-right: 0px;
+    }
 }
 
 @media (max-width: 692px) { /* Adjusting for medium devices, change this as per your layout */
@@ -16,7 +19,7 @@
     .chart-container, .card-header, .card-body {
         /* Ensure these elements don't exceed the column width */
         width: 100%;
-        margin: 0; /* Remove any default margins */
+        margin: 20px; /* Remove any default margins */
         padding: 10px; /* Adjust padding as needed but keep it within the column width */
     }
 }
@@ -54,7 +57,13 @@ main {
 
 .container {
     align-items: center;
+    padding: 20px;
     padding-bottom: 30px; /* Adjust this value as needed */
+}
+
+.row {
+    margin-right: -255px;
+    margin-left: -55px;
 }
 
 footer {
