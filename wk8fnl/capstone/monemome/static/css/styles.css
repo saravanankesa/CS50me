@@ -1,8 +1,26 @@
-@media (max-width: 768px) {
+@media (max-width: 622px) {
     .navbar-nav {
         flex-direction: column !important; /* Force vertical stacking */
     }
 }
+
+@media (max-width: 692px) { /* Adjusting for medium devices, change this as per your layout */
+    .row > div {
+        flex: 0 0 100%; /* Ensures each column takes full width on smaller screens */
+        max-width: 100%; /* Prevents any overflow */
+    }
+}
+
+
+@media (min-width: 622px) {
+    .chart-container, .card-header, .card-body {
+        /* Ensure these elements don't exceed the column width */
+        width: 100%;
+        margin: 0; /* Remove any default margins */
+        padding: 10px; /* Adjust padding as needed but keep it within the column width */
+    }
+}
+
 
 .d-flex {
     display: flex;
@@ -18,7 +36,7 @@ body {
     background-color: #E8F5E9; /* Lighter shade of sage green */
 }
 
-body, html {
+html, body {
     height: 100%; /* Full height */
     margin: 0;
     padding: 0;
@@ -28,13 +46,14 @@ body, html {
 }
 
 main {
-    flex: 1;
+    flex: 1 0 auto;
     min-height: 100vh; /* Minimum height to take full viewport height */
     overflow-y: auto; /* Ensures that scrolling is enabled if content exceeds the viewport */
-    padding-bottom: 50px;
+    padding-bottom: 60px;
 }
 
 .container {
+    align-items: center;
     padding-bottom: 30px; /* Adjust this value as needed */
 }
 
@@ -169,15 +188,37 @@ form .form-control {
 }
 
 .card {
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border-radius: 8px; /* Optional, for slightly rounded corners */
+    width: 30px; /* Set or adjust the width as needed */
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 20px; /* Optional, for slightly rounded corners */
 }
 
 .card-header {
-    background-color: #f8f9fa; /* Light grey header */
+    width: 30vw; /* Set or adjust the width as needed */
+    padding: 20px;
+    border-radius: 20px; /* Optional, for slightly rounded corners */
+    background-color: #FF7F50; 
     font-weight: bold;
 }
 
+.card-body {
+    padding-left: 20px;
+    width: 30vw; 
+    background-color: #faad81;
+}
+
+.card-header, .card-body {
+    padding-right: 20px;
+    display: flex;
+    justify-content: center; /* Centers content horizontally */
+    align-items: center; /* Centers content vertically */
+    text-align: center; /* Ensures text within these elements is centered */
+}
+
 .list-group-item {
-    border: none; /* Remove borders within the list for a cleaner look */
+    width: 25vw; 
+    background-color: #a0daa2;
+    justify-content: center;
+    align-items: center;
 }
