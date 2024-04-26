@@ -183,6 +183,14 @@ h3 {
     background-color: #FF8A65; /* A darker shade of orange/beige for hover effect */
 }
 
+.btn-primary {
+    background-color: #f37227;
+}
+
+.btn-secondary {
+    background-color: rgb(248, 163, 65);
+}
+
 /* Styles for form labels */
 .form-label {
     color: #40755E; /* Darker shade of green for better readability */
