@@ -150,7 +150,7 @@ h3 {
 .navbar {
     padding: 5px;
     background-color: #8fce91; /* Darker shade of sage green */
-    height: 11vh; /* Set the desired width, e.g., 80% of its parent container */
+    height: 11vh; 
 }
 
 .navbar-title {
@@ -161,7 +161,7 @@ h3 {
     text-shadow: 1px 1px 2px rgba(51, 24, 16, 0.781); /* Adding drop shadow for depth */
     text-decoration: none; 
     padding-right: 4vw;
-    padding-left: 3vw;
+    padding-left: 1vw;
 }
 
 
@@ -170,7 +170,7 @@ h3 {
 }
 
 .navbar-toggler {
-    padding: 0.25rem 0.75rem;
+    padding: 0.5rem 0.8rem;
     font-size: 1.25rem;
     color: #fc5827;
     line-height: 1;
