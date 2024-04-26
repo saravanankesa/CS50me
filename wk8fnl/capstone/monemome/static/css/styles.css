@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Tangerine&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin Sans&display=swap');
 
 @media (max-width: 622px) {
     .navbar-nav {
@@ -40,7 +41,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
     font-family: 'Arial', sans-serif;
-    background-color: #bbe7bf; /* Lighter shade of sage green */
+    background-color: #ceffdd; /* Lighter shade of sage green */
 }
 
 html, body {
@@ -97,7 +98,7 @@ footer {
 
 canvas {
     display: block;
-    max-width: 100%;
+    max-width: 90%;
     max-height: 40vh; /* Adjust this value as needed */
 }
 
@@ -118,29 +119,26 @@ canvas {
 }
 
 h1, h2, h3 {
-    font-family: 'Tangerine', cursive; /* Change to your preferred font */
-    color: #f87851; /* A darker shade of green for better readability */
-    text-align: center; /* Center align titles */
-    
-    text-shadow: 
-        -1px -1px 0 #b12803,  
-         1px -1px 0 #b12803,
-        -1px  1px 0 #b12803,
-         1px  1px 0 #b12803;
+    color: #1a663c;  /* Terra cotta color */
+    font-family: 'Josefin Sans', sans-serif; /* Change to your preferred font */
+    font-weight: 400;
+    text-shadow: 1px 1px 2px rgba(51, 24, 16, 0.781); /* Adding drop shadow for depth */
+    text-decoration: none; 
+    text-align: center;
 }
 
 h1 {
-    font-size: 5rem; /* Larger size for main titles */
+    font-size: 3.5rem; /* Larger size for main titles */
     margin-bottom: 0.5rem; /* Adjust bottom margin */
 }
 
 h2 {
-    font-size: 4rem; /* Slightly smaller size for secondary titles */
+    font-size: 3rem; /* Slightly smaller size for secondary titles */
     margin-bottom: 0.3rem; /* Adjust bottom margin */
 }
 
 h3 {
-    font-size: 3rem; /* Slightly smaller size for secondary titles */
+    font-size: 2.2rem; /* Slightly smaller size for secondary titles */
     margin-bottom: 0.2rem; /* Adjust bottom margin */
 }
 
@@ -149,17 +147,26 @@ h3 {
     color: inherit;
 }
 
-
-.navbar-brand {
-    color: #A5D6A7
-}
-
 .navbar {
-    background-color: #80c982; /* Darker shade of sage green */
+    padding: 5px;
+    background-color: #8fce91; /* Darker shade of sage green */
+    height: 11vh; /* Set the desired width, e.g., 80% of its parent container */
 }
+
+.navbar-title {
+    color: #f5582d;  /* Terra cotta color */
+    font-family: 'Tangerine', cursive; /* Change to your preferred font */
+    font-size: 60px;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(51, 24, 16, 0.781); /* Adding drop shadow for depth */
+    text-decoration: none; 
+    padding-right: 4vw;
+    padding-left: 3vw;
+}
+
 
 .navbar-brand, .nav-link {
-    color: #0e3821 !important; /* Darker shade of green for better readability */
+    color: #0e3821; /* Darker shade of green for better readability */
 }
 
 .navbar-toggler {
