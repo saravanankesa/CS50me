@@ -42,7 +42,7 @@
                     <ul class="list-group list-group-flush">
                         {% for account in accounts %}
                         <li class="list-group-item">
-                            {{ account.account_name }} - ${{ account.total_balance|floatformat:2 }}
+                            {{ account.account_name }} ${{ account.total_balance|floatformat:2 }}
                         </li>
                         {% empty %}
                         <li class="list-group-item">No accounts found.</li>

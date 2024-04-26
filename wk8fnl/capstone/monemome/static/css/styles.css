@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Tangerine&display=swap');
+
 @media (max-width: 622px) {
     .navbar-nav {
         flex-direction: column !important; /* Force vertical stacking */
@@ -113,6 +115,33 @@ canvas {
 .centered-content {
     display: flex;
     justify-content: center;
+}
+
+h1, h2, h3 {
+    font-family: 'Tangerine', cursive; /* Change to your preferred font */
+    color: #fa5b2b; /* A darker shade of green for better readability */
+    text-align: center; /* Center align titles */
+    
+    text-shadow: 
+        -1px -1px 0 #721a01,  
+         1px -1px 0 #721a01,
+        -1px  1px 0 #721a01,
+         1px  1px 0 #721a01;
+}
+
+h1 {
+    font-size: 5rem; /* Larger size for main titles */
+    margin-bottom: 0.5rem; /* Adjust bottom margin */
+}
+
+h2 {
+    font-size: 4rem; /* Slightly smaller size for secondary titles */
+    margin-bottom: 0.3rem; /* Adjust bottom margin */
+}
+
+h3 {
+    font-size: 3rem; /* Slightly smaller size for secondary titles */
+    margin-bottom: 0.2rem; /* Adjust bottom margin */
 }
 
 .h3-link {
@@ -254,7 +283,7 @@ form .form-control {
 }
 
 .list-group-item {
-    width: 30vw; 
+    width: 29.5vw; 
     background-color: #f5c66f;
     justify-content: center;
     align-items: center;
