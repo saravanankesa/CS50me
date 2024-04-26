@@ -96,6 +96,7 @@ def index(request):
         is_pre_auth=True,
         date__range=(today, future)
     ).order_by('date')[:3]  # Get the first 3 upcoming payments
+    print(upcoming_payments)
 
     context = {
         'expense_data': expense_data,
@@ -377,17 +378,15 @@ def delete_transaction(request, id):
 @login_required
 def pre_auth_payments(request):
     today = datetime.now().date()
-    threshold_date = today + timedelta(days=5)
     transactions = Transaction.objects.filter(
         user=request.user,
         is_pre_auth=True,
         transaction_type='Expense',
-        date__lte=threshold_date
     ).order_by('-date')
     
     # Enhance transactions with 'due_soon' flag
     for transaction in transactions:
-        transaction.due_soon = (today <= transaction.date <= threshold_date)
+        transaction.due_soon = (today <= transaction.date <= today + timedelta(days=5))
     
     return render(request, 'monemome/pre_auth_payments.html', {'transactions': transactions})
 

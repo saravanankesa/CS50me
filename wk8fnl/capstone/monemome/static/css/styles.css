@@ -19,7 +19,7 @@
     .chart-container, .card-header, .card-body {
         /* Ensure these elements don't exceed the column width */
         width: 100%;
-        margin: 20px; /* Remove any default margins */
+        margin: 20px;
         padding: 10px; /* Adjust padding as needed but keep it within the column width */
     }
 }
