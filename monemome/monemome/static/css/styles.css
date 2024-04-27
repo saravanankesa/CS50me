@@ -1,0 +1,353 @@
+@import url('https://fonts.googleapis.com/css2?family=Tangerine&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira Sans&display=swap');
+
+
+@media (max-width: 692px) { 
+    .navbar-nav {
+        flex-direction: column; /* Stacks nav items vertically on small screens */
+    }
+
+    /* General settings for smaller devices */
+    .row > div, .row, .container {
+        flex: 0 0 100%; /* Full width for all column and row elements */
+        max-width: 100%; /* Ensures no element overflows its container */
+        margin: -200; /* Resets margin for rows */
+        padding: 0; /* Resets padding for containers */
+    }
+
+    .card-header, .card-body {
+        margin-left: 10px; /* Adjusts left margin for better alignment */
+        padding-left: 50px; /* Uniform padding for cards */
+    }
+
+    .chart-container {
+        width: 90vw; /* Utilizes 90% of viewport width */
+        margin: 0 auto 50px; /* Centers the chart with auto margins and reduces bottom margin */
+    }
+
+    .row > div {
+        margin-right: 0px; /* Adjusts right margin if needed */
+        margin-left: 200px; /* Increases left margin to avoid cutting off */
+    }
+}
+
+.d-flex {
+    display: flex;
+    padding-left: 50px;
+    gap: 15px; /* Optional: adds space between cards */
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+}
+
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+    background-color: #c3ffdc;
+}
+
+html, body {
+    height: 100%; /* Full height */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    overflow-x: hidden;
+    flex-direction: column; /* Stack vertically */
+}
+
+main {
+    flex: 1 0 auto;
+    min-height: 100vh; /* Minimum height to take full viewport height */
+    overflow-y: auto; /* Ensures that scrolling is enabled if content exceeds the viewport */
+    padding-bottom: 60px;
+}
+
+.container {
+    align-items: center;
+    padding: 5px;
+    padding-bottom: 30px; /* Adjust this value as needed */
+}
+
+.row {
+    margin-right: -300px;
+    margin-left: -45px;
+}
+
+footer {
+    position: fixed;
+    text-align: center;
+    bottom: 0px;
+    width: 100%;
+    height: 5vh; 
+    background-color: #80c982; 
+    color: #0e3821;
+    align-items: center;
+    justify-content: center;
+}
+
+.centered-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centers content vertically in the column */
+    margin-left: 40px;
+    height: 100%; /* Takes full height of the parent */
+}
+
+.chart-container {
+    height:40vh;
+    width: 40vw; 
+    margin: 20px; /* Center it horizontally with some margin at the top */
+    margin-bottom: 400px;
+    position: center;
+}
+
+.chart-spacing {
+    height: 40px;
+}
+
+canvas {
+    display: block;
+    max-width: 90%;
+    max-height: 40vh; /* Adjust this value as needed */
+}
+
+.centered-content {
+    display: flex;
+    justify-content: center;
+}
+
+h1, h2, h3 {
+    color: #258550;
+    font-family: 'Fira Sans', sans-serif; 
+    font-weight: 400;
+    text-shadow: 1px 1px 3px rgba(71, 48, 40, 0.781); /* Adding drop shadow for depth */
+    text-decoration: none; 
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem; /* Larger size for main titles */
+    margin-bottom: 0.5rem; /* Adjust bottom margin */
+}
+
+h2 {
+    font-size: 2.75rem; /* Slightly smaller size for secondary titles */
+    margin-bottom: 0.3rem; /* Adjust bottom margin */
+}
+
+h3 {
+    font-size: 2.0rem; /* Slightly smaller size for secondary titles */
+    margin-bottom: 0.2rem; /* Adjust bottom margin */
+}
+
+.h3-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.header-link {
+    color: #185a36;
+    text-decoration: none;
+}
+
+
+.navbar {
+    padding: 5px;
+    background-color: #8fce91; /* Darker shade of sage green */
+    height: 13vh; 
+    display: flex;
+    align-items: center; /* Centers items vertically */
+    justify-content: space-between;
+}
+
+.navbar-title {
+    color: #e6613d;  /* Terra cotta color */
+    font-family: 'Tangerine', cursive; /* Change to your preferred font */
+    font-size: 70px;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(51, 24, 16, 0.781); /* Adding drop shadow for depth */
+    text-decoration: none; 
+    padding-right: 4vw;
+    padding-left: 1vw;
+}
+
+.navbar-logo img {
+    border: 2px solid #e6613d;
+    border-radius: 50%; /* Makes the ring circular */
+    display: inline-block; 
+    box-shadow: 1px 1px 3px rgba(51, 24, 16, 0.781);
+}
+
+
+.nav-link {
+    color: #164b2e; 
+    background-color: #ecbd65; /* Existing background color */
+    display: inline-block; /* Align items in line and respect width and padding */
+    width: 120px; /* Set a uniform width for each link */
+    text-align: center; /* Center the text within each link */
+    padding: 10px; /* Adjust padding to ensure sufficient space around text */
+    font-family: 'Roboto', sans-serif; /* New font family */
+    font-size: 15px; /* Adjust font size as needed */
+    font-weight: 600; /* Normal font weight */
+}
+
+
+.navbar-toggler {
+    padding: 0.5rem 0.8rem;
+    font-size: 1.25rem;
+    color: #fc5827;
+    line-height: 1;
+    background-color: #f1935c;
+    border: 1px;
+    border-radius: 0.25rem;
+    transition: box-shadow .15s ease-in-out;
+}   
+
+.sub-header {
+    width: 100%;  
+    display: flex;
+    justify-content: center;
+    align-items: center;  
+}
+
+.btn-primary {
+    background-color: #ee5b17;
+    border: none;
+}
+
+.btn-secondary {
+    background-color: #e67b18;
+    border: none;
+}
+
+.btn-primary:active, .btn-secondary:active {
+    border: none;
+}
+
+.btn-primary:focus, .btn-secondary:focus {
+    outline: none;
+}
+
+.btn-subheader {
+    background-color: #f7a75d;
+}
+
+/* Styles for form labels */
+.form-label {
+    color: #2f5745; /* Darker shade of green for better readability */
+}
+
+.form-button {
+    padding: 10px 20px; /* Top-Bottom, Left-Right padding */
+    margin-top: 10px;  /* Additional spacing above the button */
+}
+
+.hide-field {
+    display: none;
+}
+
+
+/* Styles for table */
+.table {
+    color: #35614e; /* Darker shade of green for better readability */
+}
+
+
+/* Styles for text in table cells */
+.table td {
+    color: #2d5744; /* Darker shade of green for better readability */
+}
+
+.table th {
+    color: #c74d28;
+}
+
+/* Styles for hyperlinks in table headers */
+.table th a {
+    color: #c74d28; /* Terra cotta color for hyperlinks */
+    text-decoration: none; /* Optional: removes underline from links */
+}
+
+/* Hover effect for hyperlinks in table headers */
+.table th a:hover {
+    color: #f08a5d; /* Lighter terra cotta shade for hover effect */
+    text-decoration: underline; /* Optional: adds underline on hover */
+}
+
+
+/* Custom styles for the login button */
+#login-button {
+    background-color: #ee5b17; 
+    color: white; /* White text color */
+}
+
+#login-button:hover {
+    background-color: #ee8757; /* Darker shade of orange/beige for hover effect */
+}
+
+form .form-control {
+    width: 50%; /* Adjust width to 50% of its container */
+}
+
+.highlight {
+    background-color: #fdc630;  /* Or any color that fits your design */
+    font-weight: bold;
+}
+
+.helptext {
+    color: #C0604D; /* A darker shade of terra cotta */
+    font-size: 0.92rem; /* Adjust size as needed */
+}
+
+.card {
+    width: 30px; /* Set or adjust the width as needed */
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 20px; /* Optional, for slightly rounded corners */
+}
+
+.card-header {
+    width: 30vw; /* Set or adjust the width as needed */
+    padding: 10px;
+    border-radius: 20px; /* Optional, for slightly rounded corners */
+    background-color: #ecbe78; 
+    font-family: 'Roboto', sans-serif; /* New font family */
+    font-size: 17px; /* Adjust font size as needed */
+    font-weight: 600; /* Normal font weight */
+}
+
+.card-body {
+    padding-left: 20px;
+    width: 30vw; 
+}
+
+.card-custom-bg {
+    margin-top: 50px;
+    min-width: 200px;
+    flex-grow: 1; 
+}
+
+.div-card {
+    max-width: 50px;
+}
+
+.div-card-body {
+    max-width: 300px;
+}
+
+.card-header, .card-body {
+    padding-right: 20px;
+    display: flex;
+    justify-content: center; /* Centers content horizontally */
+    align-items: center; /* Centers content vertically */
+    text-align: center; /* Ensures text within these elements is centered */
+    border-radius: 8px;
+}
+
+.list-group-item {
+    width: 29.5vw; 
+    background-color: #f5c66f;
+    justify-content: center;
+    align-items: center;
+}

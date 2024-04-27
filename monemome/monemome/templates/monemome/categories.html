@@ -1,0 +1,170 @@
+{% extends 'monemome/layout.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+        <p><h2>Manage Categories</h2></p>
+        <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add New Category</button>
+        <a href="{% url 'add_transaction' %}" class="btn btn-primary">Add a Transaction</a>
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+                {{ message|safe }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Instruction message for users redirected here because no categories exist -->
+    {% if not categories.exists %}
+        <p class="alert alert-warning">No categories currently exist. Please <a href="{% url 'add_category' %}" class="alert-link">create a category</a> to continue with adding transactions.</p>
+    {% endif %}
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th><a href="?sort={% if request.GET.sort == '-category_name' %}category_name{% else %}-category_name{% endif %}">Category Name {% if request.GET.sort == 'category_name' %}▲{% elif request.GET.sort == '-category_name' %}▼{% endif %}</a></th>
+                <th><a href="?sort={% if request.GET.sort == '-transaction_type' %}transaction_type{% else %}-transaction_type{% endif %}">Transaction Type {% if request.GET.sort == 'transaction_type' %}▲{% elif request.GET.sort == '-transaction_type' %}▼{% endif %}</a></th>
+                <th><a href="?sort={% if request.GET.sort == '-total_amount' %}total_amount{% else %}-total_amount{% endif %}">Total Amount {% if request.GET.sort == 'total_amount' %}▲{% elif request.GET.sort == '-total_amount' %}▼{% endif %}</a></th>
+                <th><a href="?sort={% if request.GET.sort == '-value_score' %}value_score{% else %}-value_score{% endif %}">Value Score {% if request.GET.sort == 'value_score' %}▲{% elif request.GET.sort == '-value_score' %}▼{% endif %}</a></th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+            <tr>
+                <td>{{ category.category_name }}</td>
+                <td>{{ category.transaction_type }}</td>
+                <td>${{ category.total_amount|default:"0.00" }}</td>
+                <td>{{ category.value_score }}</td>
+                <td>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ category.id }}">Edit</button>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ category.id }}">Delete</button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No categories found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Add Category Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{% url 'add_category' %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="categoryName" class="form-label">Category Name:</label>
+                            <input type="text" class="form-control" id="categoryName" name="category_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="transactionType" class="form-label">Transaction Type:</label>
+                            <select class="form-control" id="transactionType" name="transaction_type">
+                                <option value="Income">Income</option>
+                                <option value="Expense">Expense</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="valueScore" class="form-label">Value Score:</label>
+                            <select class="form-control" id="valueScore" name="value_score">
+                                <option value="1">1 - Low</option>
+                                <option value="2">2</option>
+                                <option value="3">3 - Medium</option>
+                                <option value="4">4</option>
+                                <option value="5">5 - High</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Category</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modals -->
+    {% for category in categories %}
+    <div class="modal fade" id="editModal{{ category.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ category.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel{{ category.id }}">Edit Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{% url 'edit_category' category.id %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="categoryName{{ category.id }}" class="form-label">Category Name:</label>
+                            <input type="text" class="form-control" id="categoryName{{ category.id }}" name="category_name" value="{{ category.category_name }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="transactionType{{ category.id }}" class="form-label">Transaction Type:</label>
+                            <select class="form-control" id="transactionType{{ category.id }}" name="transaction_type">
+                                <option value="Income" {% if category.transaction_type == 'Income' %}selected{% endif %}>Income</option>
+                                <option value="Expense" {% if category.transaction_type == 'Expense' %}selected{% endif %}>Expense</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="valueScore{{ category.id }}" class="form-label">Value Score:</label>
+                            <select class="form-control" id="valueScore{{ category.id }}" name="value_score">
+                                <option value="1" {% if category.value_score == 1 %}selected{% endif %}>1 - Low</option>
+                                <option value="2" {% if category.value_score == 2 %}selected{% endif %}>2</option>
+                                <option value="3" {% if category.value_score == 3 %}selected{% endif %}>3 - Medium</option>
+                                <option value="4" {% if category.value_score == 4 %}selected{% endif %}>4</option>
+                                <option value="5" {% if category.value_score == 5 %}selected{% endif %}>5 - High</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Delete Modals -->
+    {% for category in categories %}
+    <div class="modal fade" id="deleteModal{{ category.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ category.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ category.id }}">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete the category "{{ category.category_name }}"? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <form method="post" action="{% url 'delete_category' category.id %}">
+                        {% csrf_token %}
+                        {% if categories|length > 1 %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        {% else %}
+                            <button type="button" class="btn btn-danger" disabled>Last Category Cannot Be Deleted</button>
+                        {% endif %}
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    
+</div>
+{% endblock %}

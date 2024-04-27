@@ -1,0 +1,133 @@
+{% extends 'monemome/layout.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="sub-header">
+        <div class="btn-group" role="group" aria-label="Transaction navigation">
+            <a href="{% url 'list_transactions' %}" class="btn btn-subheader">List Transactions</a>
+            <a href="{% url 'add_transaction' %}" class="btn btn-subheader">Add Transaction</a>
+            <a href="{% url 'pre_auth_payments' %}" class="btn btn-subheader">Pre-Auth Payments</a>
+            <a href="{% url 'recurring_incomes' %}" class="btn btn-subheader">Recurring Incomes</a>
+        </div>
+    </div>
+    <p><h2>Add Transaction</h2></p>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+                {{ message|safe }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <form method="post" action="{% url 'add_transaction' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const pTags = document.querySelectorAll('#form-container p');
+    var categorySelect = document.querySelector('select[name="category"]');
+    if (categorySelect) {
+        var errorParagraph = document.createElement('p');
+        errorParagraph.id = 'category-error';
+        errorParagraph.className = 'text-danger';
+        categorySelect.parentNode.insertBefore(errorParagraph, categorySelect.nextSibling);
+    }
+    pTags.forEach(p => {
+        const div = document.createElement('div');
+        div.innerHTML = p.innerHTML;
+        div.className = 'form-group';
+
+        // Add IDs and classes based on the name attribute of the input within the <p> tag
+        const input = p.querySelector('input, select');
+        if (input) {
+            div.id = 'div_' + input.name; // Create an ID based on the input name
+
+            // Apply visibility classes based on specific criteria
+            if (input.name === 'is_pre_auth') {
+                div.classList.add('expense-only');
+            } else if (input.name === 'is_recurring') {
+                div.classList.add('income-only');
+            }
+        }
+
+        p.parentNode.replaceChild(div, p);
+    });
+
+    // Activate updateFormFields on radio button change
+    document.querySelectorAll('input[name="transaction_type"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            updateFormFields();
+            const transactionType = document.querySelector('input[name="transaction_type"]:checked').value;
+            loadCategories(transactionType);
+        });
+    });
+
+    // Call updateFormFields on page load if a type is already selected
+    const checkedRadio = document.querySelector('input[name="transaction_type"]:checked');
+    if (checkedRadio) {
+        updateFormFields();
+        loadCategories(checkedRadio.value);
+    }
+});
+
+function updateFormFields() {
+    const transactionType = document.querySelector('input[name="transaction_type"]:checked').value;
+
+    // Hide all form groups initially
+    document.querySelectorAll('.form-group').forEach(group => group.style.display = 'none');
+
+    // Show the transaction type radio buttons always
+    document.querySelectorAll('.transaction-type').forEach(elem => elem.style.display = 'block');
+
+    // Conditionally display fields based on transaction type
+    if (transactionType === 'Income') {
+        document.querySelectorAll('.expense-only').forEach(elem => elem.style.display = 'none');
+        document.querySelectorAll('.income-only').forEach(elem => elem.style.display = 'block');
+    } else if (transactionType === 'Expense') {
+        document.querySelectorAll('.income-only').forEach(elem => elem.style.display = 'none');
+        document.querySelectorAll('.expense-only').forEach(elem => elem.style.display = 'block');
+    }
+
+    // Show other fields common to both types, adjust selector as needed
+    document.querySelectorAll('.common-fields').forEach(elem => {
+        elem.style.display = 'block';
+    });
+
+    // Trigger loading of categories
+    loadCategories(transactionType);
+}
+
+
+function loadCategories(transactionType) {
+    fetch(`/api/categories/${transactionType}/`)  
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const categorySelect = document.querySelector('#id_category');
+            categorySelect.innerHTML = '';
+            if (data.length === 0) {
+                categorySelect.innerHTML = '<option>No categories available</option>';
+            } else {
+                data.forEach(cat => {
+                    const option = new Option(cat.category_name, cat.id);
+                    categorySelect.append(option);
+                });
+            }
+            categorySelect.style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error loading categories:', error);
+            document.querySelector('#category-error').textContent = 'Failed to load categories. Please try again.';
+        });
+}
+</script>
+    
+    
+
+{% endblock %}

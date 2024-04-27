@@ -1,0 +1,128 @@
+{% extends 'monemome/layout.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+        <p><h2>Manage Accounts</h2></p>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAccountModal">Add New Account</button>
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Account Name</th>
+                <th>Purpose</th>
+                <th>Balance</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for account, balance in accounts_with_balances %}
+            <tr>
+                <td>{{ account.account_name }}</td>
+                <td>{{ account.purpose }}</td>
+                <td>{{ balance|floatformat:2 }}</td>
+                <td>
+                    <!-- Make sure the URL is generated only if the ID is valid -->
+                    {% if account.id %}
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ account.id }}">Edit</button>
+                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ account.id }}">Delete</button>
+                    {% else %}
+                        <div>Error: No valid ID for account {{ account.account_name }}</div>
+                    {% endif %}
+                </td>
+            </tr>
+
+            <!-- Add Modal -->
+            <div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addAccountModalLabel">Add New Account</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="post" action="{% url 'add_account' %}">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="accountName" class="form-label">Account Name:</label>
+                                    <input type="text" class="form-control" id="accountName" name="account_name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="accountPurpose" class="form-label">Purpose:</label>
+                                    <textarea class="form-control" id="accountPurpose" name="purpose" required></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save Account</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Modals -->
+            <div class="modal fade" id="editModal{{ account.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ account.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel{{ account.id }}">Edit Account</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="post" action="{% url 'edit_account' account.id %}">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="accountName{{ account.id }}" class="form-label">Account Name:</label>
+                                    <input type="text" class="form-control" id="accountName{{ account.id }}" name="name" value="{{ account.account_name }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="accountPurpose{{ account.id }}" class="form-label">Purpose:</label>
+                                    <textarea class="form-control" id="accountPurpose{{ account.id }}" name="purpose">{{ account.purpose }}</textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Delete Modals -->
+            <div class="modal fade" id="deleteModal{{ account.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ account.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel{{ account.id }}">Confirm Delete</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete the account "{{ account.account_name }}"? This action cannot be undone.
+                        </div>
+                        <div class="modal-footer">
+                            <form method="post" action="{% url 'delete_account' account.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <tr>
+                <td colspan="4">No accounts found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

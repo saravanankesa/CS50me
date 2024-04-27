@@ -1,0 +1,93 @@
+{% extends 'monemome/layout.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="sub-header">
+        <div class="btn-group" role="group" aria-label="Transaction navigation">
+            <a href="{% url 'list_transactions' %}" class="btn btn-secondary">List Transactions</a>
+            <a href="{% url 'add_transaction' %}" class="btn btn-secondary">Add Transaction</a>
+            <a href="{% url 'pre_auth_payments' %}" class="btn btn-secondary">Pre-Auth Payments</a>
+            <a href="{% url 'recurring_incomes' %}" class="btn btn-secondary">Recurring Incomes</a>
+        </div>
+    </div>
+    <h2>Edit Transaction</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const pTags = document.querySelectorAll('#form-container p');
+    pTags.forEach(p => {
+        const div = document.createElement('div');
+        div.innerHTML = p.innerHTML;
+        div.className = 'form-group';
+
+        const input = p.querySelector('input, select');
+        if (input) {
+            div.id = 'div_' + input.name;
+            if (input.name === 'is_pre_auth') {
+                div.classList.add('expense-only');
+            } else if (input.name === 'is_recurring') {
+                div.classList.add('income-only');
+            }
+        }
+        p.parentNode.replaceChild(div, p);
+    });
+
+    document.querySelectorAll('input[name="transaction_type"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            updateFormFields();
+            const transactionType = document.querySelector('input[name="transaction_type"]:checked').value;
+            loadCategories(transactionType);
+        });
+    });
+
+    // Update form fields on initial load
+    updateFormFields();
+    const initialTransactionType = document.querySelector('input[name="transaction_type"]:checked')?.value;
+    if (initialTransactionType) {
+        loadCategories(initialTransactionType);
+    }
+});
+
+function updateFormFields() {
+    const transactionType = document.querySelector('input[name="transaction_type"]:checked')?.value;
+    document.querySelectorAll('.form-group').forEach(group => group.style.display = 'none');
+    document.querySelectorAll('.transaction-type').forEach(elem => elem.style.display = 'block');
+    if (transactionType === 'Income') {
+        document.querySelectorAll('.expense-only').forEach(elem => elem.style.display = 'none');
+        document.querySelectorAll('.income-only').forEach(elem => elem.style.display = 'block');
+    } else if (transactionType === 'Expense') {
+        document.querySelectorAll('.income-only').forEach(elem => elem.style.display = 'none');
+        document.querySelectorAll('.expense-only').forEach(elem => elem.style.display = 'block');
+    }
+    document.querySelectorAll('.common-fields').forEach(elem => elem.style.display = 'block');
+}
+
+function loadCategories(transactionType) {
+    fetch(`/api/categories/${transactionType}/`)  
+        .then(response => response.json())
+        .then(data => {
+            const categorySelect = document.querySelector('#id_category');
+            categorySelect.innerHTML = '';
+            data.forEach(cat => {
+                const option = new Option(cat.category_name, cat.id);
+                categorySelect.append(option);
+            });
+            categorySelect.style.display = 'block';
+        })
+        .catch(error => console.error('Error loading categories:', error));
+}
+</script>
+    
+{% endblock %}

@@ -1,0 +1,331 @@
+@import url('https://fonts.googleapis.com/css2?family=Tangerine&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin Sans&display=swap');
+
+@media (max-width: 622px) {
+    .navbar-nav {
+        flex-direction: column !important; /* Force vertical stacking */
+    }
+    .card-header, .card-body {
+        margin-right: 0px;
+    }
+}
+
+@media (max-width: 692px) { /* Adjusting for medium devices, change this as per your layout */
+    .row > div {
+        flex: 0 0 100%; /* Ensures each column takes full width on smaller screens */
+        max-width: 100%; /* Prevents any overflow */
+    }
+}
+
+
+@media (min-width: 622px) {
+    .chart-container, .card-header, .card-body {
+        /* Ensure these elements don't exceed the column width */
+        width: 100%;
+        margin: 20px;
+        padding: 0px; /* Adjust padding as needed but keep it within the column width */
+    }
+}
+
+
+.d-flex {
+    display: flex;
+    padding-left: 50px;
+    gap: 20px; /* Optional: adds space between cards */
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+}
+
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+    background-color: #ceffdd; /* Lighter shade of sage green */
+}
+
+html, body {
+    height: 100%; /* Full height */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    overflow-x: hidden;
+    flex-direction: column; /* Stack vertically */
+}
+
+main {
+    flex: 1 0 auto;
+    min-height: 100vh; /* Minimum height to take full viewport height */
+    overflow-y: auto; /* Ensures that scrolling is enabled if content exceeds the viewport */
+    padding-bottom: 60px;
+}
+
+.container {
+    align-items: center;
+    padding: 20px;
+    padding-bottom: 30px; /* Adjust this value as needed */
+}
+
+.row {
+    margin-right: -255px;
+    margin-left: -55px;
+}
+
+footer {
+    position: fixed;
+    text-align: center;
+    bottom: 0px;
+    width: 100%;
+    height: 60px; 
+    background-color: #80c982; /* Darker shade of sage green */
+    color: #0e3821; /* Darker shade of green for better readability */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-container {
+    height:40vh;
+    width: 40vw; 
+    margin: 20px; /* Center it horizontally with some margin at the top */
+    margin-bottom: 400px;
+    position: relative;
+}
+
+.chart-spacing {
+    height: 40px;
+}
+
+canvas {
+    display: block;
+    max-width: 90%;
+    max-height: 40vh; /* Adjust this value as needed */
+}
+
+.sub-header {
+    width: 100%;  
+    display: flex;
+    justify-content: center;
+    align-items: center;  
+}
+
+.header-link {
+    color: #0e3821;
+}
+
+.centered-content {
+    display: flex;
+    justify-content: center;
+}
+
+h1, h2, h3 {
+    color: #1a663c;  /* Terra cotta color */
+    font-family: 'Josefin Sans', sans-serif; /* Change to your preferred font */
+    font-weight: 400;
+    text-shadow: 1px 1px 2px rgba(51, 24, 16, 0.781); /* Adding drop shadow for depth */
+    text-decoration: none; 
+    text-align: center;
+}
+
+h1 {
+    font-size: 3.5rem; /* Larger size for main titles */
+    margin-bottom: 0.5rem; /* Adjust bottom margin */
+}
+
+h2 {
+    font-size: 3rem; /* Slightly smaller size for secondary titles */
+    margin-bottom: 0.3rem; /* Adjust bottom margin */
+}
+
+h3 {
+    font-size: 2.2rem; /* Slightly smaller size for secondary titles */
+    margin-bottom: 0.2rem; /* Adjust bottom margin */
+}
+
+.h3-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.navbar {
+    padding: 5px;
+    background-color: #8fce91; /* Darker shade of sage green */
+    height: 11vh; 
+}
+
+.navbar-title {
+    color: #f5582d;  /* Terra cotta color */
+    font-family: 'Tangerine', cursive; /* Change to your preferred font */
+    font-size: 60px;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(51, 24, 16, 0.781); /* Adding drop shadow for depth */
+    text-decoration: none; 
+    padding-right: 4vw;
+    padding-left: 1vw;
+}
+
+
+.navbar-brand, .nav-link {
+    color: #0e3821; /* Darker shade of green for better readability */
+}
+
+.navbar-toggler {
+    padding: 0.5rem 0.8rem;
+    font-size: 1.25rem;
+    color: #fc5827;
+    line-height: 1;
+    background-color: #f1935c;
+    border: 1px;
+    border-radius: 0.25rem;
+    transition: box-shadow .15s ease-in-out;
+}    
+
+/* Add custom styles for buttons, tables, and other elements here using the sage green and orange/beige color scheme */
+.btn-custom {
+    background-color: #FFAB91; /* Orange/beige color */
+    color: white;
+}
+
+.btn-custom:hover {
+    background-color: #FF8A65; /* A darker shade of orange/beige for hover effect */
+}
+
+.btn-primary {
+    background-color: #fa6b19;
+}
+
+.btn-secondary {
+    background-color: rgb(252, 154, 43);
+}
+
+.btn-subheader {
+    background-color: #f7a75d;
+}
+
+/* Styles for form labels */
+.form-label {
+    color: #2f5745; /* Darker shade of green for better readability */
+}
+
+.form-button {
+    padding: 10px 20px; /* Top-Bottom, Left-Right padding */
+    margin-top: 10px;  /* Additional spacing above the button */
+}
+
+.hide-field {
+    display: none;
+}
+
+
+/* Styles for table */
+.table {
+    color: #35614e; /* Darker shade of green for better readability */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f3f7f3; /* Very light shade of green for striped rows */
+}
+
+/* Styles for text in table cells */
+.table td {
+    color: #2d5744; /* Darker shade of green for better readability */
+}
+
+.table th {
+    color: #c74d28;
+}
+
+/* Styles for hyperlinks in table headers */
+.table th a {
+    color: #c74d28; /* Terra cotta color for hyperlinks */
+    text-decoration: none; /* Optional: removes underline from links */
+}
+
+/* Hover effect for hyperlinks in table headers */
+.table th a:hover {
+    color: #f08a5d; /* Lighter terra cotta shade for hover effect */
+    text-decoration: underline; /* Optional: adds underline on hover */
+}
+
+
+/* Custom styles for the login button */
+#login-button {
+    background-color: #fa7a53d3; /* Orange/beige color */
+    border-color: #fd7c55da; /* Orange/beige border color */
+    color: white; /* White text color */
+}
+
+#login-button:hover {
+    background-color: #f7a58ce7; /* Darker shade of orange/beige for hover effect */
+    border-color: #f7a58ce7; /* Darker shade of orange/beige border color for hover effect */
+}
+
+form .form-control {
+    width: 50%; /* Adjust width to 50% of its container */
+}
+
+.highlight {
+    background-color: yellow;  /* Or any color that fits your design */
+    font-weight: bold;
+}
+
+.card-custom-bg {
+    min-width: 300px;
+    flex-grow: 1; /* Makes each card grow to fill the space equally */
+    background-color: #f0f8ff; /* Alice blue, very light and soothing */
+    border-color: #dee2e6; /* Slightly darker border for some contrast */
+}
+
+.helptext {
+    color: #C0604D; /* A darker shade of terra cotta */
+    font-size: 0.92rem; /* Adjust size as needed */
+}
+
+.card {
+    width: 30px; /* Set or adjust the width as needed */
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 20px; /* Optional, for slightly rounded corners */
+}
+
+.card-header {
+    width: 30vw; /* Set or adjust the width as needed */
+    padding: 10px;
+    border-radius: 20px; /* Optional, for slightly rounded corners */
+    background-color: #ecbe78; 
+    font-weight: bold;
+}
+
+.card-body {
+    padding-left: 20px;
+    width: 30vw; 
+}
+
+.div-card {
+    max-width: 50px;
+}
+
+.div-card-spacing {
+    height: 40px;
+}
+
+.div-card-body {
+    max-width: 300px;
+}
+
+.card-header, .card-body {
+    padding-right: 20px;
+    display: flex;
+    justify-content: center; /* Centers content horizontally */
+    align-items: center; /* Centers content vertically */
+    text-align: center; /* Ensures text within these elements is centered */
+    border: 1px solid #94453d;
+    border-radius: 8px;
+}
+
+.list-group-item {
+    width: 29.5vw; 
+    background-color: #f5c66f;
+    justify-content: center;
+    align-items: center;
+}
