@@ -150,7 +150,10 @@ h3 {
 .navbar {
     padding: 5px;
     background-color: #8fce91; /* Darker shade of sage green */
-    height: 11vh; 
+    height: 12vh; 
+    display: flex;
+    align-items: center; /* Centers items vertically */
+    justify-content: space-between;
 }
 
 .navbar-title {
@@ -164,13 +167,20 @@ h3 {
     padding-left: 1vw;
 }
 
+.navbar-logo img {
+    border: 3px solid #fc5827;
+    border-radius: 50%; /* Makes the ring circular */
+    display: inline-block; 
+}
+
+
 .nav-link {
     color: #0e3821; /* Darker shade of green for better readability */
     background-color: #ecbd65; /* Existing background color */
     display: inline-block; /* Align items in line and respect width and padding */
-    width: 100px; /* Set a uniform width for each link */
+    width: 120px; /* Set a uniform width for each link */
     text-align: center; /* Center the text within each link */
-    padding: 10px 10px; /* Adjust padding to ensure sufficient space around text */
+    padding: 10px; /* Adjust padding to ensure sufficient space around text */
 }
 
 
