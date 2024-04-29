@@ -24,110 +24,89 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const pTags = document.querySelectorAll('#form-container p');
-    var categorySelect = document.querySelector('select[name="category"]');
-    if (categorySelect) {
-        var errorParagraph = document.createElement('p');
-        errorParagraph.id = 'category-error';
-        errorParagraph.className = 'text-danger';
-        categorySelect.parentNode.insertBefore(errorParagraph, categorySelect.nextSibling);
-    }
-    pTags.forEach(p => {
-        const div = document.createElement('div');
-        div.innerHTML = p.innerHTML;
-        div.className = 'form-group';
+$(document).ready(function() {
+    // Handling form container paragraphs
+    $('#form-container p').each(function() {
+        var $div = $('<div>').addClass('form-group').html($(this).html());
+        var $input = $(this).find('input, select');
 
-        // Add IDs and classes based on the name attribute of the input within the <p> tag
-        const input = p.querySelector('input, select');
-        if (input) {
-            div.id = 'div_' + input.name; // Create an ID based on the input name
-
-            // Apply visibility classes based on specific criteria
-            if (input.name === 'is_pre_auth') {
-                div.classList.add('expense-only');
-            } else if (input.name === 'is_recurring') {
-                div.classList.add('income-only');
+        if ($input.length) {
+            $div.attr('id', 'div_' + $input.attr('name'));
+            if ($input.attr('name') === 'is_pre_auth') {
+                $div.addClass('expense-only');
+            } else if ($input.attr('name') === 'is_recurring') {
+                $div.addClass('income-only');
             }
         }
 
-        p.parentNode.replaceChild(div, p);
+        $(this).replaceWith($div);
     });
 
-    // Activate updateFormFields on radio button change
-    document.querySelectorAll('input[name="transaction_type"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            updateFormFields();
-            const transactionType = document.querySelector('input[name="transaction_type"]:checked').value;
-            loadCategories(transactionType);
-        });
-    });
+    // Insert error paragraph for category selection if needed
+    var $categorySelect = $('select[name="category"]');
+    if ($categorySelect.length) {
+        $('<p>').attr('id', 'category-error').addClass('text-danger').insertAfter($categorySelect);
+    }
 
-    // Call updateFormFields on page load if a type is already selected
-    const checkedRadio = document.querySelector('input[name="transaction_type"]:checked');
-    if (checkedRadio) {
+    // Event handling for radio button changes
+    $('input[name="transaction_type"]').change(function() {
         updateFormFields();
-        loadCategories(checkedRadio.value);
+        loadCategories($(this).val());
+    });
+
+    // Initialize the form fields and category loading on page load
+    if ($('input[name="transaction_type"]:checked').length) {
+        updateFormFields();
+        loadCategories($('input[name="transaction_type"]:checked').val());
     }
 });
 
 function updateFormFields() {
-    const transactionType = document.querySelector('input[name="transaction_type"]:checked').value;
-
-    // Hide all form groups initially
-    document.querySelectorAll('.form-group').forEach(group => group.style.display = 'none');
-
-    // Show the transaction type radio buttons always
-    document.querySelectorAll('.transaction-type').forEach(elem => elem.style.display = 'block');
-
-    // Conditionally display fields based on transaction type
+    var transactionType = $('input[name="transaction_type"]:checked').val();
+    $('.form-group').hide();
+    $('.transaction-type').show();
+    
     if (transactionType === 'Income') {
-        document.querySelectorAll('.expense-only').forEach(elem => elem.style.display = 'none');
-        document.querySelectorAll('.income-only').forEach(elem => elem.style.display = 'block');
+        $('.expense-only').hide();
+        $('.income-only').show();
     } else if (transactionType === 'Expense') {
-        document.querySelectorAll('.income-only').forEach(elem => elem.style.display = 'none');
-        document.querySelectorAll('.expense-only').forEach(elem => elem.style.display = 'block');
+        $('.income-only').hide();
+        $('.expense-only').show();
     }
 
-    // Show other fields common to both types, adjust selector as needed
-    document.querySelectorAll('.common-fields').forEach(elem => {
-        elem.style.display = 'block';
-    });
-
-    // Trigger loading of categories
+    $('.common-fields').show();
     loadCategories(transactionType);
 }
 
-
 function loadCategories(transactionType) {
-    fetch(`/api/categories/${transactionType}/`)  
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const categorySelect = document.querySelector('#id_category');
-            categorySelect.innerHTML = '';
+    $.ajax({
+        url: `/api/categories/${transactionType}/`,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            var $categorySelect = $('#id_category');
+            $categorySelect.empty();
+
             if (data.length === 0) {
-                categorySelect.innerHTML = '<option>No categories available</option>';
+                $categorySelect.html('<option>No categories available</option>');
             } else {
-                data.forEach(cat => {
-                    const option = new Option(cat.category_name, cat.id);
-                    categorySelect.append(option);
+                $.each(data, function(i, cat) {
+                    $categorySelect.append(new Option(cat.category_name, cat.id));
                 });
             }
-            categorySelect.style.display = 'block';
-        })
-        .catch(error => {
-            console.error('Error loading categories:', error);
-            document.querySelector('#category-error').textContent = 'Failed to load categories. Please try again.';
-        });
+
+            $categorySelect.show();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error loading categories:', errorThrown);
+            $('#category-error').text('Failed to load categories. Please try again.');
+        }
+    });
 }
 </script>
-    
+
     
 
 {% endblock %}

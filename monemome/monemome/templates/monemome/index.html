@@ -1,122 +1,124 @@
 {% extends 'monemome/layout.html' %}
 
 {% block content %}
-    <div class="container">
-        <h1>Welcome, {{ user.username }}!</h1>
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-        <div class="row">
-            <div class="col-md-5">
-                <div class="chart-container">
-                    <canvas id="expenseChart"></canvas>
-                    <div class="chart-spacing"></div>
-                    <canvas id="incomeChart"></canvas>
-                </div>
+<div class="container">
+    <h1>Welcome, {{ user.username }}!</h1>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            <div class="col-md-5">
-                <div class="card-header">
-                    <a href="{% url 'pre_auth_payments' %}" class="header-link">Upcoming Pre-Auth Payments</a>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        {% for payment in upcoming_payments %}
-                            <li class="list-group-item">
-                                {{ payment.transaction_name }} - ${{ payment.amount }} - Due: {{ payment.date|date:"M d, Y" }}
-                            </li>
-                        {% empty %}
-                            <li class="list-group-item">No upcoming payments.</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="card-header">
-                    <a href="{% url 'accounts' %}" class="header-link">Account Balances</a>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        {% for account in accounts %}
-                        <li class="list-group-item">
-                            {{ account.account_name }} ${{ account.total_balance|floatformat:2 }}
-                        </li>
-                        {% empty %}
-                        <li class="list-group-item">No accounts found.</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+        {% endfor %}
+    {% endif %}
+    <div class="row">
+        <div class="col-md-5">
+            <div class="chart-container">
+                <canvas id="expenseChart"></canvas>
+                <div class="chart-spacing"></div>
+                <canvas id="incomeChart"></canvas>
             </div>
         </div>
-        {{ expense_data|json_script:"expense-data" }}
-        {{ income_data|json_script:"income-data" }}        
+        <div class="col-md-5">
+            <div class="card-header">
+                <a href="{% url 'pre_auth_payments' %}" class="header-link">Upcoming Pre-Auth Payments</a>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for payment in upcoming_payments %}
+                        <li class="list-group-item">
+                            {{ payment.transaction_name }} - ${{ payment.amount }} - Due: {{ payment.date|date:"M d, Y" }}
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item">No upcoming payments.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-header">
+                <a href="{% url 'accounts' %}" class="header-link">Account Balances</a>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for account in accounts %}
+                    <li class="list-group-item">
+                        {{ account.account_name }} ${{ account.total_balance|floatformat:2 }}
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item">No accounts found.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var expenseData = JSON.parse(document.getElementById('expense-data').textContent);
-            var incomeData = JSON.parse(document.getElementById('income-data').textContent);
-        
-            var ctxExpense = document.getElementById('expenseChart').getContext('2d');
-            var expenseChart = new Chart(ctxExpense, {
-                type: 'pie',
-                data: {
-                    labels: expenseData.map(data => data.name),
-                    datasets: [{
-                        label: 'Expense Breakdown',
-                        data: expenseData.map(data => data.value),
-                        backgroundColor: ['#FFB280', '#FF7043', '#FF8966', '#FF6347', '#D85F52'], // Define colors
-                        borderColor: '#94453d',  // Define border colors
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false, 
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 16 
-                                },
-                                color: '#0e3821'
-                            }
+    {{ expense_data|json_script:"expense-data" }}
+    {{ income_data|json_script:"income-data" }}        
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+$(document).ready(function() {
+    var expenseData = JSON.parse($('#expense-data').text());
+    var incomeData = JSON.parse($('#income-data').text());
+
+    var ctxExpense = $('#expenseChart').get(0).getContext('2d');
+    var expenseChart = new Chart(ctxExpense, {
+        type: 'pie',
+        data: {
+            labels: expenseData.map(data => data.name),
+            datasets: [{
+                label: 'Expense Breakdown',
+                data: expenseData.map(data => data.value),
+                backgroundColor: ['#FFB280', '#FF7043', '#FF8966', '#FF6347', '#D85F52'], // Define colors
+                borderColor: '#94453d',  // Define border color
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, 
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 16 
                         },
+                        color: '#0e3821'
                     }
-                }
-            });
-        
-            var ctxIncome = document.getElementById('incomeChart').getContext('2d');
-            var incomeChart = new Chart(ctxIncome, {
-                type: 'pie',
-                data: {
-                    labels: incomeData.map(data => data.name),
-                    datasets: [{
-                        label: 'Income Breakdown',
-                        data: incomeData.map(data => data.value),
-                        backgroundColor: ['#FFCC99', '#FF6600', '#FF7F50', '#FF4500', '#CC5500'], // Define colors
-                        borderColor: '#94453d',  // Define border colors
-                        borderWidth: 1
-                    }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 16
-                                },
-                                color: '#0e3821'
-                            }
-                        },
-                    }
-                }
-            });
-        });
-    </script>
+            }
+        }
+    });
+
+    var ctxIncome = $('#incomeChart').get(0).getContext('2d');
+    var incomeChart = new Chart(ctxIncome, {
+        type: 'pie',
+        data: {
+            labels: incomeData.map(data => data.name),
+            datasets: [{
+                label: 'Income Breakdown',
+                data: incomeData.map(data => data.value),
+                backgroundColor: ['#FFCC99', '#FF6600', '#FF7F50', '#FF4500', '#CC5500'], // Define colors
+                borderColor: '#94453d',  // Define border color
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+        fontSize: 16,
+        fontColor: '#0e3821',
+        fontFamily: '"Lucida Console", Monaco, monospace'
+      }
+                },
+            }
+        }
+    });
+});
+</script>
+
 {% endblock %}
